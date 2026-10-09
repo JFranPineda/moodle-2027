@@ -157,20 +157,26 @@ movimiento del sistema solar.
 
 ## 4. Registro de ensayos
 
-| Paso | Ensayo 1 · 2026-10-09 |
-|---|---|
-| Importar base + `moodledata` | 24 s |
-| Unificar collation | 4 s |
-| Upgrade 4.3 → 4.5 | 139 s |
-| Cambio a PHP 8.3 + MySQL 8.4 | 20 s |
-| Upgrade 4.5 → 5.3 | 148 s |
-| Tareas adhoc (≈ todo CSS; `mod_qbank` ≈ 1 s) | 197 s |
-| Personalización de idioma | 7 s |
-| **Total, de la collation al último paso** | **515 s ≈ 8,6 min** |
-| Resultado | `checks.php`: solo el aviso de cron. Esquema OK. Las 504 tablas en `unicode_ci`. Sección E: todo OK salvo el acceso de invitados BBB, que viene apagado de producción |
+| Paso | Ensayo 1 · copia 1 | Ensayo 2 · copia 2 | Ensayo 3 · copia 2 |
+|---|---|---|---|
+| Importar base + `moodledata` | 24 s | 30 s | 32 s |
+| Unificar collation | 4 s | 4 s (nada que convertir) | 4 s |
+| Upgrade 4.3 → 4.5 | 139 s | 173 s | 198 s |
+| Cambio a PHP 8.3 + MySQL 8.4 | 20 s | 24 s | 25 s |
+| Upgrade 4.5 → 5.3 | 148 s | 199 s | 225 s |
+| Tareas adhoc (≈ todo CSS; `mod_qbank` ≈ 1 s) | 197 s | 205 s | 240 s |
+| Personalización de idioma | 7 s | 9 s | 11 s |
+| **Total, de la collation al último paso** | **515 s ≈ 8,6 min** | **614 s ≈ 10,2 min** | **703 s ≈ 11,7 min** |
+| Resultado técnico | Esquema OK; sección E: acceso de invitados BBB apagado (venía así) | Esquema OK; sección E: **tema del sitio = `rmuniversidad`** (venía así de producción, ver §5) | Esquema OK; sección E igual que el ensayo 2 (tema del sitio = `rmuniversidad`, de producción) |
+| Aceptación | A mano: 22/25 ✅, 4 arreglos | Automática: 51/51 ✅ (un fallo del propio script, corregido); a ojo: «Attempt submitted.» en inglés → 37 cadenas traducidas | Automática: **52/52 ✅** con BBB real; sin arreglos en medio |
 
-El script se corrió cuatro veces sobre la misma copia mientras se afinaba, y
-los tiempos variaron poco: 119–139 s el salto a 4.5 y 126–152 s el salto a 5.3.
+- **Copia 1**: tomada el 2026-10-09 a las 16:43 (hora del servidor).
+- **Copia 2**: tomada a las 23:54, ya con la collation unificada, el acceso de
+  invitados encendido y el banner instalado.
+
+Los tiempos varían con la carga del portátil (119–198 s el salto a 4.5 y
+126–225 s el salto a 5.3, entre seis ejecuciones); la ventana real sale de
+medirlos en el servidor (Fase 3).
 
 Tiempos del portátil: el VPS 4 tiene menos CPU. La Fase 3 los repite en el
 servidor antes de fijar la ventana del corte.
@@ -271,6 +277,25 @@ arrancar (`lib/setup.php`), y el script de 4.3 todavía no lo compensa (el de
    estaba en 0 ya en 4.3. Encendido en producción el 2026-10-09; las copias
    anteriores lo traen apagado.
 6. **MIG-40 cerrado**: ni `chat` ni `survey` en producción.
+7. **Tema del sitio en producción = `rmuniversidad`** desde la tarde del
+   2026-10-09 (en la copia 1 era `richimath`). No está en `config_log`, y
+   nuestro código solo escribe el tema de cada usuario, nunca el del sitio:
+   alguien lo cambió a mano (el selector de temas no deja rastro). Lo ven los
+   visitantes sin sesión, en la portada pública y el login, porque todos los
+   usuarios reales tienen su tema de nivel. Si no fue a propósito, se vuelve
+   atrás en Apariencia → Temas → Richimath → «Usar tema».
+8. **El paquete español de 5.3 aún no traduce todo**: la versión acaba de salir.
+   37 cadenas que ven alumnos o profesores van traducidas en
+   `assets/customlang/es/` y se importan en el corte. Antes del corte conviene
+   repetir el recuento, por si el paquete trae más o menos huecos:
+
+   ```bash
+   docker compose -p rmrehearsal exec -T web php -r 'define("MOODLE_INTERNAL", 1);
+     $string = []; include "/var/www/html/public/mod/quiz/lang/en/quiz.php"; $en = $string;
+     $string = []; include "/var/moodledata/lang/es/quiz.php";
+     print_r(array_keys(array_diff_key($en, $string)));'
+   ```
+   Se cambia `quiz` por el componente que se quiera revisar.
 
 ## 6. Al cerrar la Fase 2
 

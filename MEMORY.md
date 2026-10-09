@@ -1,6 +1,6 @@
 # MEMORY.md — estado vivo de la migración a 5.3 (actualizar al terminar cada tarea)
 
-Última actualización: 2026-10-09 (Fase 2: ensayo 1 + aceptación completa sobre la copia; 4 arreglos durante la aceptación → toca el ensayo 2 desde una copia nueva).
+Última actualización: 2026-10-09 noche (Fase 2: copia 2 + ensayos 2 y 3 con aceptación automática `scripts/rehearsal/acceptance.sh`; pendiente: tema del sitio en prod = rmuniversidad).
 
 ## Árboles en disco
 
@@ -20,7 +20,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 |---|---|
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
 | 1 Portar código | ✅ 2026-10-09 — 23/23 MIG. MIG-27 = iconos de Moodle; MIG-26 = lista de usuarios de 5.3 + `core_admin/userlist` = «Lista de usuarios» (customlang) |
-| 2 Ensayo con copia de producción | 🟡 ensayo 1 + aceptación FUN-01…25 hechos (22 ✅, FUN-16/25 no aplican, FUN-23 es de Fase 3); 4 arreglos en medio → falta el ensayo 2 con copia nueva ([docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md)) |
+| 2 Ensayo con copia de producción | 🟡 ensayo 1 (a mano, 4 arreglos) · ensayo 2 (copia 2, 51/51 auto; 37 cadenas sin traducir → customlang) · ensayo 3 (misma copia, 52/52 auto, sin arreglos: primer verde limpio) — ver [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md) |
 | 3 Preparar servidor | — |
 | 4 Corte | — |
 | 5 Después | — |
@@ -279,3 +279,21 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
   `core_renderer::in_quiz_attempt()`; vuelven en la revisión.
 - La barra secundaria de 5.3 (React) pinta un instante las pestañas en dos
   líneas antes de mandarlas a «Más»: esperar antes de capturar, no es un fallo.
+
+## Fase 2 — copia 2 y ensayos automáticos (2026-10-09, noche)
+
+- **Copia 2** (23:54 hora del servidor): ya trae collation unificada, invitados
+  BBB encendidos y banner. La copia 1 se borró.
+- **`scripts/rehearsal/acceptance.sh <copia> [--bbb]`**: aceptación automática,
+  unas 50 comprobaciones PASS/FAIL, con capturas en `work/acceptance/`. Las
+  carpetas y foros se abren por tandas de 25: con una sola llamada,
+  agent-browser corta por tiempo.
+- **Tema del SITIO en producción = `rmuniversidad`** desde la tarde del
+  2026-10-09, sin rastro en `config_log`: un cambio a mano (el selector de temas
+  no deja log). Nuestro código solo escribe `mdl_user.theme`. Lo ven los
+  visitantes sin sesión. `check-db-settings.php` lo marca FAIL hasta que se
+  decida.
+- **Paquete español de 5.3 incompleto** (versión recién salida): 37 cadenas
+  visibles en `assets/customlang/es/` (quiz, moodle, forum, block_timeline,
+  h5pactivity, courseformat). Antes del corte, repetir el recuento
+  (`docs/migration/phase-2-production-copy.md` §5).
