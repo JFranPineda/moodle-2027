@@ -4116,11 +4116,13 @@ body#page-mod-quiz-summary {
     }
 }
 
-// The solution box (F4b): paper the RM watermark reads through, and one
-// colour per level of the solution. Fixed, not taken from the od palette: a
-// level theme's primary can be red (Preuniversitario) and its secondary teal,
-// and in a solution red and green must mean wrong and right on every level.
-$rm-solution-paper: #fffbf2 !default;
+// The solution box (F4b): a pale ice blue the RM watermark reads through
+// (students found the cream before it yellow), and one colour per level of
+// the solution. Fixed, not taken from the od palette: a level theme's primary
+// can be red (Preuniversitario) and its secondary teal, and in a solution red
+// and green must mean wrong and right on every level.
+$rm-solution-paper: #f4f8ff !default;
+$rm-solution-line: #dbe4f5 !default;
 $rm-solution-step: #004ccd !default;
 $rm-solution-formula: #5b2bb5 !default;
 $rm-solution-right: #006d40 !default;
@@ -4275,7 +4277,7 @@ body#page-mod-quiz-review {
         .outcome {
             margin: 1rem 0 0;
             padding: 1rem 1.25rem;
-            border: 0;
+            border: 1px solid $rm-solution-line;
             border-left: 4px solid $od-exam-accent;
             border-radius: 0;
             color: $od-on-surface;

@@ -213,8 +213,9 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
   admin). Core pone `left` desde reglas `:has(#page.drawers…)` (dos IDs): solo
   `!important` las vence. Vuelve al borde, con el botón de cerrar arriba a la
   derecha, como en 4.3 (`docs/theme-richimath.md`).
-- **Caja de solución del examen (`.que .outcome`)**: papel crema con marca de
-  agua RM y un color por nivel (veredicto, título, pasos, fórmulas, respuesta).
+- **Caja de solución del examen (`.que .outcome`)**: azul hielo `#f4f8ff` con
+  borde fino y marca de agua RM (el crema se rechazó por «amarillo»), y un
+  color por nivel (veredicto, título, pasos, fórmulas, respuesta).
   **Colores fijos, no de la paleta del nivel**: `rmpreu` tiene `$od-primary`
   ROJO y `rmsecundaria`/`rmuniversidad` `$od-secondary` turquesa.
 - **Fórmulas MathJax anchas**: `.que` tiene `overflow: hidden` y las cortaba en

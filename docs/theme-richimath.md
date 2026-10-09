@@ -261,8 +261,13 @@ Al revisar un intento, la caja `.outcome` junta tres cosas: el veredicto (el
 feedback de la opción elegida, «Respuesta incorrecta.»), la solución que sube
 el profesor (feedback general) y la respuesta correcta. Boost la pintaba como
 aviso amarillo, y con el fondo lavanda del tema el texto quedaba marrón y
-apagado. Ahora es papel crema (`$rm-solution-paper`) con la misma marca de agua
-RM que el enunciado, y cada nivel de la solución tiene su color:
+apagado. Ahora es azul hielo (`$rm-solution-paper`, `#f4f8ff`) con borde fino y
+la misma marca de agua RM que el enunciado, y cada nivel de la solución tiene
+su color. Un primer intento en crema no gustó a los alumnos («amarillo»). Entre
+blanco, gris perla y azul hielo se eligió el último: el blanco la confundía con
+el enunciado y el gris quedaba apagado.
+
+Los niveles y sus colores:
 
 | Nivel | Qué es | Color |
 |---|---|---|
