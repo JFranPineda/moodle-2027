@@ -24,7 +24,6 @@
  */
 
 require(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/user/lib.php');
 
 use local_richimath\courselink;
 use local_richimath\invitation;
@@ -152,7 +151,7 @@ if ($data = $form->get_data()) {
         'password' => $data->password,
         'lang' => $CFG->lang,
     ];
-    $userid = user_create_user($user, true, true);
+    $userid = \core\user::create_user($user, true, true);
     $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
     complete_user_login($user);
 

@@ -122,8 +122,7 @@ create_admin() {
     dc exec -T -u www-data -e QA_PW="$pw" web php -r '
         define("CLI_SCRIPT", true);
         require("/var/www/html/config.php");
-        require_once($CFG->dirroot . "/user/lib.php");
-        $id = user_create_user((object) ["username" => "qa.admin", "password" => getenv("QA_PW"),
+        $id = \core\user::create_user((object) ["username" => "qa.admin", "password" => getenv("QA_PW"),
             "firstname" => "QA", "lastname" => "Admin", "email" => "qa.admin@example.invalid",
             "auth" => "manual", "confirmed" => 1, "mnethostid" => $CFG->mnet_localhost_id, "lang" => "es"]);
         set_config("siteadmins", $CFG->siteadmins . "," . $id);'
