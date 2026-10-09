@@ -196,6 +196,11 @@ Más la consulta de **MIG-40** (actividades de `chat` y `survey`).
   4.3).
 - **`DocumentRoot` → `/var/www/html/public`** y `AllowOverride FileInfo
   Indexes` en el nuevo directorio, por el `.htaccess` de rutas.
+- **Router de Moodle**: en 5.3 sin configurar es una comprobación **crítica**.
+  `RewriteRule` a `/r.php` para todo lo que no sea fichero ni directorio (no
+  `FallbackResource`), al final de `public/.htaccess`, y
+  `$CFG->routerconfigured = true`. Detalle en `docs/local-dev-environment.md`
+  y MIG-14. En el corte: `admin/cli/checks.php` sin críticos.
 
 ### 6.3 Red de seguridad
 - **Snapshot del VPS 4** en el panel de Contabo justo antes del corte (no

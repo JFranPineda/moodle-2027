@@ -56,7 +56,9 @@ instalado: solo esos seis.
    los bancos de curso se migran solos en la actualización.
 9. **Lista de usuarios del admin** (`/admin/user.php`): ahora es un informe del
    *report builder*, no el formulario de filtros de 4.3.
-10. **Router de Moodle** (`r.php`, `$CFG->routerconfigured = false` por defecto).
+10. **Router de Moodle** (`r.php`). En 5.3 un router sin configurar es una
+    **comprobación crítica**: hay que configurarlo en el servidor web y poner
+    `$CFG->routerconfigured = true` (verificado en la Fase 0).
 
 ---
 
@@ -519,9 +521,11 @@ T-04 → FUN-06 · T-05 → FUN-15 · T-06 → FUN-24 (BBB) · T-07 y T-09 → g
 #### MIG-03 · `config.php` de 5.3 🟢
 - **Qué**: partir de `config-dist.php` de la raíz; trasladar `wwwroot`,
   `dataroot`, `dbtype` (`mysqli` en prod), `sslproxy`/`reverseproxy` si los hay, y
-  el desvío de correo local. Dejar **`$CFG->routerconfigured = false`** (ver
-  MIG-23).
-- **Hecho cuando**: el sitio carga en local; ninguna credencial queda en git.
+  el desvío de correo local. **`$CFG->routerconfigured = true`**, con el router
+  configurado en Apache (ver MIG-14), y un `$CFG->sessioncookie` propio en
+  local para no chocar con el espejo 4.3 en el mismo `localhost`.
+- **Hecho cuando**: el sitio carga en local; `admin/cli/checks.php` sin
+  críticos; ninguna credencial queda en git. **Hecho el 2026-10-09.**
 
 ---
 
@@ -584,9 +588,15 @@ solos con la base de datos**. No hay que recrearlas.
     escribir ahí.
   - Las reglas reescriben a scripts reales (`/login/index.php`…): mismas rutas
     relativas dentro de `public/`.
-  - **Convivencia con el router de Moodle**: con `routerconfigured = false` no
-    hay conflicto. Si algún día se configura el router (todo lo que no existe
-    va a `r.php`), nuestras reglas deben ir **antes**.
+  - **Convivencia con el router de Moodle** (obligatorio en 5.3): todo lo que
+    no es fichero ni directorio va a `/r.php` con un `RewriteRule`. **No sirve
+    `FallbackResource`**: PHP contesta su propio 404 a un `*.php` inexistente y
+    uno de los tests de core pide justo eso. Y como las reglas de un
+    `.htaccess` **sustituyen** a las del `<Directory>`, la regla del router
+    tiene que ir **al final de `public/.htaccess`**, después de las rutas
+    limpias. `build-routes.php` la escribe ahí.
+  - Comprobación: `admin/cli/checks.php` → «Configuración de router» OK (sus 5
+    tests de URL).
   - Las tres guardas siguen siendo obligatorias: `REDIRECT_STATUS`, no
     redirigir POST, `DirectorySlash Off`.
 - **Hecho cuando**: cada ruta del mapa responde en sus dos direcciones (limpia →
