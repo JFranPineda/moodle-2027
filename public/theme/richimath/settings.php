@@ -41,4 +41,9 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_configselect($name, $title, $description, 'compact', $choices);
     $setting->set_updatedcallback('theme_reset_all_caches');
     $settings->add($setting);
+
+    // 5.3 hands every theme its page hidden, and lists it only once the theme
+    // unhides it: left hidden, Appearance > Themes > Richimath answered
+    // "section error" and the sidebar style could not be changed.
+    $settings->hidden = false;
 }
