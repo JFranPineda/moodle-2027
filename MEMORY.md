@@ -205,3 +205,32 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    `admin/cli/cfg.php --name=release`.
 9. Con «Entrar como», el aviso «Usted se ha identificado como…» se recorta en
    la cabecera de la barra lateral (solo lo ve el admin).
+
+## Ajustes de UI pedidos sobre 5.3 (2026-10-09)
+
+- **Cajón derecho de bloques**: 5.3 «ancla» los cajones junto al contenido en
+  `pagelayout-standard` y `body.limitedwidth` (cuestionario, actividades,
+  admin). Core pone `left` desde reglas `:has(#page.drawers…)` (dos IDs): solo
+  `!important` las vence. Vuelve al borde, con el botón de cerrar arriba a la
+  derecha, como en 4.3 (`docs/theme-richimath.md`).
+- **Caja de solución del examen (`.que .outcome`)**: papel crema con marca de
+  agua RM y un color por nivel (veredicto, título, pasos, fórmulas, respuesta).
+  **Colores fijos, no de la paleta del nivel**: `rmpreu` tiene `$od-primary`
+  ROJO y `rmsecundaria`/`rmuniversidad` `$od-secondary` turquesa.
+- **Fórmulas MathJax anchas**: `.que` tiene `overflow: hidden` y las cortaba en
+  el móvil → `mjx-container[display="true"]` con scroll horizontal.
+- **Fechas de actividad** (`.activity-dates`): rejilla `1fr 1fr` sin salto que
+  core solo apila en viewport estrecho → `auto-fit` al ancho real.
+
+### Trampas de verificación
+
+1. **`html { scroll-behavior: smooth }`**: el clic por coordenadas de
+   agent-browser llega antes de que acabe el desplazamiento (el login a 390 «no
+   enviaba»). Usar `find role button click --name …` o Enter. No es un fallo
+   para usuarios reales.
+2. **MathJax tarda segundos** en componer una revisión larga: esperar antes de
+   capturar o se ve TeX crudo.
+3. **En Boost la página se desplaza dentro de `#page`**, no en `window`:
+   `document.querySelector('#page').scrollTop`.
+4. Compilar el CSS (≈2,5 min por entorno) en `:8084` y `:8083` a la vez: los dos
+   montan el mismo árbol y cada uno tiene su caché.

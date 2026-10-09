@@ -250,10 +250,58 @@ sustituye por el arte de examen de Richi: `assets/exam-background.png`
 textura gris clara con el logo RM abajo a la derecha, bajo un velo blanco
 (`$richimath-veil-light`) para que enunciados largos y campos de respuesta
 mantengan contraste; `background-position: right bottom` deja el logo en la
-esquina sea cual sea la altura de la pregunta. Las cajas de retroalimentación
-(`.outcome`, `.comment`) conservan el amarillo de Boost. Verificado en la
-vista previa de un cuestionario con opción múltiple, V/F, respuesta corta y
-numérica, 1440 y 390.
+esquina sea cual sea la altura de la pregunta. El comentario del profesor
+(`.comment`) conserva el verde de Boost; la caja de solución (`.outcome`) tiene
+su propia sección, abajo. Verificado en la vista previa de un cuestionario con
+opción múltiple, V/F, respuesta corta y numérica, 1440 y 390.
+
+## Caja de solución del examen (F4b, 2026-10-09)
+
+Al revisar un intento, la caja `.outcome` junta tres cosas: el veredicto (el
+feedback de la opción elegida, «Respuesta incorrecta.»), la solución que sube
+el profesor (feedback general) y la respuesta correcta. Boost la pintaba como
+aviso amarillo, y con el fondo lavanda del tema el texto quedaba marrón y
+apagado. Ahora es papel crema (`$rm-solution-paper`) con la misma marca de agua
+RM que el enunciado, y cada nivel de la solución tiene su color:
+
+| Nivel | Qué es | Color |
+|---|---|---|
+| Veredicto | El feedback de la opción, si es una línea corta | Verde (correcta), rojo (incorrecta o sin responder), naranja (parcial). El borde izquierdo de la caja, igual |
+| Título | El primer `<strong>` de la solución («Resolución Detallada:») | Etiqueta gris en mayúsculas, como las del examen |
+| Pasos | Cada `<strong>` del autor («1. Análisis…») y las viñetas | Azul |
+| Explicación | El texto | Tinta |
+| Fórmulas destacadas | MathJax en bloque (`\[ … \]`) | Violeta |
+| Respuesta | «La respuesta correcta es: …» | Verde, tras una línea punteada |
+
+- **Los colores son fijos, no de la paleta del nivel.** Preuniversitario tiene el
+  primario rojo, y Secundaria y Universidad el secundario turquesa: con la
+  paleta del nivel, los pasos de una respuesta correcta salían en rojo.
+- **El veredicto solo se colorea si es una línea.** Dos preguntas llevan la
+  solución entera pegada en el feedback de la opción (con listas): ese texto
+  queda en tinta (`$rm-verdict` = `.specificfeedback:not(:has(ul, ol, div, table))`).
+- **Fórmulas anchas en el móvil**: `.que` oculta lo que se sale, y una fórmula
+  más ancha que el teléfono se cortaba. Ahora se desplaza en horizontal,
+  también en el enunciado.
+- Ninguna regla depende de cómo escriba el profesor salvo usar negrita para
+  los pasos: 68 de las 71 soluciones de producción siguen ese patrón.
+
+Verificado con la copia de producción en `:8084`: intentos con respuestas
+incorrectas y correctas, admin y alumna (tema Preuniversitario), 1440 y 390.
+
+## Cajón derecho de bloques en 5.3
+
+En las páginas `pagelayout-standard` y `body.limitedwidth` (cuestionario, casi
+todas las actividades, administración), 5.3 «ancla» los cajones junto al
+contenido. El de bloques quedaba flotando con un hueco a su derecha, mientras
+`#page` seguía reservando su ancho en el borde. El tema lo devuelve al borde de
+la ventana, como en el resto de páginas y como en 4.3, con el botón de cerrar
+arriba a la derecha. Core fija `left` desde reglas `:has(#page.drawers…)`, que
+suman dos IDs, así que solo `!important` las alcanza.
+
+Relacionado: las fechas de la cabecera de una actividad («Abrió… Cerró…») van
+en dos columnas que no se parten, y core solo las apila en pantallas estrechas.
+Con los dos cajones abiertos en un portátil se salían de la cinta negra; ahora
+las columnas se ajustan al ancho real.
 
 ## Limitaciones conocidas (deliberadas)
 
