@@ -124,6 +124,37 @@ Resultados en `~/richimath-prod-copy/work/`:
 El sitio queda en **http://localhost:8084**. Para ver a un alumno: como
 `qa.admin`, su perfil → «Iniciar sesión como».
 
+### Aceptación automática
+
+```bash
+scripts/rehearsal/acceptance.sh ~/richimath-prod-copy          # ~5 min
+scripts/rehearsal/acceptance.sh ~/richimath-prod-copy --bbb    # + sala real en el VPS 6
+```
+
+Escribe una línea PASS/FAIL por comprobación y termina con error si alguna
+falla.
+
+**Qué comprueba sola:**
+- **Rutas limpias** en las dos direcciones.
+- **Login:** error sin salir de `/login`, *reducir movimiento*, 390.
+- **Portada y banner.**
+- **Admin:** lista de usuarios, línea de la hora del calendario, página de
+  ajustes del tema y columna de nombres del calificador.
+- **Datos reales:** todas las carpetas y foros, y cada fichero en `moodledata`.
+- **Invitaciones** y enlace compartido.
+- **Privacidad** con un alumno real de un curso, vía «Entrar como».
+- **Alumno de prueba `qa.alumno`** con inicio de sesión real: tema por plan,
+  chips, sin catálogo, botones flotantes en móvil.
+- **Examen completo:** temporizador, navegación, marca de agua, sin botones
+  flotantes en el intento ni en el resumen, y caja de solución en la revisión.
+
+Con `--bbb` abre una sala **nueva** y sin grabación en el servidor real, entra
+como profesor y como invitado, y la cierra.
+
+**Lo que sigue siendo a ojo:** las capturas que deja en `work/acceptance/`
+(fuera del repo: llevan alumnos reales), los colores y espaciados, y el
+movimiento del sistema solar.
+
 ## 4. Registro de ensayos
 
 | Paso | Ensayo 1 · 2026-10-09 |
