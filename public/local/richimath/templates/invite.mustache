@@ -1,0 +1,219 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_richimath/invite
+
+    Teacher page: the invitation just created (link ready to copy or send),
+    the form for the next one, and every invitation issued here.
+
+    Context (json):
+    {
+        "heading": "Invite students",
+        "intro": "Each invitation is a personal link…",
+        "form": "<form>…</form>",
+        "created": {
+            "email": "a@b.c",
+            "url": "https://…/accept.php?token=…",
+            "whatsapp": "https://wa.me/?text=…",
+            "sent": true,
+            "expires": "6 September 2026"
+        },
+        "hasinvitations": true,
+        "invitations": [
+            {
+                "email": "a@b.c",
+                "status": "pending",
+                "statuslabel": "Pending",
+                "ispending": true,
+                "when": "Expires 6 September 2026",
+                "url": "…",
+                "whatsapp": "…",
+                "deleteurl": "…",
+                "user": {
+                    "name": "Ana",
+                    "profileurl": "…"
+                }
+            }
+        ]
+    }
+}}
+<div class="richimath-invite">
+    <h2 class="richimath-invite-title">{{heading}}</h2>
+    <p class="richimath-invite-intro">{{intro}}</p>
+
+    {{#courselink}}
+    <section class="richimath-invite-share richimath-invite-courselink" data-richimath-share>
+        <p class="richimath-invite-share-status">
+            <i class="fa fa-link" aria-hidden="true"></i>
+            {{^sitewide}}{{#str}} courselink, local_richimath {{/str}}{{/sitewide}}
+            {{#sitewide}}{{#str}} courselinksite, local_richimath {{/str}}{{/sitewide}}
+        </p>
+        <p class="richimath-invite-courselink-intro">{{#str}} courselinkintro, local_richimath {{/str}}</p>
+        <div class="richimath-invite-linkrow">
+            <input class="form-control" type="text" readonly value="{{url}}" data-richimath-select
+                aria-label="{{#str}} sharelink, local_richimath {{/str}}">
+            <button type="button" class="btn btn-primary" data-richimath-copy="{{url}}" data-copied="{{#str}} copied, local_richimath {{/str}}">
+                <i class="fa fa-copy" aria-hidden="true"></i> <span data-label>{{#str}} copylink, local_richimath {{/str}}</span>
+            </button>
+            <a class="btn btn-success" href="{{whatsapp}}" target="_blank" rel="noopener">
+                <i class="fa fa-whatsapp" aria-hidden="true"></i> {{#str}} sharewhatsapp, local_richimath {{/str}}
+            </a>
+        </div>
+    </section>
+    {{/courselink}}
+
+    {{#created}}
+    <section class="richimath-invite-share" data-richimath-share aria-live="polite">
+        <p class="richimath-invite-share-status">
+            {{#sent}}<i class="fa fa-check-circle" aria-hidden="true"></i> {{#str}} sharesent, local_richimath, {{email}} {{/str}}{{/sent}}
+            {{^sent}}<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> {{#str}} sharenotsent, local_richimath, {{email}} {{/str}}{{/sent}}
+        </p>
+        <label class="richimath-invite-share-label" for="richimath-invite-link">{{#str}} sharelink, local_richimath {{/str}}</label>
+        <div class="richimath-invite-linkrow">
+            <input id="richimath-invite-link" class="form-control" type="text" readonly value="{{url}}" data-richimath-select>
+            <button type="button" class="btn btn-primary" data-richimath-copy="{{url}}" data-copied="{{#str}} copied, local_richimath {{/str}}">
+                <i class="fa fa-copy" aria-hidden="true"></i> <span data-label>{{#str}} copylink, local_richimath {{/str}}</span>
+            </button>
+            <a class="btn btn-success" href="{{whatsapp}}" target="_blank" rel="noopener">
+                <i class="fa fa-whatsapp" aria-hidden="true"></i> {{#str}} sharewhatsapp, local_richimath {{/str}}
+            </a>
+        </div>
+        <p class="richimath-invite-share-hint">{{#str}} sharehint, local_richimath, {{expires}} {{/str}}</p>
+    </section>
+    {{/created}}
+
+    <section class="richimath-invite-form">
+        {{{form}}}
+    </section>
+
+    <h3 class="richimath-invite-listtitle">{{#str}} invitationlist, local_richimath {{/str}}</h3>
+    {{^hasinvitations}}
+        <p class="richimath-invite-empty">{{#str}} noinvitations, local_richimath {{/str}}</p>
+    {{/hasinvitations}}
+    {{#hasinvitations}}
+    <div class="table-responsive">
+        <table class="generaltable richimath-invite-table">
+            <thead>
+                <tr>
+                    <th scope="col">{{#str}} email, core {{/str}}</th>
+                    <th scope="col">{{#str}} status, local_richimath {{/str}}</th>
+                    <th scope="col">{{#str}} acceptedby, local_richimath {{/str}}</th>
+                    <th scope="col" class="richimath-invite-actions"><span class="sr-only">{{#str}} actions, core {{/str}}</span></th>
+                </tr>
+            </thead>
+            <tbody>
+            {{#invitations}}
+                <tr>
+                    <td class="richimath-invite-email">{{email}}</td>
+                    <td>
+                        <span class="richimath-invite-badge is-{{status}}">{{statuslabel}}</span>
+                        <span class="richimath-invite-when">{{when}}</span>
+                    </td>
+                    <td>{{#user}}<a href="{{profileurl}}">{{name}}</a>{{/user}}{{^user}}—{{/user}}</td>
+                    <td class="richimath-invite-actions">
+                        {{#ispending}}
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-richimath-copy="{{url}}" data-copied="{{#str}} copied, local_richimath {{/str}}">
+                            <i class="fa fa-copy" aria-hidden="true"></i> <span data-label>{{#str}} copylink, local_richimath {{/str}}</span>
+                        </button>
+                        <a class="btn btn-sm btn-success" href="{{whatsapp}}" target="_blank" rel="noopener">
+                            <i class="fa fa-whatsapp" aria-hidden="true"></i> WhatsApp
+                        </a>
+                        {{/ispending}}
+                        <a class="btn btn-sm btn-outline-danger" href="{{deleteurl}}" data-richimath-confirm="{{#str}} confirmdelete, local_richimath, {{email}} {{/str}}" title="{{#str}} delete, core {{/str}}">
+                            <i class="fa fa-trash" aria-hidden="true"></i><span class="sr-only">{{#str}} delete, core {{/str}}</span>
+                        </a>
+                    </td>
+                </tr>
+            {{/invitations}}
+            </tbody>
+        </table>
+    </div>
+    {{/hasinvitations}}
+</div>
+{{#js}}
+(function() {
+    var flash = function(button) {
+        var label = button.querySelector('[data-label]') || button;
+        var text = label.textContent;
+        label.textContent = button.dataset.copied;
+        button.classList.add('is-copied');
+        setTimeout(function() {
+            label.textContent = text;
+            button.classList.remove('is-copied');
+        }, 2000);
+    };
+    // Last resort: leave the link selected so Ctrl+C works.
+    var select = function(button) {
+        var box = button.closest('[data-richimath-share]');
+        var input = box && box.querySelector('input');
+        if (input) {
+            input.focus();
+            input.select();
+        }
+    };
+    var legacy = function(text, button) {
+        var area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.top = '-1000px';
+        document.body.appendChild(area);
+        area.select();
+        var ok = false;
+        try {
+            ok = document.execCommand('copy');
+        } catch (e) {
+            ok = false;
+        }
+        document.body.removeChild(area);
+        if (ok) {
+            flash(button);
+        } else {
+            select(button);
+        }
+    };
+    var copy = function(text, button) {
+        // navigator.clipboard only exists on HTTPS or localhost; the site
+        // runs on plain HTTP, so the old execCommand path is the usual one.
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(function() {
+                flash(button);
+            }, function() {
+                legacy(text, button);
+            });
+        } else {
+            legacy(text, button);
+        }
+    };
+    document.addEventListener('click', function(e) {
+        var button = e.target.closest('[data-richimath-copy]');
+        if (button) {
+            e.preventDefault();
+            copy(button.dataset.richimathCopy, button);
+            return;
+        }
+        if (e.target.matches('[data-richimath-select]')) {
+            e.target.select();
+            return;
+        }
+        var remove = e.target.closest('[data-richimath-confirm]');
+        if (remove && !window.confirm(remove.dataset.richimathConfirm)) {
+            e.preventDefault();
+        }
+    });
+})();
+{{/js}}
