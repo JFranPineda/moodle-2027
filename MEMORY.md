@@ -181,8 +181,11 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    el de 4.3). El VPS necesita salida a `download.moodle.org` en el corte.
 2. **El upgrade encola `build_installed_themes_task`**: ~3 min de CSS dentro de
    la ventana. NO purgar después o se compila dos veces.
-3. **`customlang/cli/import.php` con `--source` relativo** → «Falta archivo o
-   directorio». Siempre ruta absoluta.
+3. **El CLI de Moodle se mueve a la carpeta del script** (`lib/setup.php`, en 4.3
+   y en 5.3): una ruta relativa se busca ahí. Por eso `customlang/cli/import.php
+   --source=assets/...` decía «Falta archivo». Rutas absolutas, o guardar
+   `getcwd()` antes del `require config.php` (lo hace ya
+   `scripts/set-frontpage-banner.php`).
 4. **Collation — unificada en producción el 2026-10-09 19:31**: el `config.php`
    (líneas 18 y 30, repetida) y las 5 tablas `local_richimath_*` estaban en
    `utf8mb4_general_ci`; las 483 de core, en `unicode_ci`. Hecho con `sed` +
@@ -264,3 +267,15 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    automatización (`#frm-finishattempt.submit()`); la búsqueda de mensajes se
    prueba con `core_message_message_search_users`; un elemento `position: fixed`
    tiene `offsetParent` nulo (medir con `getBoundingClientRect`).
+
+## Decisiones de Richi aplicadas (2026-10-09, tras la aceptación)
+
+- **Favicon**: el del sitio (Apariencia → Logos, icono RM) en todos los niveles.
+- **Banner de portada (FUN-25)**: instalado en la copia; en producción, con
+  `sudo -u www-data php scripts/set-frontpage-banner.php /var/www/html/assets/frontpage-banner.jpg`.
+  En 5.3 la cabecera de sección lleva `.d-flex` (`!important`): la sección D6
+  necesita `display: none !important` para quitar la franja vacía.
+- **«Consultas» y WhatsApp fuera del intento de examen** (attempt y summary):
+  `core_renderer::in_quiz_attempt()`; vuelven en la revisión.
+- La barra secundaria de 5.3 (React) pinta un instante las pestañas en dos
+  líneas antes de mandarlas a «Más»: esperar antes de capturar, no es un fallo.

@@ -200,13 +200,26 @@ servidor antes de fijar la ventana del corte.
 3. **Botones flotantes en móvil.** 5.3 sube los botones de cajón a `calc(99vh - navbar × 2.5)`, justo donde estaba «Consultas». Con ese botón en la página, «Consultas» y WhatsApp van encima.
 4. **Cuentas de invitados.** `accept.php` usa `\core\user::create_user()` en vez de la obsoleta `user_create_user()` (MDL-82650). Nada más de nuestro código usa API obsoleta de 5.3, comprobado contra `deprecatedlib.php` y los atributos `#[deprecated]`.
 
-**Decisiones pendientes (Richi):**
-1. **Favicon:** ¿el de cada nivel? Habría que vaciar el del sitio en Apariencia → Logos.
-2. **Banner (FUN-25):** ¿instalarlo en el corte?
-3. **Botones flotantes en el examen:** en el móvil pasan por encima del enunciado. ¿Se ocultan en la página del intento?
+**Decisiones de Richi (2026-10-09), ya aplicadas:**
+1. **Favicon:** el que gestiona Moodle, en todos los niveles: el icono RM de
+   Apariencia → Logos (como hoy en 4.3). Sin favicon por nivel.
+2. **Banner (FUN-25):** se instala. En la copia ya está, y en 5.3 se veía con una
+   franja vacía encima (la cabecera de sección lleva `.d-flex`, con
+   `!important`): corregido. En producción se instala ya con el script (abajo),
+   y viaja con la base.
+3. **Botones flotantes:** fuera durante el intento y su resumen («Consultas» y
+   WhatsApp); vuelven en la revisión. Lo decide el *renderer*, no el CSS.
 
-**Avisos de los upgrades:** solo el *callback* `after_config` de 4.3 en el
-salto a 4.5, esperado porque ese plugin es el viejo. En 5.3 ya es un *hook*.
+**Instalar el banner en producción (4.3), en el VPS:**
+
+```bash
+cd /var/www/html
+sudo -u www-data php scripts/set-frontpage-banner.php /var/www/html/assets/frontpage-banner.jpg
+```
+
+La ruta va absoluta: el CLI de Moodle se mueve a la carpeta del script al
+arrancar (`lib/setup.php`), y el script de 4.3 todavía no lo compensa (el de
+5.3 sí).
 
 ## 5. Hallazgos que pasan a las fases 3 y 4
 

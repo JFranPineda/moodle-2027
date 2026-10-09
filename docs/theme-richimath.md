@@ -303,6 +303,11 @@ añadir su ajuste.
 
 ## Calificador y botones flotantes en 5.3
 
+- **Fuera del examen**: «Consultas» y WhatsApp no se pintan durante un intento
+  (sus páginas y el resumen) — `core_renderer::in_quiz_attempt()`. En el móvil
+  tapaban el enunciado, y un examen no es momento de escribir a nadie. Vuelven
+  en la revisión.
+
 - **Calificador**: 5.3 desplaza la página entera en horizontal y fija la
   columna de nombres en el borde de la ventana, debajo de nuestra barra
   lateral. Se fija a la derecha de la barra (`left:

@@ -439,6 +439,8 @@ Todas las comprobaciones se hacen a **1440 y 390 px**, como **admin** y como
   5.3.
 
 #### FUN-25 · Portada con sesión: banner de bienvenida 🟢
+- **2026-10-09**: producción no lo tenía; Richi pidió instalarlo. Va con
+  `scripts/set-frontpage-banner.php` (ver `docs/migration/phase-2-production-copy.md`).
 - **Qué ve el usuario con sesión**: el banner de bienvenida de Richi Math en la
   portada del aula, encima de las tarjetas de categoría.
 - **Commits**: `75657932`.
