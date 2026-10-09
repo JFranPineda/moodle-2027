@@ -1499,10 +1499,17 @@ body.path-calendar .maincalendar {
 
         // Boost pins the drawers below the top navbar; with it gone they run
         // full height and the left one opens right after the sidebar.
+        // 5.3 also "anchors" them on course pages as rounded grey cards,
+        // content-sized and capped at the viewport minus the navbar gap: undo
+        // that too, or the drawer floats as a grey card beside the sidebar.
         .drawer-left,
         .drawer-right {
             top: 0;
             height: 100vh;
+            max-height: none;
+            padding-bottom: 0;
+            border-radius: 0;
+            background-color: transparent;
         }
 
         // Keep the drawers clear of the sticky footer (edit mode, quiz nav),
@@ -1951,42 +1958,53 @@ body#page-my-index #page.drawers .main-inner {
    navy/white buttons, purple badges.
    ------------------------------------------------------------------ */
 #{$richimath-skin} {
-    .secondary-navigation .navigation {
-        background-color: transparent;
-        border-bottom: 0;
-        // moremenu.js auto-collapses items whenever the UL outgrows this
-        // fixed-height parent; grow it by the segmented control's vertical
-        // padding (2 x 0.25rem) + border (2px) so the collapse only fires
-        // on a real second row.
+    // 5.3 draws the secondary navigation with the design-system React
+    // component (core/nav/Nav): a.mds-nav-pill, --selected on the current
+    // tab, and a dot indicator. The segmented control is rebuilt on those.
+    // The Nav component moves tabs into "More" whenever the list is taller
+    // than this bar (Nav.tsx: menu.offsetHeight > container.offsetHeight),
+    // and core fixes the bar at $moremenu-height. Grow it by exactly what the
+    // segmented control adds (2 x 0.25rem padding + 2px border), or every tab
+    // ends up under "More".
+    .secondary-navigation .navigation.secondarynav-tabbar {
         height: calc(#{$moremenu-height} + 0.5rem + 2px);
+    }
 
-        .nav-tabs {
-            padding: 0.25rem;
-            background-color: $richimath-veil;
-            border: 1px solid $richimath-line;
-            border-radius: 8px;
+    .secondary-navigation .secondarynav-tabbar .more-nav {
+        padding: 0.25rem;
+        background-color: $richimath-veil;
+        border: 1px solid $richimath-line;
+        border-radius: 8px;
+    }
 
-            .nav-link {
-                border: 0;
-                border-radius: 6px;
-                margin: 0 0.125rem;
-                color: $richimath-navy;
-                font-weight: 500;
+    .secondary-navigation .mds-nav-pill {
+        margin: 0 0.125rem;
+        border: 0;
+        border-radius: 6px;
+        color: $richimath-navy;
+        font-weight: 500;
 
-                &:hover {
-                    background-color: rgba($richimath-navy, 0.06);
-                }
+        .mds-nav-pill__label {
+            color: inherit;
+        }
 
-                &.active {
-                    background-color: $richimath-navy;
-                    color: #fff;
+        // The fill marks the current tab; 5.3's dot would say it twice.
+        .mds-nav-pill__indicator {
+            display: none;
+        }
 
-                    &:hover,
-                    &:focus {
-                        background-color: $richimath-navy;
-                        color: #fff;
-                    }
-                }
+        &:hover {
+            background-color: rgba($richimath-navy, 0.06);
+        }
+
+        &.mds-nav-pill--selected {
+            background-color: $richimath-navy;
+            color: #fff;
+
+            &:hover,
+            &:focus {
+                background-color: $richimath-navy;
+                color: #fff;
             }
         }
     }
@@ -2377,12 +2395,6 @@ body#page-my-index #page.drawers .main-inner {
                 font-weight: 600;
             }
 
-            .activityiconcontainer {
-                width: 40px;
-                height: 40px;
-                padding: 8px;
-                border-radius: 8px;
-            }
         }
     }
 
@@ -2600,7 +2612,7 @@ body#page-my-index #page.drawers .main-inner {
             font-size: 1.6rem;
         }
 
-        .secondary-navigation .navigation .nav-tabs .nav-link {
+        .secondary-navigation .mds-nav-pill {
             display: flex;
             align-items: center;
             min-height: 40px;
@@ -3661,10 +3673,9 @@ body.richimath-sidebar-compact {
         box-shadow: 0 0 0 2px $od-surface-lowest, 0 0 0 5px $od-primary-container;
     }
 
-    // E6) Activity rows: white card, 6px purpose bar on the left edge,
-    // squircle glyph, chevron affordance. The purpose colour already
-    // rides on .activityiconcontainer (pre.scss), so the bar reads it
-    // back from the icon square instead of duplicating the map.
+    // E6) Activity rows: white card. The icon keeps 5.3's own size: core
+    // draws it coloured and without a tile now, and the 4.3 tile sizing
+    // (52px box, 8px padding) pushed it 8px off its own container.
     .course-content .activity-item {
         margin-bottom: 0.75rem;
         padding: 0.9rem 1rem;
@@ -3682,12 +3693,6 @@ body.richimath-sidebar-compact {
         &:hover {
             background-color: $od-surface-low;
             box-shadow: 0 8px 18px -4px rgba(15, 98, 254, 0.14);
-        }
-
-        .activityiconcontainer {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
         }
 
         .activityname a,
@@ -3816,26 +3821,26 @@ body.richimath-sidebar-compact {
 // secondary navigation, the support FAB and the dashboard chips are the
 // same control language, so they take the primary blue of the system.
 #{$richimath-skin} {
-    .secondary-navigation .navigation .nav-tabs {
+    .secondary-navigation .secondarynav-tabbar .more-nav {
         background-color: $od-surface-low;
         border-radius: 0.75rem;
+    }
 
-        .nav-link {
-            border-radius: 0.75rem;
-            color: $od-on-surface-variant;
-            font-family: $od-headline;
-            font-weight: 600;
+    .secondary-navigation .mds-nav-pill {
+        border-radius: 0.75rem;
+        color: $od-on-surface-variant;
+        font-family: $od-headline;
+        font-weight: 600;
 
-            &:hover {
-                background-color: $od-surface-container;
-                color: $od-on-surface;
-            }
+        &:hover {
+            background-color: $od-surface-container;
+            color: $od-on-surface;
+        }
 
-            &.active {
-                background-color: $od-primary-container;
-                color: $od-on-primary-container;
-                @include od-key($od-primary-shadow);
-            }
+        &.mds-nav-pill--selected {
+            background-color: $od-primary-container;
+            color: $od-on-primary-container;
+            @include od-key($od-primary-shadow);
         }
     }
 
