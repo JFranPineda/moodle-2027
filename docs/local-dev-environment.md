@@ -1,4 +1,68 @@
-# Entorno de desarrollo local
+# Entorno de desarrollo local — Moodle 5.3
+
+`docker compose up -d` en la raíz de este repo → **http://localhost:8083**.
+Corre al lado del espejo 4.3 (`github/moodle`, puerto 8080), así se comparan
+las dos versiones lado a lado.
+
+| Servicio | Imagen | Qué hace |
+|---|---|---|
+| `db` | `mysql:8.4` | La base que exige 5.3 y la que tendrá producción |
+| `web` | `moodlehq/moodle-php-apache:8.3` | Apache + PHP 8.3, `DocumentRoot` en `public/` |
+| `cron` | la misma imagen | `admin/cli/cron.php` cada 60 s, como en producción |
+
+## Lo que el contenedor `web` configura al arrancar (y por qué)
+
+1. **`DocumentRoot` = `public/`** (variable `APACHE_DOCUMENT_ROOT`). Desde 5.1 el
+   código web vive ahí; `config.php` y `admin/cli/` siguen en la raíz.
+2. **El router de Moodle.** 5.3 marca un router sin configurar como
+   **comprobación crítica**. Todo lo que no es fichero ni directorio va a
+   `/r.php` con una regla de `mod_rewrite`.
+   - **No sirve `FallbackResource /r.php`**: PHP contesta su propio 404 a un
+     `*.php` inexistente antes de que actúe el *fallback*, y uno de los cinco
+     tests de core pide justo eso (`/lib/exampleshimroute2.php` → 302).
+   - Con el router configurado, `config.php` lleva `$CFG->routerconfigured = true`.
+3. **Apache escucha también en 8083 dentro del contenedor.** El test del router
+   lo hace el propio Moodle desde el servidor contra `$CFG->wwwroot`
+   (`localhost:8083`), y dentro del contenedor solo existía el puerto 80: los
+   tests fallaban con «cURL error 7» aunque desde el navegador todo iba bien.
+4. **`mod_rewrite` y `AllowOverride FileInfo Indexes`** en `public/`, para el
+   `.htaccess` de las rutas limpias (MIG-14).
+
+> **Ojo para MIG-14**: cuando exista `public/.htaccess` con `RewriteEngine On`,
+> sus reglas **sustituyen** a las del bloque `<Directory>` (mod_rewrite no las
+> mezcla salvo `RewriteOptions Inherit`). La regla del router tendrá que ir
+> **al final de ese `.htaccess`**, después de las rutas limpias, y en
+> producción igual.
+
+## `config.php` local
+
+No está en git. Lo esencial: `dbtype=mysqli`, `dbhost=db`, `wwwroot=http://localhost:8083`,
+`dataroot=/var/moodledata`, `routerconfigured=true`, depuración `E_ALL` y
+**`noemailever = true`** (en local no sale ningún correo).
+
+## Instalación limpia (ya hecha el 2026-10-09)
+
+```bash
+docker compose up -d
+docker cp ../moodle-lang/es_v5.3/es moodle-2027-web-1:/var/moodledata/lang/es
+docker compose exec -T web chown -R www-data:www-data /var/moodledata
+docker compose exec -T -u www-data web php admin/cli/install_database.php \
+  --lang=es --adminuser=qa.admin --adminpass='…' --adminemail=qa.admin@localhost.local \
+  --fullname="Richi Academy (5.3 local)" --shortname="Richi Academy" --agree-license
+docker compose exec -T -u www-data web php admin/cli/checks.php   # todo OK
+```
+
+La contraseña del admin local no va en el repo.
+
+---
+
+# Referencia: el entorno de 4.3
+
+Lo que sigue es la guía del espejo 4.3 (`github/moodle`). Sigue valiendo para
+**sacar la copia de producción** (Fase 2 del plan): BD y `moodledata/filedir`
+viajan juntos.
+
+## Entorno de desarrollo local (4.3)
 
 Objetivo: un Moodle en el portátil que sea **espejo de Contabo**, para probar
 antes de desplegar sobre un sitio con alumnos.

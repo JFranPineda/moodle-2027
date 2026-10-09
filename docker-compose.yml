@@ -1,0 +1,70 @@
+# Local environment for Moodle 5.3: PHP 8.3 + MySQL 8.4, the versions 5.3
+# requires and the ones production will run. Runs next to the 4.3 mirror
+# (github/moodle on :8080) so both can be compared side by side.
+# Usage: docker compose up -d → http://localhost:8083
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: moodle
+      MYSQL_USER: moodle
+      MYSQL_PASSWORD: moodle
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    volumes:
+      - db_data:/var/lib/mysql
+
+  web:
+    image: moodlehq/moodle-php-apache:8.3
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # From 5.1 the web root is public/; config.php and admin/cli stay above it.
+      APACHE_DOCUMENT_ROOT: /var/www/html/public
+    # Two things public/ needs from Apache:
+    # - The Moodle router: 5.3 reports an unconfigured router as a critical
+    #   check. Every path that is neither a file nor a directory goes to r.php.
+    #   A rewrite and not FallbackResource: PHP answers a missing *.php with
+    #   its own 404 before mod_dir's fallback runs, and core tests exactly that.
+    # - mod_rewrite + AllowOverride: the clean URLs (local/richimath/routes.php)
+    #   are served by .htaccess, and run before the fallback.
+    # Apache also listens on 8083 inside the container: Moodle's own router
+    # check calls $CFG->wwwroot (localhost:8083) from the server side, where
+    # only port 80 existed.
+    command: >
+      bash -c "a2enmod rewrite >/dev/null 2>&1;
+               grep -q 'Listen 8083' /etc/apache2/ports.conf || echo 'Listen 8083' >> /etc/apache2/ports.conf;
+               sed -i 's/:80>/:80 *:8083>/' /etc/apache2/sites-enabled/000-default.conf;
+               printf '<Directory /var/www/html/public>\n    AllowOverride FileInfo Indexes\n    RewriteEngine On\n    RewriteCond %%{REQUEST_FILENAME} !-f\n    RewriteCond %%{REQUEST_FILENAME} !-d\n    RewriteRule ^ /r.php [L]\n</Directory>\n' > /etc/apache2/conf-enabled/richimath-routes.conf;
+               exec apache2-foreground"
+    ports:
+      - "8083:80"
+    volumes:
+      - .:/var/www/html
+      - moodledata:/var/moodledata
+
+  # Moodle's cron, every minute, as production runs it. Without it 5.3 flags a
+  # warning and adhoc tasks (mail, caches, BBB recordings) never run.
+  cron:
+    image: moodlehq/moodle-php-apache:8.3
+    depends_on:
+      db:
+        condition: service_healthy
+    user: www-data
+    working_dir: /var/www/html
+    entrypoint: ["bash", "-c", "while true; do php admin/cli/cron.php --keep-alive=0 >/dev/null 2>&1; sleep 60; done"]
+    volumes:
+      - .:/var/www/html
+      - moodledata:/var/moodledata
+
+volumes:
+  db_data:
+  moodledata:
