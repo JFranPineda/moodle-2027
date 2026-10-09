@@ -1,6 +1,6 @@
 # MEMORY.md — estado vivo de la migración a 5.3 (actualizar al terminar cada tarea)
 
-Última actualización: 2026-10-09 (Fase 0 TERMINADA; siguiente: Fase 1, paso 1.1 = MIG-10).
+Última actualización: 2026-10-09 (Fase 1 en curso: 1.1–1.4 hechos — MIG-10, 20, 21, 22; siguiente 1.5 = MIG-24).
 
 ## Árboles en disco
 
@@ -19,7 +19,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 | Fase | Estado |
 |---|---|
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
-| 1 Portar código | — |
+| 1 Portar código | en curso: MIG-10 ✅, MIG-20 ✅, MIG-21 ✅, MIG-22 ✅ |
 | 2 Ensayo con copia de producción | — |
 | 3 Preparar servidor | — |
 | 4 Corte | — |
@@ -60,3 +60,29 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    preguntas de prueba, importar GIFT con `qformat_gift`, y luego
    `quiz_settings::create($id)->get_grade_calculator()->recompute_quiz_sumgrades()`
    o el intento dice que ninguna pregunta tiene calificación.
+
+## Trampas pagadas en la Fase 1
+
+1. **Login partido en 5.x** (`theme_boost/templates/core/login_layout.mustache`):
+   panel promocional de core a la izquierda («500.000.000 usuarios»). Nuestro
+   override `core/login_layout` es de una columna y NO lleva la clase
+   `login-layout-right-content` (core la limita a 576px).
+2. **`.icon` tope 24px en 5.3** (max-width/max-height): todo logo pintado con
+   `{{#pix}}` encoge. Cada regla de logo lleva `max-height/max-width: none`.
+3. **Interruptor «Modo de edición» = componente React** (`.mds-switch`,
+   `mds-switch--label-start` invierte el orden con `row-reverse`).
+4. **`enablemyhome` / `enablemycourses`** (nuevos): apagados en instalación
+   nueva, encendidos por el upgrade de un sitio existente. En local se
+   encendieron a mano para imitar producción.
+5. **Propósito de actividad `interface` → `interactivecontent`** (variable
+   `$activity-icon-interactivecontent-bg`).
+6. **Bootstrap 5**: `.bg-*` llevan `!important` (nuestros colores de badge
+   también); `.custom-select`→`.form-select`; `.form-group` ya no existe
+   (filas `mb-3 row fitem`).
+7. **CSS en caché del navegador tras purgar**: si una medida no cuadra después
+   de un `purge_caches`, recargar la página antes de concluir que la regla no
+   aplica (pasó dos veces).
+8. **Plantillas copiadas**: se rehacen con `git merge-file -p nuestra base_4.3
+   core_5.3` (fusión a tres bandas) y se resuelven los choques a mano.
+9. `pix_plugins/mod` (iconos de 4.3) y la sección §J **fuera** hasta que Richi
+   decida MIG-27: tapaban los iconos nuevos de 5.3 o los ponían negros.
