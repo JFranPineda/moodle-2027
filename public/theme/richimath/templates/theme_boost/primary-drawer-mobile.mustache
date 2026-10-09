@@ -1,0 +1,184 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+
+    @template theme_boost/primary-drawer-mobile
+
+    Richimath copy of the Boost mobile primary-nav drawer. Identical to the
+    Boost original except for the .richimath-mobilenav block appended after
+    the standard list: the same fixed items the desktop sidebar carries
+    (Calendar, Messages, Notifications, Grades) plus Log out, so the drawer
+    holds the FULL Blackboard-style navigation below lg. The navy skin for
+    the panel lives in scss/post.scss section B4.
+
+    Rebuilt on the 5.3 core template (MIG-21, 2026-10-09) with a three-way
+    merge: the 5.3 home link around the logo, Bootstrap 5 attributes and
+    visually-hidden labels come from core.
+
+    Example context (json):
+    {
+        "output": {
+            "should_display_navbar_logo": true,
+            "get_compact_logo_url": "http://placekitten.com/50/50"
+        },
+        "mobileprimarynav": [
+            {
+                "text": "Dashboard",
+                "url": "/my",
+                "isactive": "true"
+            },
+            {
+                "text": "Site home",
+                "url": "/",
+                "isactive": "false"
+            },
+            {
+                "text": "My courses",
+                "url": "/course",
+                "isactive": "false"
+            }
+        ]
+    }
+}}
+
+{{< theme_boost/drawer }}
+    {{$id}}theme_boost-drawers-primary{{/id}}
+    {{$drawerclasses}}drawer drawer-left drawer-primary{{/drawerclasses}}
+    {{$drawercloseonresize}}1{{/drawercloseonresize}}
+    {{$drawerheading}}
+        <a
+            href="{{{ config.homeurl }}}"
+            title="{{{ sitename }}}"
+            data-region="site-home-link"
+            class="aabtn text-reset d-flex align-items-center h-100"
+        >
+            {{# output.should_display_navbar_logo }}
+                <img src="{{output.get_compact_logo_url}}" class="logo" alt="{{sitename}}">
+            {{/ output.should_display_navbar_logo }}
+            {{^ output.should_display_navbar_logo }}
+                <span class="sitename" title="{{{ sitename }}}">{{{ sitename }}}</span>
+            {{/ output.should_display_navbar_logo }}
+        </a>
+    {{/drawerheading}}
+    {{$drawercontent}}
+        <div class="list-group">
+            {{#mobileprimarynav}}
+                {{#haschildren}}
+                <a id="drop-down-{{sort}}" href="#" class="list-group-item list-group-item-action icons-collapse-expand {{^isopen}}collapsed {{/isopen}}d-flex" data-bs-toggle="collapse" data-bs-target="#drop-down-menu-{{sort}}" aria-expanded="{{#isopen}}true{{/isopen}}{{^isopen}}false{{/isopen}}" aria-controls="drop-down-menu-{{sort}}">
+                    {{{text}}}
+                    <span class="ms-auto expanded-icon icon-no-margin mx-2">
+                        {{#pix}} t/expanded, core {{/pix}}
+                        <span class="visually-hidden">
+                            {{#str}} collapse, core {{/str}}
+                        </span>
+                    </span>
+                    <span class="ms-auto collapsed-icon icon-no-margin mx-2">
+                        {{#pix}} t/collapsed, core {{/pix}}
+                        <span class="visually-hidden">
+                            {{#str}} expand, core {{/str}}
+                        </span>
+                    </span>
+                </a>
+                <div class="collapse {{#isopen}}show {{/isopen}}list-group-item p-0 border-0" role="menu" id="drop-down-menu-{{sort}}" aria-labelledby="drop-down-{{sort}}">
+                    {{#children}}
+                        {{^divider}}
+                             <a href="{{{url}}}" class="ps-5 {{^isactive}}bg-light{{/isactive}}{{#isactive}}active{{/isactive}} list-group-item list-group-item-action">{{{text}}}</a>
+                        {{/divider}}
+                    {{/children}}
+                </div>
+                {{/haschildren}}
+                {{^haschildren}}
+                <a href="{{{url}}}" class="list-group-item list-group-item-action {{#isactive}}active{{/isactive}} {{#classes}}{{.}} {{/classes}}" {{#isactive}}aria-current="true"{{/isactive}}>
+                    {{{text}}}
+                </a>
+                {{/haschildren}}
+            {{/mobileprimarynav}}
+        </div>
+        {{! Fixed items mirroring templates/local/sidebar.mustache. The
+            sidebar's dedupe JS is scoped to .richimath-sidebar and must
+            never touch this list: both coexist in the DOM. }}
+        <div class="list-group richimath-mobilenav">
+            {{#output.show_catalog}}
+                <a href="{{{ output.routes.courses }}}" class="list-group-item list-group-item-action">
+                    <i class="fa fa-book-open" aria-hidden="true"></i>{{#str}} courses, moodle {{/str}}
+                </a>
+            {{/output.show_catalog}}
+            <a href="{{{ output.routes.calendar }}}" class="list-group-item list-group-item-action">
+                <i class="fa fa-calendar-days" aria-hidden="true"></i>{{#str}} calendar, calendar {{/str}}
+            </a>
+            <a href="{{{ output.routes.messages }}}" class="list-group-item list-group-item-action">
+                <i class="fa fa-envelope" aria-hidden="true"></i>{{#str}} messages, message {{/str}}
+            </a>
+            {{^usermenu.unauthenticateduser}}
+                <a href="{{{ output.routes.notifications }}}" class="list-group-item list-group-item-action">
+                    <i class="fa fa-bell" aria-hidden="true"></i>{{#str}} notifications, message {{/str}}
+                </a>
+            {{/usermenu.unauthenticateduser}}
+            <a href="{{{ output.routes.grades }}}" class="list-group-item list-group-item-action">
+                <i class="fa fa-graduation-cap" aria-hidden="true"></i>{{#str}} grades, grades {{/str}}
+            </a>
+            {{^usermenu.unauthenticateduser}}
+                <div class="richimath-mobilenav-divider" role="separator"></div>
+                {{! No sesskey on purpose: Moodle answers with its logout confirm page. }}
+                <a href="{{{ output.routes.logout }}}" class="list-group-item list-group-item-action">
+                    <i class="fa fa-right-from-bracket" aria-hidden="true"></i>{{#str}} logout, moodle {{/str}}
+                </a>
+            {{/usermenu.unauthenticateduser}}
+        </div>
+    {{/drawercontent}}
+    {{$drawerstate}}show-drawer-primary{{/drawerstate}}
+{{/ theme_boost/drawer}}
+{{#js}}
+// Active-state parity with the desktop sidebar: highlight the drawer link
+// whose URL best matches the current page. Exact pathname wins; otherwise
+// the longest matching link directory. Root path matches only exactly.
+// Self-contained on purpose — never shares state with the sidebar JS.
+try {
+    var rmdHere = window.location.pathname;
+    var rmdBest = null;
+    var rmdBestLen = -1;
+    document.querySelectorAll('#theme_boost-drawers-primary .drawercontent a.list-group-item[href]').forEach(function(link) {
+        var raw = link.getAttribute('href');
+        if (!raw || raw.charAt(0) === '#') {
+            return;
+        }
+        var score = -1;
+        if (link.pathname === rmdHere) {
+            score = 10000 + link.pathname.length;
+        } else {
+            var dir = link.pathname.replace(/[^/]*$/, '');
+            if (dir !== '/' && rmdHere.indexOf(dir) === 0) {
+                score = dir.length;
+            }
+        }
+        if (score > rmdBestLen) {
+            rmdBestLen = score;
+            rmdBest = link;
+        }
+    });
+    if (rmdBest && !rmdBest.classList.contains('active')) {
+        document.querySelectorAll('#theme_boost-drawers-primary .drawercontent a.active').forEach(function(link) {
+            link.classList.remove('active');
+            link.removeAttribute('aria-current');
+        });
+        rmdBest.classList.add('active');
+        rmdBest.setAttribute('aria-current', 'true');
+    }
+} catch (e) {
+    // Cosmetic highlight only.
+}
+{{/js}}

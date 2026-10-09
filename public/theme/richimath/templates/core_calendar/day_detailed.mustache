@@ -1,0 +1,347 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template core_calendar/day_detailed
+
+    Calendar day view, overridden by theme_richimath: adds a Blackboard-like
+    week strip + hourly grid. Mustache only emits data (hidden event stubs);
+    the inline JS below does all layout. With JS off the stock event list
+    below keeps working (the grid stays hidden until -ready is set).
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Example context (json):
+    {
+    }
+}}
+<div{{!
+    }} class="calendarwrapper"{{!
+    }} data-context-id="{{defaulteventcontext}}"{{!
+    }}{{#courseid}} data-courseid="{{courseid}}"{{/courseid}}{{!
+    }}{{#categoryid}} data-categoryid="{{categoryid}}"{{/categoryid}}{{!
+    }} data-view="day"{{!
+    }} data-year="{{date.year}}"{{!
+    }} data-month="{{date.mon}}"{{!
+    }} data-day="{{date.mday}}"{{!
+    }} data-region="day"{{!
+    }} data-new-event-timestamp="{{neweventtimestamp}}"{{!
+}}>
+    {{> core_calendar/day_navigation }}
+    {{> core/overlay_loading}}
+    {{^iscalendarblock}}
+    <div id="richimath-dayview-{{uniqid}}" class="richimath-dayview" data-viewed="{{date.timestamp}}">
+        <div class="richimath-dayview-strip" data-region="richimath-strip"></div>
+        <div class="richimath-dayview-allday" data-region="richimath-allday"></div>
+        <div class="richimath-dayview-grid" data-region="richimath-grid"></div>
+        <div class="richimath-dayview-stubs" aria-hidden="true">
+            {{#events}}
+            <div class="richimath-dayview-event"{{!
+                }} data-event-id="{{id}}"{{!
+                }} data-timestart="{{timestart}}"{{!
+                }} data-timeduration="{{timeduration}}"{{!
+                }} data-timeusermidnight="{{timeusermidnight}}"{{!
+                }} data-viewurl="{{viewurl}}">{{{name}}}</div>
+            {{/events}}
+        </div>
+    </div>
+    {{/iscalendarblock}}
+    <div class="richimath-dayview-fallback">
+    {{< core_calendar/event_list }}
+        {{$noeventsmessage}}
+            {{#str}} daywithnoevents, core_calendar {{/str}}
+        {{/noeventsmessage}}
+    {{/core_calendar/event_list}}
+    </div>
+</div>
+{{^iscalendarblock}}
+{{#js}}
+(function() {
+    // theme_richimath Blackboard-like day view. The template only emits data
+    // stubs; this script builds the week strip, all-day chip row, hourly grid
+    // and now-line. Times are computed in the BROWSER timezone: if the user's
+    // Moodle profile timezone differs from the device, blocks shift
+    // accordingly (accepted limitation — no converter on purpose).
+    var container = document.getElementById('richimath-dayview-{{uniqid}}');
+    if (!container) {
+        return;
+    }
+    try {
+        var GRIDSTART = 6 * 60;
+        var GRIDEND = 22 * 60;
+        var MINCARD = 40;
+        var wrapper = container.closest('.calendarwrapper');
+        var year, month, day;
+        if (wrapper && wrapper.getAttribute('data-year')) {
+            year = parseInt(wrapper.getAttribute('data-year'), 10);
+            month = parseInt(wrapper.getAttribute('data-month'), 10);
+            day = parseInt(wrapper.getAttribute('data-day'), 10);
+        } else {
+            var base = new Date(parseInt(container.getAttribute('data-viewed'), 10) * 1000);
+            year = base.getFullYear();
+            month = base.getMonth() + 1;
+            day = base.getDate();
+        }
+        var courseid = wrapper ? wrapper.getAttribute('data-courseid') : null;
+        var pad = function(n) {
+            return ('0' + n).slice(-2);
+        };
+
+        // 1) Week strip, Monday-first, centred under the header.
+        var strip = container.querySelector('[data-region="richimath-strip"]');
+        var viewed = new Date(year, month - 1, day);
+        var monday = new Date(year, month - 1, day - ((viewed.getDay() + 6) % 7));
+        var today = new Date();
+        for (var i = 0; i < 7; i++) {
+            // Link with local NOON, not midnight: keeps the target day stable
+            // across moderate browser-vs-profile timezone offsets.
+            var d2 = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i, 12, 0, 0);
+            var link = document.createElement('a');
+            link.className = 'richimath-dayview-strip-day';
+            // M.cfg.wwwroot works in both render paths (PHP page load and
+            // client-side re-render); {{config.wwwroot}} is PHP-side only.
+            var url = M.cfg.wwwroot + '/calendar/view.php?view=day&time=' + Math.floor(d2.getTime() / 1000);
+            if (courseid && courseid !== '0' && courseid !== '1') {
+                url += '&course=' + courseid;
+            }
+            link.href = url;
+            var initial = document.createElement('span');
+            initial.className = 'richimath-dayview-strip-initial';
+            initial.textContent = d2.toLocaleDateString(document.documentElement.lang || undefined, {weekday: 'narrow'});
+            var num = document.createElement('span');
+            num.className = 'richimath-dayview-strip-num';
+            num.textContent = d2.getDate();
+            if (d2.getFullYear() === year && d2.getMonth() === month - 1 && d2.getDate() === day) {
+                link.classList.add('is-viewed');
+                link.setAttribute('aria-current', 'date');
+            }
+            if (d2.getFullYear() === today.getFullYear() && d2.getMonth() === today.getMonth() && d2.getDate() === today.getDate()) {
+                link.classList.add('is-today');
+            }
+            link.appendChild(initial);
+            link.appendChild(num);
+            strip.appendChild(link);
+        }
+
+        // 2) Split stubs: timed events go on the grid, all-day / multi-day
+        // (>= 24h or crossing midnight) go to the chip row.
+        var timed = [];
+        var chips = [];
+        container.querySelectorAll('.richimath-dayview-event').forEach(function(stub) {
+            var ts = parseInt(stub.getAttribute('data-timestart'), 10);
+            var dur = parseInt(stub.getAttribute('data-timeduration'), 10) || 0;
+            var ev = {
+                name: stub.textContent.trim(),
+                id: stub.getAttribute('data-event-id'),
+                url: stub.getAttribute('data-viewurl'),
+                start: new Date(ts * 1000)
+            };
+            // Prefer the exporter's user-timezone midnight: positions then
+            // follow the viewer's Moodle profile timezone, not the device's.
+            // The exporter ships 0 on render paths that skip the field —
+            // only trust a real, positive midnight.
+            var mid = parseInt(stub.getAttribute('data-timeusermidnight'), 10);
+            if (mid > 0) {
+                if (dur >= 86400 || ts + dur > mid + 86400) {
+                    chips.push(ev);
+                    return;
+                }
+                ev.s = Math.round((ts - mid) / 60);
+            } else {
+                var last = new Date((ts + Math.max(dur - 1, 0)) * 1000);
+                if (dur >= 86400 || last.toDateString() !== ev.start.toDateString()) {
+                    chips.push(ev);
+                    return;
+                }
+                ev.s = ev.start.getHours() * 60 + ev.start.getMinutes();
+            }
+            // Zero-duration events render as a default 60-minute block.
+            ev.e = ev.s + (dur > 0 ? Math.round(dur / 60) : 60);
+            timed.push(ev);
+        });
+
+        // Core's delegated handler (calendar view_manager) opens the event
+        // summary modal from these attributes; all three must sit on the same
+        // element. href stays as the non-intercepted fallback.
+        var wiremodal = function(el, ev) {
+            if (ev.id) {
+                el.setAttribute('data-region', 'event-item');
+                el.setAttribute('data-action', 'view-event');
+                el.setAttribute('data-event-id', ev.id);
+            }
+        };
+
+        var alldayrow = container.querySelector('[data-region="richimath-allday"]');
+        chips.forEach(function(ev) {
+            var chip = document.createElement('a');
+            chip.className = 'richimath-dayview-chip';
+            chip.href = ev.url;
+            chip.title = ev.name;
+            chip.textContent = ev.name;
+            wiremodal(chip, ev);
+            alldayrow.appendChild(chip);
+        });
+        if (!chips.length) {
+            alldayrow.style.display = 'none';
+        }
+
+        // 3) Hour grid rows 06:00..22:00; the 22:00 row is a zero-height
+        // closing rule + label. Heights come from CSS (responsive vars).
+        var grid = container.querySelector('[data-region="richimath-grid"]');
+        for (var h = 6; h <= 22; h++) {
+            var row = document.createElement('div');
+            row.className = 'richimath-dayview-row' + (h === 22 ? ' is-last' : '');
+            var label = document.createElement('span');
+            label.className = 'richimath-dayview-hourlabel';
+            label.textContent = pad(h) + ':00';
+            row.appendChild(label);
+            if (h < 22) {
+                var half = document.createElement('div');
+                half.className = 'richimath-dayview-halfrule';
+                row.appendChild(half);
+            }
+            grid.appendChild(row);
+        }
+        var firstrow = grid.querySelector('.richimath-dayview-row');
+
+        // 4) Naive overlap handling: greedy column assignment per cluster of
+        // overlapping events, cards split the row into equal columns.
+        timed.sort(function(a, b) {
+            return a.s - b.s || a.e - b.e;
+        });
+        var cluster = [];
+        var colends = [];
+        var clusterend = -1;
+        var flush = function() {
+            cluster.forEach(function(ev) {
+                ev.ncols = colends.length;
+            });
+            cluster = [];
+            colends = [];
+        };
+        timed.forEach(function(ev) {
+            if (cluster.length && ev.s >= clusterend) {
+                flush();
+            }
+            ev.col = -1;
+            for (var c = 0; c < colends.length; c++) {
+                if (colends[c] <= ev.s) {
+                    ev.col = c;
+                    colends[c] = ev.e;
+                    break;
+                }
+            }
+            if (ev.col === -1) {
+                ev.col = colends.length;
+                colends.push(ev.e);
+            }
+            cluster.push(ev);
+            clusterend = Math.max(clusterend, ev.e);
+        });
+        flush();
+
+        var cards = [];
+        timed.forEach(function(ev) {
+            var card = document.createElement('a');
+            card.className = 'richimath-dayview-card';
+            card.href = ev.url;
+            card.title = ev.name;
+            wiremodal(card, ev);
+            var title = document.createElement('span');
+            title.className = 'richimath-dayview-card-title';
+            title.textContent = ev.name;
+            card.appendChild(title);
+            grid.appendChild(card);
+            cards.push({el: card, ev: ev});
+        });
+
+        var nowline = document.createElement('div');
+        nowline.className = 'richimath-dayview-nowline';
+        nowline.style.display = 'none';
+        var pill = document.createElement('span');
+        pill.className = 'richimath-dayview-nowpill';
+        nowline.appendChild(pill);
+        grid.appendChild(nowline);
+
+        var hourpx = function() {
+            return firstrow.getBoundingClientRect().height || 56;
+        };
+        var layout = function() {
+            var hpx = hourpx();
+            var gutter = parseFloat(window.getComputedStyle(firstrow).marginLeft) || 48;
+            var gridh = hpx * (GRIDEND - GRIDSTART) / 60;
+            var left0 = gutter + 8;
+            var usable = Math.max(grid.clientWidth - left0 - 8, 80);
+            cards.forEach(function(item) {
+                var ev = item.ev;
+                // Clip the time interval to the grid window BEFORE converting
+                // to pixels, so a partially visible event keeps a truthful
+                // end edge (02:00-07:00 must show as ending at 07:00).
+                var cs = Math.max(ev.s, GRIDSTART);
+                var ce = Math.min(Math.max(ev.e, cs), GRIDEND);
+                var top = (cs - GRIDSTART) / 60 * hpx;
+                var height = Math.max((ce - cs) / 60 * hpx, MINCARD);
+                top = Math.min(Math.max(top, 0), gridh - MINCARD);
+                height = Math.min(height, gridh - top);
+                var colw = usable / ev.ncols;
+                item.el.style.top = top + 'px';
+                item.el.style.height = height + 'px';
+                item.el.style.left = (left0 + ev.col * colw) + 'px';
+                item.el.style.width = Math.max(colw - 4, 40) + 'px';
+            });
+        };
+        var tick = function() {
+            if (!document.body.contains(container)) {
+                // The view was re-rendered over AJAX; retire this instance.
+                window.clearInterval(timer);
+                window.removeEventListener('resize', onresize);
+                return;
+            }
+            var now = new Date();
+            var istoday = now.getFullYear() === year && now.getMonth() === month - 1 && now.getDate() === day;
+            var minutes = now.getHours() * 60 + now.getMinutes();
+            if (!istoday || minutes < GRIDSTART || minutes > GRIDEND) {
+                nowline.style.display = 'none';
+                return;
+            }
+            nowline.style.display = '';
+            nowline.style.top = ((minutes - GRIDSTART) / 60 * hourpx()) + 'px';
+            pill.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
+        };
+        var onresize = function() {
+            layout();
+            tick();
+        };
+        var timer = window.setInterval(tick, 60000);
+        window.addEventListener('resize', onresize);
+
+        // Reveal before measuring: a display:none grid measures as 0.
+        (wrapper || container.parentNode).classList.add('richimath-dayview-ready');
+        layout();
+        tick();
+    } catch (e) {
+        // Any failure leaves the stock event list visible and usable.
+        if (window.console && window.console.error) {
+            window.console.error('theme_richimath dayview failed:', e);
+        }
+    }
+})();
+{{/js}}
+{{/iscalendarblock}}

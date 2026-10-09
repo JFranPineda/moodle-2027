@@ -202,22 +202,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string
      */
     public function render_login(\core_auth\output\login $form) {
-        global $SITE;
-
+        // 5.3: export_for_template() already brings errorformatted, logourl and
+        // sitename, which the 4.3 parent added here and this override had to
+        // repeat. The only difference left is where the form posts.
         $context = $form->export_for_template($this);
 
-        // core_renderer::render_login() renders the template itself, so there
-        // is no hook to change the action: this has to repeat what the parent
-        // adds to the context. Keep these three in sync with it — dropping
-        // them once already left the login card without the site's name.
-        $context->errorformatted = $this->error_text($context->error);
-        $logourl = $this->get_logo_url();
-        $context->logourl = $logourl ? $logourl->out(false) : $logourl;
-        $context->sitename = format_string($SITE->fullname, true,
-                ['context' => \context_course::instance(SITEID), 'escape' => false]);
-
-        // The only real difference: the form posts to the address the site
-        // serves, so a failed login re-renders there instead of on the .php.
+        // The form posts to the address the site serves, so a failed login
+        // re-renders there instead of on the .php.
         $context->loginurl = \local_richimath\routes::url('login')->out(false);
 
         return $this->render_from_template('core/loginform', $context);

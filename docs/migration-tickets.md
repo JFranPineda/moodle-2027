@@ -813,6 +813,7 @@ migración, porque una actualización puede reiniciarlos.
 | Personalización de idioma (es) | `userlist` = «Lista de usuarios» (ver MIG-26) |
 | Correo saliente (SMTP Gmail) y cron de `www-data` | funcionando |
 | Registro en moodle.org | se mantiene |
+| `enablemyhome`, `enablemycourses` (nuevos en 5.x) | **1** — «Página principal» y «Mis cursos» en la barra lateral. Core los enciende al actualizar un sitio existente y los deja apagados en una instalación nueva (comprobado en la Fase 1) |
 
 #### MIG-40 · Comprobar módulos retirados en producción 🟢
 - **Qué**: en el espejo local no hay ninguna actividad de `chat` ni `survey`

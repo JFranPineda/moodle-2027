@@ -1,0 +1,425 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_boost/drawers
+
+    Boost drawer template.
+
+    Richi Math copy, rebuilt on the 5.3 core template (MIG-21, 2026-10-09)
+    with a three-way merge. What differs from core: the fixed sidebar partial
+    (theme_richimath/local/sidebar), the dashboard quick-access chips, the
+    paging bar cloned above "My courses", and the floating "Consultas" and
+    teacher WhatsApp buttons. Everything else is the 5.3 template.
+
+    Context variables required for this template:
+    * sitename - The name of the site
+    * output - The core renderer for the page
+    * bodyattributes - attributes for the body tag as a string of html attributes
+    * sidepreblocks - HTML for the blocks
+    * hasblocks - true if there are blocks on this page
+    * courseindexopen - true if the nav drawer should be open on page load
+    * regionmainsettingsmenu - HTML for the region main settings menu
+    * hasregionmainsettingsmenu - There is a region main settings menu on this page.
+
+    Example context (json):
+    {
+        "sitename": "Moodle",
+        "output": {
+            "doctype": "<!DOCTYPE html>",
+            "page_title": "Test page",
+            "favicon": "favicon.ico",
+            "main_content": "<h1>Headings make html validators happier</h1>"
+         },
+        "bodyattributes":"",
+        "sidepreblocks": "<h2>Blocks html goes here</h2>",
+        "hasblocks":true,
+        "courseindexopen": true,
+        "navdraweropen": false,
+        "blockdraweropen": true,
+        "regionmainsettingsmenu": "",
+        "hasregionmainsettingsmenu": false,
+        "addblockbutton": ""
+    }
+}}
+{{> theme_boost/head }}
+
+<body {{{ bodyattributes }}}>
+{{> core/local/toast/wrapper}}
+<div id="page-wrapper" class="d-print-block">
+
+    {{{ output.standard_top_of_body_html }}}
+
+    {{> theme_boost/navbar }}
+    {{> theme_richimath/local/sidebar }}
+    {{#courseindex}}
+        {{< theme_boost/drawer }}
+            {{$id}}theme_boost-drawers-courseindex{{/id}}
+            {{$drawerheading}}{{> theme_boost/courseindexdrawerheading}}{{/drawerheading}}
+            {{$drawercontrols}}{{> theme_boost/courseindexdrawercontrols}}{{/drawercontrols}}
+            {{$drawerclasses}}drawer drawer-left {{#courseindexopen}}show{{/courseindexopen}}{{/drawerclasses}}
+            {{$drawercontent}}
+                {{{courseindex}}}
+            {{/drawercontent}}
+            {{$drawerpreferencename}}drawer-open-index{{/drawerpreferencename}}
+            {{$drawerstate}}show-drawer-left{{/drawerstate}}
+            {{$tooltipplacement}}right{{/tooltipplacement}}
+            {{$closebuttontext}}{{#str}}closecourseindex, core{{/str}}{{/closebuttontext}}
+            {{$closebuttonicon}}
+                <span class="dir-rtl-hide">{{#pix}} e/sidebar_left, core {{/pix}}</span>
+                <span class="dir-ltr-hide">{{#pix}} e/sidebar_right, core {{/pix}}</span>
+            {{/closebuttonicon}}
+        {{/ theme_boost/drawer}}
+    {{/courseindex}}
+    {{#hasblocks}}
+        {{< theme_boost/drawer }}
+            {{$id}}theme_boost-drawers-blocks{{/id}}
+            {{$drawerclasses}}drawer drawer-right{{#blockdraweropen}} show{{/blockdraweropen}}{{/drawerclasses}}
+            {{$drawercontent}}
+                <div class="d-print-none">
+                    {{{ addblockbutton }}}
+                    {{{ sidepreblocks }}}
+                </div>
+            {{/drawercontent}}
+            {{$drawerpreferencename}}drawer-open-block{{/drawerpreferencename}}
+            {{$forceopen}}{{#forceblockdraweropen}}1{{/forceblockdraweropen}}{{/forceopen}}
+            {{$drawerstate}}show-drawer-right{{/drawerstate}}
+            {{$tooltipplacement}}left{{/tooltipplacement}}
+            {{$drawercloseonresize}}1{{/drawercloseonresize}}
+            {{$closebuttontext}}{{#str}}closeblockdrawer, core{{/str}}{{/closebuttontext}}
+            {{$closebuttonicon}}
+                <span class="dir-rtl-hide">{{#pix}} e/sidebar_right, core {{/pix}}</span>
+                <span class="dir-ltr-hide">{{#pix}} e/sidebar_left, core {{/pix}}</span>
+            {{/closebuttonicon}}
+        {{/ theme_boost/drawer}}
+    {{/hasblocks}}
+    <div id="page" data-region="mainpage" data-usertour="scroller" class="drawers {{#courseindexopen}}show-drawer-left{{/courseindexopen}} {{#blockdraweropen}}show-drawer-right{{/blockdraweropen}} drag-container">
+                <div id="topofscroll" class="main-inner">
+            <div class="drawer-toggles d-flex">
+                {{#courseindex}}
+                    <div class="drawer-toggler drawer-left-toggle open-nav d-print-none">
+                        <button
+                            class="btn btn-icon icon-size-3"
+                            data-toggler="drawers"
+                            data-action="toggle"
+                            data-target="theme_boost-drawers-courseindex"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            title="{{#str}}opendrawerindex, core{{/str}}"
+                        >
+                            <span class="visually-hidden">{{#str}}opendrawerindex, core{{/str}}</span>
+                            <span class="dir-rtl-hide">{{#pix}} e/sidebar_left, core {{/pix}}</span>
+                            <span class="dir-ltr-hide">{{#pix}} e/sidebar_right, core {{/pix}}</span>
+                        </button>
+                    </div>
+                {{/courseindex}}
+                {{#hasblocks}}
+                    <div class="drawer-toggler drawer-right-toggle ms-auto d-print-none">
+                        <button
+                            class="btn btn-icon icon-size-3"
+                            data-toggler="drawers"
+                            data-action="toggle"
+                            data-target="theme_boost-drawers-blocks"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            title="{{#str}}opendrawerblocks, core{{/str}}"
+                        >
+                            <span class="visually-hidden">{{#str}}opendrawerblocks, core{{/str}}</span>
+                            <span class="dir-rtl-hide">{{#pix}} e/sidebar_right, core {{/pix}}</span>
+                            <span class="dir-ltr-hide">{{#pix}} e/sidebar_left, core {{/pix}}</span>
+                        </button>
+                    </div>
+                {{/hasblocks}}
+            </div>
+            {{{ output.full_header }}}
+            {{#secondarymoremenu}}
+                <div class="secondary-navigation d-print-none">
+                    {{> core/secondarymoremenu}}
+                </div>
+            {{/secondarymoremenu}}
+            {{! T-03 quick-access chips, dashboard only (renderer gate
+                dashboard_chips: pagelayout 'mydashboard', never guests —
+                /my/courses.php shares body#page-my-index, so the layout is
+                the gate). One pill per enrolled course, last accessed
+                first, capped with a "view all" tail; staff (show_catalog)
+                also get the top-level categories. Unlike the landing these
+                ARE links — every target is a page the user can open.
+                Names come out of format_string already: unescaped tag,
+                same reason as the landing. }}
+            {{#output.dashboard_chips}}
+                <nav class="richimath-dashchips d-print-none" aria-label="{{#str}} quickaccess, theme_richimath {{/str}}">
+                    {{#hascourses}}
+                        <div class="richimath-dashchips-row">
+                            <span class="richimath-dashchips-label" id="richimath-dashchips-courses">{{#str}} mycourses, moodle {{/str}}</span>
+                            <ul class="richimath-dashchips-list list-unstyled" aria-labelledby="richimath-dashchips-courses">
+                                {{#courses}}
+                                    <li>
+                                        <a class="richimath-dashchip" href="{{url}}" title="{{{name}}}">
+                                            <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+                                            <span class="richimath-dashchip-name">{{{name}}}</span>
+                                        </a>
+                                    </li>
+                                {{/courses}}
+                                {{#morecoursesurl}}
+                                    <li>
+                                        <a class="richimath-dashchip richimath-dashchip-more" href="{{.}}">
+                                            <span class="richimath-dashchip-name">{{#str}} viewallmycourses, theme_richimath {{/str}}</span>
+                                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                {{/morecoursesurl}}
+                            </ul>
+                        </div>
+                    {{/hascourses}}
+                    {{#hascategories}}
+                        <div class="richimath-dashchips-row">
+                            <span class="richimath-dashchips-label" id="richimath-dashchips-categories">{{#str}} categories, moodle {{/str}}</span>
+                            <ul class="richimath-dashchips-list list-unstyled" aria-labelledby="richimath-dashchips-categories">
+                                {{#categories}}
+                                    <li>
+                                        <a class="richimath-dashchip" href="{{url}}" title="{{{name}}}">
+                                            <i class="fa fa-folder-open" aria-hidden="true"></i>
+                                            <span class="richimath-dashchip-name">{{{name}}}</span>
+                                        </a>
+                                    </li>
+                                {{/categories}}
+                            </ul>
+                        </div>
+                    {{/hascategories}}
+                </nav>
+            {{/output.dashboard_chips}}
+            <div id="page-content" class="pb-3 d-print-block">
+                <div id="region-main-box">
+                    {{#hasregionmainsettingsmenu}}
+                    <div id="region-main-settings-menu" class="d-print-none">
+                        <div> {{{ regionmainsettingsmenu }}} </div>
+                    </div>
+                    {{/hasregionmainsettingsmenu}}
+                    <div id="region-main">
+
+                        {{#hasregionmainsettingsmenu}}
+                            <div class="region_main_settings_menu_proxy"></div>
+                        {{/hasregionmainsettingsmenu}}
+                        {{{ output.course_content_header }}}
+                        {{#headercontent}}
+                            {{> core/activity_header }}
+                        {{/headercontent}}
+                        {{#overflow}}
+                            <div class="container-fluid tertiary-navigation">
+                                <div class="navitem">
+                                    {{> core/tertiary_navigation_selector}}
+                                </div>
+                            </div>
+                        {{/overflow}}
+                        {{{ output.main_content }}}
+                        {{{ output.activity_navigation }}}
+                        {{{ output.course_content_footer }}}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{> theme_boost/footer }}
+        {{! One-click line to the site admin. The renderer decides whether it
+            applies at all (logged in, not guest, not the login layout, not
+            already inside /message/*) and resolves the admin id from the
+            site. Lives inside #page so it can dodge the right drawer the
+            same way Boost's own footer FAB does. }}
+        {{! The course teacher's WhatsApp. Sits above the Consultas FAB, which
+            already sits above Boost's own footer button: three in the same
+            corner, so the offsets are set together in the SCSS. }}
+        {{#output.teacher_whatsapp}}
+            <a href="{{url}}" target="_blank" rel="noopener"
+               class="richimath-whatsapp-fab d-print-none" title="{{label}}">
+                <i class="fa fa-whatsapp" aria-hidden="true"></i>
+                <span class="visually-hidden">{{label}}</span>
+            </a>
+        {{/output.teacher_whatsapp}}
+
+        {{#output.admin_message_url}}
+            <a href="{{.}}" class="richimath-support-fab d-print-none">
+                <i class="fa fa-comments" aria-hidden="true"></i>
+                <span>{{#str}} supportbutton, theme_richimath {{/str}}</span>
+            </a>
+        {{/output.admin_message_url}}
+    </div>
+    {{{ output.standard_after_main_region_html }}}
+</div>
+
+</body>
+</html>
+{{#js}}
+M.util.js_pending('theme_boost/loader');
+require(['theme_boost/loader', 'theme_boost/drawer'], function(Loader, Drawer) {
+    Drawer.init();
+    M.util.js_complete('theme_boost/loader');
+});
+
+
+// "My courses": block_myoverview paints its paging bar only UNDER the course
+// list, so changing page means scrolling past every card. Mirror that bar
+// above the list. It cannot be a template override: the block re-renders
+// reactively (Templates.replaceNodeContents on [data-region="courses-view"]),
+// which would wipe any markup we put inside it. So: clone on every render
+// (MutationObserver on the block root), keep the clone OUTSIDE courses-view,
+// strip the data-region markers core queries block-wide (see sync()), and
+// delegate its clicks to the matching control in the original bar — the
+// original stays the only source of truth for the page state.
+(function() {
+    try {
+        if (!document.body.classList.contains('page-mycourses')
+                && !document.body.classList.contains('pagelayout-mycourses')) {
+            return;
+        }
+        var CLONE = 'richimath-paging-clone';
+        var VIEW = '[data-region="courses-view"]';
+        var CONTROLS = '[data-region="paging-control-container"]';
+        var BAR = '[data-region="paging-bar"]';
+        var PAGE_ITEM = '[data-region="page-item"]';
+        var block = document.querySelector('[data-region="myoverview"]');
+        if (!block) {
+            return;
+        }
+
+        var onCloneClick = function(e) {
+            try {
+                if (!e.target.closest) {
+                    return;
+                }
+                var item = e.target.closest(PAGE_ITEM + ', [data-limit]');
+                if (!item) {
+                    // The "Show 12" toggle: let Bootstrap open the menu.
+                    return;
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                if (item.classList.contains('disabled')) {
+                    return;
+                }
+                var view = block.querySelector(VIEW);
+                var controls = view ? view.querySelector(CONTROLS) : null;
+                if (!controls) {
+                    return;
+                }
+                var selector = null;
+                if (item.hasAttribute('data-limit')) {
+                    selector = '[data-limit="' + item.getAttribute('data-limit') + '"]';
+                } else if (item.hasAttribute('data-control')) {
+                    selector = PAGE_ITEM + '[data-control="' + item.getAttribute('data-control') + '"]';
+                } else if (item.hasAttribute('data-page-number')) {
+                    selector = PAGE_ITEM + '[data-page-number="' + item.getAttribute('data-page-number') + '"]';
+                }
+                if (!selector) {
+                    return;
+                }
+                var target = controls.querySelector(selector);
+                if (!target || target.classList.contains('disabled')) {
+                    return;
+                }
+                (target.querySelector('[data-region="page-link"]') || target).click();
+            } catch (err) {
+                // Convenience only: never break the page.
+            }
+        };
+
+        var sync = function() {
+            var view = block.querySelector(VIEW);
+            var clone = block.querySelector('.' + CLONE);
+            var controls = view ? view.querySelector(CONTROLS) : null;
+            var bar = controls ? controls.querySelector(BAR) : null;
+            // One page of courses or fewer: core hides the bar, so do we.
+            if (!view || !bar || bar.classList.contains('hidden')) {
+                if (clone) {
+                    clone.parentNode.removeChild(clone);
+                }
+                return;
+            }
+            if (!clone) {
+                clone = document.createElement('div');
+                clone.className = CLONE + ' d-flex';
+                clone.addEventListener('click', onCloneClick);
+                view.parentNode.insertBefore(clone, view);
+            }
+            var html = controls.innerHTML;
+            if (clone.richimathSrc === html) {
+                return;
+            }
+            // The rebuild below destroys the node the user is standing on, so
+            // remember which control had focus and restore it afterwards.
+            var focusKey = null;
+            if (clone.contains(document.activeElement)) {
+                var focused = document.activeElement.closest(PAGE_ITEM + ', [data-limit]');
+                if (focused) {
+                    focusKey = focused.hasAttribute('data-limit')
+                        ? '[data-limit="' + focused.getAttribute('data-limit') + '"]'
+                        : (focused.hasAttribute('data-control')
+                            ? PAGE_ITEM + '[data-control="' + focused.getAttribute('data-control') + '"]'
+                            : (focused.hasAttribute('data-page-number')
+                                ? PAGE_ITEM + '[data-page-number="' + focused.getAttribute('data-page-number') + '"]'
+                                : null));
+                }
+            }
+            clone.richimathSrc = html;
+            clone.innerHTML = html;
+            // Duplicated ids would poison every getElementById on the page.
+            clone.querySelectorAll('[id]').forEach(function(node) {
+                node.removeAttribute('id');
+            });
+            // block_myoverview queries these from the BLOCK root, not from
+            // courses-view (view.js hideElement reads the first matching
+            // paging bar), so a second set here would shadow the live one.
+            clone.querySelectorAll(BAR + ', ' + CONTROLS + ', [data-region="paging-control-limit-container"]')
+                .forEach(function(node) {
+                    node.removeAttribute('data-region');
+                });
+            if (focusKey) {
+                var again = clone.querySelector(focusKey);
+                if (again) {
+                    (again.querySelector('[data-region="page-link"]') || again).focus();
+                }
+            }
+        };
+
+        var pending = false;
+        var observer = new MutationObserver(function(mutations) {
+            var external = mutations.some(function(mutation) {
+                return !(mutation.target.closest && mutation.target.closest('.' + CLONE));
+            });
+            if (!external || pending) {
+                return;
+            }
+            pending = true;
+            window.setTimeout(function() {
+                pending = false;
+                try {
+                    sync();
+                } catch (err) {
+                    // Convenience only: never break the page.
+                }
+            }, 50);
+        });
+        observer.observe(block, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        sync();
+    } catch (e) {
+        // Convenience only: never break the page.
+    }
+})();
+{{/js}}

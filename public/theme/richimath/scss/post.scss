@@ -226,6 +226,9 @@ body.pagelayout-login {
         width: auto;
         height: 40px;
         margin: 0;
+        // 5.3 caps .icon at 24px (max-width/max-height): our logos come through {{#pix}}.
+        max-height: none;
+        max-width: none;
     }
 }
 
@@ -359,6 +362,9 @@ body.pagelayout-login {
         width: auto;
         height: clamp(56px, 12vw, 84px);
         margin: 0;
+        // 5.3 caps .icon at 24px (max-width/max-height): our logos come through {{#pix}}.
+        max-height: none;
+        max-width: none;
     }
 }
 
@@ -426,7 +432,11 @@ body.pagelayout-login {
 }
 
 .richimath-loginform .login-form {
-    .form-group {
+    // Named rows, not .form-group: Bootstrap 5 dropped that class.
+    .login-form-username,
+    .login-form-password,
+    .login-form-recaptcha,
+    .login-form-submit {
         margin-bottom: 1.15rem;
     }
 
@@ -1362,6 +1372,8 @@ body.path-calendar .maincalendar {
                 width: auto;
                 height: 56px;
                 max-width: 100%;
+                // 5.3 caps .icon at 24px (max-width/max-height): our logos come through {{#pix}}.
+                max-height: none;
             }
         }
 
@@ -3062,6 +3074,9 @@ body.richimath-sidebar-compact {
             img,
             .icon {
                 height: 34px;
+                // 5.3 caps .icon at 24px (max-width/max-height): our logos come through {{#pix}}.
+                max-height: none;
+                max-width: none;
             }
         }
 
@@ -3154,19 +3169,26 @@ body.richimath-sidebar-compact {
             margin: 0.5rem 0.6rem;
         }
 
+        // 5.3 draws the edit switch with the design-system React component
+        // (.mds-switch, label after the track in the DOM but shown first):
+        // stack it, label on top, so it fits the 88px rail.
         .richimath-sidebar-bottom .editmode-switch-form {
+            margin-left: 0 !important; /* stylelint-disable-line declaration-no-important */
             padding: 0.4rem 0.2rem 0.5rem;
+            justify-content: center;
             font-size: 10px;
 
-            .input-group {
-                flex-direction: column;
+            .mds-switch-control {
+                flex-direction: column-reverse;
                 align-items: center;
+                gap: 0.3rem;
             }
 
-            // Balances the .mr-2 utility the label ships so it reads centred.
-            label {
-                margin-left: 0.5rem;
+            .mds-switch-label {
+                font-size: 10px;
+                line-height: 1.2;
                 text-align: center;
+                white-space: normal;
             }
         }
     }
@@ -4485,6 +4507,9 @@ body.richimath-site {
         width: auto;
         height: 42px;
         margin: 0;
+        // 5.3 caps .icon at 24px (max-width/max-height): our logos come through {{#pix}}.
+        max-height: none;
+        max-width: none;
     }
 }
 
@@ -4775,6 +4800,9 @@ $rm-orbit-planets: (1.05rem, 1.25rem, 1.4rem, 1.55rem, 1.3rem);
         width: 64%;
         height: auto;
         margin: 0;
+        // 5.3 caps .icon at 24px (max-width/max-height): our logos come through {{#pix}}.
+        max-height: none;
+        max-width: none;
     }
 }
 
@@ -5584,6 +5612,9 @@ body.richimath-site .rm-site-btn-division {
         width: auto;
         height: 46px;
         margin: 0;
+        // 5.3 caps .icon at 24px (max-width/max-height): our logos come through {{#pix}}.
+        max-height: none;
+        max-width: none;
     }
 
     p {
