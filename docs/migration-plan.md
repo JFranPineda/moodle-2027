@@ -186,11 +186,21 @@ Más la consulta de **MIG-40** (actividades de `chat` y `survey`).
 ### 6.2 Trampas del servidor ya conocidas
 - **MySQL 8.4 desactiva `mysql_native_password` por defecto.** Si el usuario
   de Moodle se autentica con ese plugin, después de la subida **no podrá
-  conectar**. Antes del corte, pasarlo a `caching_sha2_password` (y probar que
-  PHP conecta) o, como último recurso, reactivar el plugin en `my.cnf`.
-- **Ubuntu 22.04 no trae MySQL 8.4**: hay que añadir el repositorio APT
-  oficial de MySQL. La subida 8.0 → 8.4 en el sitio está soportada, pero se
-  ensaya primero (Fase 2) y con snapshot.
+  conectar**. **Comprobado el 2026-10-09: no aplica.** `moodleuser` usa
+  `caching_sha2_password` y `root`, `auth_socket`.
+- **Ubuntu 24.04 (el del VPS) trae MySQL 8.0, no 8.4**: hay que añadir el
+  repositorio APT oficial de MySQL. La subida 8.0 → 8.4 en el sitio está
+  soportada, pero se ensaya primero (Fase 2) y con snapshot.
+- **Collation**: el `config.php` de producción dice `utf8mb4_general_ci` (en
+  dos líneas, la 18 y la 30), pero solo las 5 tablas de `local_richimath`
+  nacieron así; las 483 de core son `utf8mb4_unicode_ci`. Con ese config, las
+  tablas que crean 4.4–5.3 nacerían en `general_ci`, y una consulta que compare
+  columnas de texto de dos tablas distintas falla («Illegal mix of
+  collations»). En el corte, **antes del primer upgrade**:
+  1. `dbcollation` → `utf8mb4_unicode_ci` en `config.php`;
+  2. `php admin/cli/mysql_collation.php --collation=utf8mb4_unicode_ci`.
+
+  Ensayado: convierte 5 tablas en 1 s y sin errores.
 - **PHP 8.3 al lado de 8.2** (PPA ondrej, el mismo de hoy): instalar
   `php8.3` con las mismas extensiones (`php8.2 -m` como lista) y cambiar el
   módulo de Apache solo en el corte. Así volver atrás es cambiar el módulo de
@@ -229,12 +239,18 @@ Plantilla de la ventana (horas de Lima):
 | T+0:00 | **Modo mantenimiento** (`admin/cli/maintenance.php --enable`); parar cron | — |
 | T+0:05 | Backup: `mysqldump` + `tar` de `moodledata` → copia fuera del VPS | — |
 | T+0:20 | **Snapshot del VPS 4** en Contabo | — |
-| T+0:30 | Código **4.5.x** + plugins actuales → `upgrade.php` | Restaurar snapshot |
+| T+0:30 | `config.php`: `dbcollation` → `utf8mb4_unicode_ci`; `mysql_collation.php --collation=utf8mb4_unicode_ci` (§6.2) | Restaurar snapshot |
+| T+0:32 | Código **4.5.x** + plugins actuales → `upgrade.php` | Restaurar snapshot |
 | T+? | **PHP 8.3** (cambiar módulo de Apache) + **MySQL 8.0 → 8.4** | Volver a 8.2 / restaurar snapshot |
 | T+? | Código **moodle-2027** (5.3 + plugins portados); `DocumentRoot` → `public/`; `config.php` | Restaurar snapshot |
-| T+? | `upgrade.php` → 5.3; purgar cachés | Restaurar snapshot |
+| T+? | `upgrade.php` → 5.3 (instala el paquete `es` de 5.3: el VPS necesita salida a internet); `adhoc_task.php --execute` (CSS de los temas y `mod_qbank`; **no purgar después**, o el CSS se compila dos veces); personalización de idioma desde `assets/customlang/es`; `scripts/check-db-settings.php` en verde | Restaurar snapshot |
 | T+? | **Pruebas de humo** (abajo), con mantenimiento todavía puesto (como admin) | Restaurar snapshot |
 | T+? | Quitar mantenimiento; volver a encender cron | — |
+
+El ensayo con la copia real lo hace todo, desde la collation hasta la
+personalización de idioma, en unos 9 minutos en el portátil
+([migration/phase-2-production-copy.md](migration/phase-2-production-copy.md)
+§4). Los `T+?` se fijan con los tiempos del servidor (Fase 3).
 
 **Pruebas de humo** (20 minutos, como admin y con una cuenta de alumno de
 prueba). Una muestra de los `FUN`, no todos: el resto ya se probó en el ensayo.
@@ -279,11 +295,12 @@ Mejor otra noche que una mañana de alumnos sin plataforma.
 | Riesgo | Probabilidad | Cobertura |
 |---|---|---|
 | Plantilla copiada de 4.3 que «funciona» pero oculta lo nuevo de core | Alta | MIG-21: siempre partir de la de 5.3; comparar con las capturas de la 5.3 limpia |
-| El usuario de BD no conecta tras MySQL 8.4 (`mysql_native_password`) | Media | §6.2: migrar el plugin de autenticación antes del corte, ensayado |
+| El usuario de BD no conecta tras MySQL 8.4 (`mysql_native_password`) | Descartado | `moodleuser` ya usa `caching_sha2_password` (comprobado el 2026-10-09) |
+| Collation mixta: tablas nuevas de 5.x en `general_ci` junto a core en `unicode_ci` | Alta si no se hace nada | §6.2: `config.php` a `unicode_ci` y `mysql_collation.php` antes del primer upgrade; `scripts/check-db-settings.php` lo verifica |
 | `upgrade.php` tarda más de lo previsto en producción | Media | Cronometrado en el ensayo ×2; ventana con margen; snapshot |
 | Traspaso de invitados BBB falla en silencio | Media | MIG-16: prueba anónima completa en el ensayo |
 | Rutas limpias rompen el login (POST redirigido) | Baja (ya pasó una vez) | MIG-14: guardas obligatorias + prueba de login fallido en humo |
-| Actividades de `chat`/`survey` en prod | Baja (0 en el espejo) | MIG-40 antes de fijar fecha |
+| Actividades de `chat`/`survey` en prod | Descartado | MIG-40: 0 y 0 en la copia de producción del 2026-10-09 |
 | La paginación de arriba de «Mis cursos» desaparece sin error (el JS depende de los `data-region` de `block_myoverview`) | Media | FUN-09: probarla con más de una página de cursos |
 | Los ajustes de logo propios de 5.x (*Apariencia → Logos*) compiten con nuestros logos por nivel | Baja | FUN-02: dejar esos ajustes vacíos y comprobar cada nivel |
 | Un cambio de marcado de 5.3 deja sin estilo una pantalla que nadie abrió en el ensayo | Media | MIG-25 recorre las secciones A–J página por página; cada `FUN` dice qué página mirar |

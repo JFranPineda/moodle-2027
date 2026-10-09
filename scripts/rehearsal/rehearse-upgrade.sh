@@ -38,6 +38,10 @@ hop() {
     export DB_IMAGE=$1 PHP_IMAGE=$2 CODE=$3 DOCROOT=$4 CONFIG=$5
 }
 
+# utf8mb4_unicode_ci on purpose. Production's config.php says general_ci, but
+# only local_richimath's five tables were created that way: core's 483 are
+# unicode_ci. The cutover switches config.php first, so the tables 4.4-5.3 add
+# match core's, and converts those five before the first upgrade.
 write_config() {
     cat > "$1" <<'PHP'
 <?php  // Rehearsal only (scripts/rehearsal): a copy of production on localhost.
@@ -137,6 +141,7 @@ step "import database"                import_db
 step "restore moodledata"             restore_moodledata
 # 4.5 prints a debugging trace first: the 4.3 plugin still uses the legacy after_config callback.
 echo "Production release: $(web admin/cli/cfg.php --name=release | tail -1)" | tee -a "$LOG"
+step "unify collation (unicode_ci)"   web admin/cli/mysql_collation.php --collation=utf8mb4_unicode_ci
 step "upgrade 4.3 → 4.5"              upgrade 4.5
 step "switch to PHP 8.3 + MySQL 8.4"  switch_to_53
 step "upgrade 4.5 → 5.3"              upgrade 5.3

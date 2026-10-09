@@ -47,6 +47,15 @@ $check = function (string $name, $actual, $expected) use (&$failed): void {
 };
 $info = fn(string $name, $value) => printf("INFO %s = %s\n", $name, var_export($value, true));
 
+// One collation everywhere, the one config.php creates new tables with: two
+// string columns in different collations cannot be compared in a query.
+$collation = $DB->get_dbcollation();
+$check('dbcollation (config.php)', $collation, 'utf8mb4_unicode_ci');
+$check('tables in another collation', $DB->count_records_sql(
+    "SELECT COUNT(*) FROM information_schema.tables
+      WHERE table_schema = ? AND table_name LIKE ? AND table_collation <> ?",
+    [$CFG->dbname, $CFG->prefix . '%', $collation]), 0);
+
 // Look and front page.
 $check('theme', $CFG->theme, 'richimath');
 $check('allowuserthemes', $CFG->allowuserthemes, 1);

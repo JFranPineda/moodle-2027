@@ -182,9 +182,17 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    la ventana. NO purgar después o se compila dos veces.
 3. **`customlang/cli/import.php` con `--source` relativo** → «Falta archivo o
    directorio». Siempre ruta absoluta.
-4. **5 tablas `local_richimath_*` en `utf8mb4_general_ci`**, el resto
-   `unicode_ci`. Pendiente: `dbcollation` del `config.php` de producción;
-   unificar con `admin/cli/mysql_collation.php` (decidir en la Fase 3).
+4. **Collation**: el `config.php` de producción dice `utf8mb4_general_ci`
+   (líneas 18 y 30, repetida), pero solo las 5 tablas `local_richimath_*`
+   nacieron así; las 483 de core son `unicode_ci`. Sin tocarlo, las tablas de
+   4.4–5.3 nacerían `general_ci` → «Illegal mix of collations». Paso del corte
+   ANTES del primer upgrade: `dbcollation` → `utf8mb4_unicode_ci` +
+   `admin/cli/mysql_collation.php --collation=utf8mb4_unicode_ci` (5 tablas,
+   segundos). Ya está en el ensayo y en `check-db-settings.php`.
+10. **Producción, BD**: usuario `moodleuser` con `caching_sha2_password`
+    (MySQL 8.4 sin `mysql_native_password` no le afecta); `root` por
+    `auth_socket`. VPS en **Ubuntu 24.04**, que trae MySQL 8.0: el 8.4 viene
+    del repo APT oficial de MySQL.
 5. **Copia = identidad de producción**: solo podría salir correo (SMTP Gmail);
    `noemailever` en el config del ensayo. `airnotifier` activo pero sin clave,
    sin OAuth2 de sistema. Sin cron en el ensayo (el aviso de `checks.php` es

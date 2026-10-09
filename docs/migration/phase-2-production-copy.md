@@ -98,6 +98,7 @@ Parte siempre de cero: borra el ensayo anterior (proyecto Docker
 | Árbol 4.5 | `github/moodle-2026` + los 6 plugins de 4.3 en el commit de `version.txt` | Sí |
 | PHP 8.2 + MySQL 8.0 | Las versiones que tiene hoy el VPS | Sí |
 | Importar | Volcado y `moodledata` | — |
+| Unificar collation | `config.php` del ensayo en `utf8mb4_unicode_ci` + `mysql_collation.php`: convierte las 5 tablas de `local_richimath`, las únicas en `general_ci` | Sí (plan §6.2) |
 | Upgrade 4.3 → 4.5 | `upgrade.php --non-interactive` | Sí |
 | Cambio a PHP 8.3 + MySQL 8.4 | MySQL actualiza su diccionario al arrancar sobre los mismos datos | Sí (en el VPS es `apt`; se mide en la Fase 3) |
 | Upgrade 4.5 → 5.3 | Código de este repo | Sí |
@@ -127,17 +128,18 @@ El sitio queda en **http://localhost:8084**. Para ver a un alumno: como
 
 | Paso | Ensayo 1 · 2026-10-09 |
 |---|---|
-| Importar base + `moodledata` | 17 s |
-| Upgrade 4.3 → 4.5 | 138 s |
+| Importar base + `moodledata` | 24 s |
+| Unificar collation | 4 s |
+| Upgrade 4.3 → 4.5 | 139 s |
 | Cambio a PHP 8.3 + MySQL 8.4 | 20 s |
-| Upgrade 4.5 → 5.3 | 152 s |
-| Tareas adhoc (≈ todo CSS; `mod_qbank` ≈ 1 s) | 188 s |
-| Personalización de idioma | 11 s |
-| **Total, del primer upgrade al último paso** | **509 s ≈ 8,5 min** |
-| Resultado | `checks.php`: solo el aviso de cron. Esquema OK. Sección E: todo OK salvo el acceso de invitados BBB, que viene apagado de producción |
+| Upgrade 4.5 → 5.3 | 148 s |
+| Tareas adhoc (≈ todo CSS; `mod_qbank` ≈ 1 s) | 197 s |
+| Personalización de idioma | 7 s |
+| **Total, de la collation al último paso** | **515 s ≈ 8,6 min** |
+| Resultado | `checks.php`: solo el aviso de cron. Esquema OK. Las 504 tablas en `unicode_ci`. Sección E: todo OK salvo el acceso de invitados BBB, que viene apagado de producción |
 
-El script se corrió tres veces sobre la misma copia mientras se afinaba, y los
-tiempos variaron poco: 119–138 s el salto a 4.5 y 126–152 s el salto a 5.3.
+El script se corrió cuatro veces sobre la misma copia mientras se afinaba, y
+los tiempos variaron poco: 119–139 s el salto a 4.5 y 126–152 s el salto a 5.3.
 
 Tiempos del portátil: el VPS 4 tiene menos CPU. La Fase 3 los repite en el
 servidor antes de fijar la ventana del corte.
@@ -148,7 +150,9 @@ servidor antes de fijar la ventana del corte.
   - dashboard del admin;
   - una alumna de primaria con su tema `rmprimaria`: dashboard a 1440 y 390,
     su curso a 390 y la revisión de un intento suyo del 3 de octubre, con
-    nota y fórmulas intactas.
+    nota y fórmulas intactas;
+  - repetida sobre la ejecución con la collation unificada: su curso a 1440,
+    con su tema y sus actividades.
 - **Falta** la lista completa: FUN-01…25 y los casos de §5.3 del plan.
 
 **Avisos de los upgrades:** solo el *callback* `after_config` de 4.3 en el
@@ -156,14 +160,17 @@ salto a 4.5, esperado porque ese plugin es el viejo. En 5.3 ya es un *hook*.
 
 ## 5. Hallazgos que pasan a las fases 3 y 4
 
-1. **Collation mixta.** Las 5 tablas de `local_richimath` están en
-   `utf8mb4_general_ci` y las otras 483 en `utf8mb4_unicode_ci`.
-   - Falta saber qué `dbcollation` tiene el `config.php` de producción
-     (`grep -n dbcollation /var/www/html/config.php`).
-   - Se unifica con `admin/cli/mysql_collation.php`. Se decide en la Fase 3.
-2. **MySQL 8.4 sin `mysql_native_password`.** Hay que mirar con qué plugin
-   entra el usuario de Moodle en producción:
-   `mysql -u root -p -e "SELECT user, host, plugin FROM mysql.user"`.
+1. **Collation mixta → se unifica en el corte.**
+   - Las 5 tablas de `local_richimath` están en `utf8mb4_general_ci` y las
+     otras 483 en `utf8mb4_unicode_ci`. El `config.php` de producción dice
+     `general_ci`, en dos líneas: la 18 y la 30.
+   - Con ese config, las tablas que crean 4.4–5.3 saldrían en `general_ci`
+     junto a core en `unicode_ci`.
+   - Paso del corte, antes del primer upgrade (plan §6.2): `config.php` a
+     `utf8mb4_unicode_ci` y `mysql_collation.php`. Ensayado: 5 tablas, sin
+     errores, esquema OK.
+2. **MySQL 8.4 sin `mysql_native_password` → no aplica.** `moodleuser` usa
+   `caching_sha2_password` y `root`, `auth_socket`.
 3. **Salida a internet** desde el VPS durante el corte, para los paquetes de
    idioma (sección 3).
 4. **El CSS de los temas** (unos 3 min en el portátil) va dentro de la ventana,
