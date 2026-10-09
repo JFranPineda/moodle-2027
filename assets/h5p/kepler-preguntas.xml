@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="category">
+  <category><text>$course$/top/Estación Kepler</text></category>
+  <info format="html"><text>Preguntas calculadas del escape room 360 «Estación Kepler». Cada alumno recibe números distintos.</text></info>
+  <idnumber></idnumber>
+</question>
+<question type="calculatedmulti">
+  <name><text>Kepler 1 · La grieta</text></name>
+  <questiontext format="html"><text><![CDATA[<p><strong>PASO 1 — MEDIR LA GRIETA</strong></p><p>Los sensores no alcanzan la grieta. Solo miden sus dos sombras sobre ejes que se cortan en ángulo recto:</p><ul><li>Sombra horizontal: <strong>{a} m</strong></li><li>Sombra vertical: <strong>{b} m</strong></li></ul><p>¿Cuánto mide la grieta?</p>]]></text></questiontext>
+  <generalfeedback format="html"><text></text></generalfeedback>
+  <defaultgrade>1</defaultgrade>
+  <penalty>0.3333333</penalty>
+  <hidden>0</hidden>
+  <synchronize>0</synchronize>
+  <single>1</single>
+  <shuffleanswers>1</shuffleanswers>
+  <answernumbering>abc</answernumbering>
+  <correctfeedback format="html"><text>Casco medido. Pasa a pedir el sellador.</text></correctfeedback>
+  <partiallycorrectfeedback format="html"><text>Casi.</text></partiallycorrectfeedback>
+  <incorrectfeedback format="html"><text>Sigue escapando oxígeno. Vuelve a la sala y repasa el método.</text></incorrectfeedback>
+  <answer fraction="100">
+    <text>{=sqrt({a}*{a}+{b}*{b})}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Correcto: la grieta es la hipotenusa.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{={a}+{b}}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Has sumado las sombras. La grieta es la hipotenusa, no la suma.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{={a}*{b}}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Eso es el doble del área del triángulo, no un lado.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{=abs({b}-{a})}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Restar las sombras no da la hipotenusa.</text></feedback>
+  </answer>
+  <unitgradingtype>0</unitgradingtype>
+  <unitpenalty>0.1</unitpenalty>
+  <showunits>3</showunits>
+  <unitsleft>0</unitsleft>
+<dataset_definitions>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>a</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>3</text></minimum>
+    <maximum><text>20</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>3</value></dataset_item>
+      <dataset_item><number>2</number><value>6</value></dataset_item>
+      <dataset_item><number>3</number><value>5</value></dataset_item>
+      <dataset_item><number>4</number><value>9</value></dataset_item>
+      <dataset_item><number>5</number><value>8</value></dataset_item>
+      <dataset_item><number>6</number><value>12</value></dataset_item>
+      <dataset_item><number>7</number><value>7</value></dataset_item>
+      <dataset_item><number>8</number><value>20</value></dataset_item>
+      <dataset_item><number>9</number><value>15</value></dataset_item>
+      <dataset_item><number>10</number><value>10</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>b</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>4</text></minimum>
+    <maximum><text>24</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>4</value></dataset_item>
+      <dataset_item><number>2</number><value>8</value></dataset_item>
+      <dataset_item><number>3</number><value>12</value></dataset_item>
+      <dataset_item><number>4</number><value>12</value></dataset_item>
+      <dataset_item><number>5</number><value>15</value></dataset_item>
+      <dataset_item><number>6</number><value>16</value></dataset_item>
+      <dataset_item><number>7</number><value>24</value></dataset_item>
+      <dataset_item><number>8</number><value>21</value></dataset_item>
+      <dataset_item><number>9</number><value>20</value></dataset_item>
+      <dataset_item><number>10</number><value>24</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+</dataset_definitions>
+</question>
+<question type="calculatedmulti">
+  <name><text>Kepler 2 · El sellador</text></name>
+  <questiontext format="html"><text><![CDATA[<p><strong>PASO 2 — PEDIR EL SELLADOR</strong></p><p>La grieta que acabas de medir tiene <strong>{=sqrt({a}*{a}+{b}*{b})} m</strong>.</p><p>Las tiras de sellador miden <strong>{t} m</strong> cada una y no se pueden partir. ¿Cuántas tiras necesitas como mínimo para cubrirla entera?</p>]]></text></questiontext>
+  <generalfeedback format="html"><text></text></generalfeedback>
+  <defaultgrade>1</defaultgrade>
+  <penalty>0.3333333</penalty>
+  <hidden>0</hidden>
+  <synchronize>0</synchronize>
+  <single>1</single>
+  <shuffleanswers>1</shuffleanswers>
+  <answernumbering>abc</answernumbering>
+  <correctfeedback format="html"><text>Sellador en camino. Aparece una segunda grieta.</text></correctfeedback>
+  <partiallycorrectfeedback format="html"><text>Casi.</text></partiallycorrectfeedback>
+  <incorrectfeedback format="html"><text>Sigue escapando oxígeno. Vuelve a la sala y repasa el método.</text></incorrectfeedback>
+  <answer fraction="100">
+    <text>{=ceil(sqrt({a}*{a}+{b}*{b})/{t})}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Correcto: al no poder partirlas, se redondea hacia arriba.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{=floor(sqrt({a}*{a}+{b}*{b})/{t})}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Redondeaste hacia abajo: la grieta quedaría sin cubrir.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{=ceil(sqrt({a}*{a}+{b}*{b})*{t})}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Has multiplicado en vez de dividir.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{=ceil(({a}+{b})/{t})}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Has usado la suma de las sombras en vez de la grieta.</text></feedback>
+  </answer>
+  <unitgradingtype>0</unitgradingtype>
+  <unitpenalty>0.1</unitpenalty>
+  <showunits>3</showunits>
+  <unitsleft>0</unitsleft>
+<dataset_definitions>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>a</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>3</text></minimum>
+    <maximum><text>20</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>3</value></dataset_item>
+      <dataset_item><number>2</number><value>6</value></dataset_item>
+      <dataset_item><number>3</number><value>5</value></dataset_item>
+      <dataset_item><number>4</number><value>9</value></dataset_item>
+      <dataset_item><number>5</number><value>8</value></dataset_item>
+      <dataset_item><number>6</number><value>12</value></dataset_item>
+      <dataset_item><number>7</number><value>7</value></dataset_item>
+      <dataset_item><number>8</number><value>20</value></dataset_item>
+      <dataset_item><number>9</number><value>15</value></dataset_item>
+      <dataset_item><number>10</number><value>10</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>b</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>4</text></minimum>
+    <maximum><text>24</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>4</value></dataset_item>
+      <dataset_item><number>2</number><value>8</value></dataset_item>
+      <dataset_item><number>3</number><value>12</value></dataset_item>
+      <dataset_item><number>4</number><value>12</value></dataset_item>
+      <dataset_item><number>5</number><value>15</value></dataset_item>
+      <dataset_item><number>6</number><value>16</value></dataset_item>
+      <dataset_item><number>7</number><value>24</value></dataset_item>
+      <dataset_item><number>8</number><value>21</value></dataset_item>
+      <dataset_item><number>9</number><value>20</value></dataset_item>
+      <dataset_item><number>10</number><value>24</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>t</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>2</text></minimum>
+    <maximum><text>5</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>2</value></dataset_item>
+      <dataset_item><number>2</number><value>3</value></dataset_item>
+      <dataset_item><number>3</number><value>4</value></dataset_item>
+      <dataset_item><number>4</number><value>2</value></dataset_item>
+      <dataset_item><number>5</number><value>3</value></dataset_item>
+      <dataset_item><number>6</number><value>3</value></dataset_item>
+      <dataset_item><number>7</number><value>4</value></dataset_item>
+      <dataset_item><number>8</number><value>5</value></dataset_item>
+      <dataset_item><number>9</number><value>3</value></dataset_item>
+      <dataset_item><number>10</number><value>4</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+</dataset_definitions>
+</question>
+<question type="calculatedmulti">
+  <name><text>Kepler 3 · La segunda grieta</text></name>
+  <questiontext format="html"><text><![CDATA[<p><strong>PASO 3 — LA SEGUNDA GRIETA</strong></p><p>Una segunda grieta mide <strong>{c} m</strong> y su sombra vertical es de <strong>{d} m</strong>. Las dos sombras vuelven a cortarse en ángulo recto.</p><p>¿Cuánto mide su sombra horizontal?</p>]]></text></questiontext>
+  <generalfeedback format="html"><text></text></generalfeedback>
+  <defaultgrade>1</defaultgrade>
+  <penalty>0.3333333</penalty>
+  <hidden>0</hidden>
+  <synchronize>0</synchronize>
+  <single>1</single>
+  <shuffleanswers>1</shuffleanswers>
+  <answernumbering>abc</answernumbering>
+  <correctfeedback format="html"><text>Las dos grietas localizadas. Toca cortar el parche.</text></correctfeedback>
+  <partiallycorrectfeedback format="html"><text>Casi.</text></partiallycorrectfeedback>
+  <incorrectfeedback format="html"><text>Sigue escapando oxígeno. Vuelve a la sala y repasa el método.</text></incorrectfeedback>
+  <answer fraction="100">
+    <text>{=sqrt({c}*{c}-{d}*{d})}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Correcto: aquí conoces la hipotenusa y buscas un cateto, así que se resta.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{={c}-{d}}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Has restado los lados directamente. Pitágoras resta los CUADRADOS.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{={c}+{d}}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Has sumado los lados. Ningún lado es la suma de los otros dos.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{={c}*{d}}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Eso no es una longitud del triángulo.</text></feedback>
+  </answer>
+  <unitgradingtype>0</unitgradingtype>
+  <unitpenalty>0.1</unitpenalty>
+  <showunits>3</showunits>
+  <unitsleft>0</unitsleft>
+<dataset_definitions>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>c</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>5</text></minimum>
+    <maximum><text>29</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>5</value></dataset_item>
+      <dataset_item><number>2</number><value>10</value></dataset_item>
+      <dataset_item><number>3</number><value>13</value></dataset_item>
+      <dataset_item><number>4</number><value>15</value></dataset_item>
+      <dataset_item><number>5</number><value>17</value></dataset_item>
+      <dataset_item><number>6</number><value>20</value></dataset_item>
+      <dataset_item><number>7</number><value>25</value></dataset_item>
+      <dataset_item><number>8</number><value>29</value></dataset_item>
+      <dataset_item><number>9</number><value>25</value></dataset_item>
+      <dataset_item><number>10</number><value>26</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>d</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>3</text></minimum>
+    <maximum><text>20</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>3</value></dataset_item>
+      <dataset_item><number>2</number><value>6</value></dataset_item>
+      <dataset_item><number>3</number><value>5</value></dataset_item>
+      <dataset_item><number>4</number><value>9</value></dataset_item>
+      <dataset_item><number>5</number><value>8</value></dataset_item>
+      <dataset_item><number>6</number><value>12</value></dataset_item>
+      <dataset_item><number>7</number><value>7</value></dataset_item>
+      <dataset_item><number>8</number><value>20</value></dataset_item>
+      <dataset_item><number>9</number><value>15</value></dataset_item>
+      <dataset_item><number>10</number><value>10</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+</dataset_definitions>
+</question>
+<question type="calculatedmulti">
+  <name><text>Kepler 4 · El parche</text></name>
+  <questiontext format="html"><text><![CDATA[<p><strong>PASO 4 — CORTAR EL PARCHE</strong></p><p>Sobre la primera grieta hay que soldar un parche triangular cuyos catetos son sus dos sombras: <strong>{a} m</strong> y <strong>{b} m</strong>.</p><p>¿Cuántos metros cuadrados de lámina necesitas?</p>]]></text></questiontext>
+  <generalfeedback format="html"><text></text></generalfeedback>
+  <defaultgrade>1</defaultgrade>
+  <penalty>0.3333333</penalty>
+  <hidden>0</hidden>
+  <synchronize>0</synchronize>
+  <single>1</single>
+  <shuffleanswers>1</shuffleanswers>
+  <answernumbering>abc</answernumbering>
+  <correctfeedback format="html"><text>Parche cortado. Queda sellar el borde.</text></correctfeedback>
+  <partiallycorrectfeedback format="html"><text>Casi.</text></partiallycorrectfeedback>
+  <incorrectfeedback format="html"><text>Sigue escapando oxígeno. Vuelve a la sala y repasa el método.</text></incorrectfeedback>
+  <answer fraction="100">
+    <text>{={a}*{b}/2}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Correcto: base por altura dividido entre dos.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{={a}*{b}}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Ese es el rectángulo entero. El parche es la mitad.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{={a}+{b}}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Has sumado los catetos: eso es una longitud, no un área.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{=2*{a}*{b}}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Has multiplicado de más: el triángulo es la MITAD del rectángulo.</text></feedback>
+  </answer>
+  <unitgradingtype>0</unitgradingtype>
+  <unitpenalty>0.1</unitpenalty>
+  <showunits>3</showunits>
+  <unitsleft>0</unitsleft>
+<dataset_definitions>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>a</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>3</text></minimum>
+    <maximum><text>20</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>3</value></dataset_item>
+      <dataset_item><number>2</number><value>6</value></dataset_item>
+      <dataset_item><number>3</number><value>5</value></dataset_item>
+      <dataset_item><number>4</number><value>9</value></dataset_item>
+      <dataset_item><number>5</number><value>8</value></dataset_item>
+      <dataset_item><number>6</number><value>12</value></dataset_item>
+      <dataset_item><number>7</number><value>7</value></dataset_item>
+      <dataset_item><number>8</number><value>20</value></dataset_item>
+      <dataset_item><number>9</number><value>15</value></dataset_item>
+      <dataset_item><number>10</number><value>10</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>b</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>4</text></minimum>
+    <maximum><text>24</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>4</value></dataset_item>
+      <dataset_item><number>2</number><value>8</value></dataset_item>
+      <dataset_item><number>3</number><value>12</value></dataset_item>
+      <dataset_item><number>4</number><value>12</value></dataset_item>
+      <dataset_item><number>5</number><value>15</value></dataset_item>
+      <dataset_item><number>6</number><value>16</value></dataset_item>
+      <dataset_item><number>7</number><value>24</value></dataset_item>
+      <dataset_item><number>8</number><value>21</value></dataset_item>
+      <dataset_item><number>9</number><value>20</value></dataset_item>
+      <dataset_item><number>10</number><value>24</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+</dataset_definitions>
+</question>
+<question type="calculatedmulti">
+  <name><text>Kepler 5 · El borde</text></name>
+  <questiontext format="html"><text><![CDATA[<p><strong>PASO 5 — SELLAR EL BORDE</strong></p><p>Falta pasar cordón por todo el contorno del parche: las dos sombras (<strong>{a} m</strong> y <strong>{b} m</strong>) y la propia grieta.</p><p>¿Cuántos metros de cordón necesitas?</p>]]></text></questiontext>
+  <generalfeedback format="html"><text></text></generalfeedback>
+  <defaultgrade>1</defaultgrade>
+  <penalty>0.3333333</penalty>
+  <hidden>0</hidden>
+  <synchronize>0</synchronize>
+  <single>1</single>
+  <shuffleanswers>1</shuffleanswers>
+  <answernumbering>abc</answernumbering>
+  <correctfeedback format="html"><text>¡Casco sellado! La Estación Kepler recupera la presión.</text></correctfeedback>
+  <partiallycorrectfeedback format="html"><text>Casi.</text></partiallycorrectfeedback>
+  <incorrectfeedback format="html"><text>Sigue escapando oxígeno. Vuelve a la sala y repasa el método.</text></incorrectfeedback>
+  <answer fraction="100">
+    <text>{={a}+{b}+sqrt({a}*{a}+{b}*{b})}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>¡Casco sellado! Has recorrido los tres lados del triángulo.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{={a}+{b}}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Te has dejado la grieta, que es el lado más largo.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{=2*({a}+{b})}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Eso sería el perímetro de un rectángulo, no de un triángulo.</text></feedback>
+  </answer>
+  <answer fraction="0">
+    <text>{=3*sqrt({a}*{a}+{b}*{b})}</text>
+    <tolerance>0.01</tolerance>
+    <tolerancetype>1</tolerancetype>
+    <correctanswerformat>1</correctanswerformat>
+    <correctanswerlength>2</correctanswerlength>
+    <feedback format="html"><text>Has dado por hecho que los tres lados miden igual. No es equilátero.</text></feedback>
+  </answer>
+  <unitgradingtype>0</unitgradingtype>
+  <unitpenalty>0.1</unitpenalty>
+  <showunits>3</showunits>
+  <unitsleft>0</unitsleft>
+<dataset_definitions>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>a</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>3</text></minimum>
+    <maximum><text>20</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>3</value></dataset_item>
+      <dataset_item><number>2</number><value>6</value></dataset_item>
+      <dataset_item><number>3</number><value>5</value></dataset_item>
+      <dataset_item><number>4</number><value>9</value></dataset_item>
+      <dataset_item><number>5</number><value>8</value></dataset_item>
+      <dataset_item><number>6</number><value>12</value></dataset_item>
+      <dataset_item><number>7</number><value>7</value></dataset_item>
+      <dataset_item><number>8</number><value>20</value></dataset_item>
+      <dataset_item><number>9</number><value>15</value></dataset_item>
+      <dataset_item><number>10</number><value>10</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+  <dataset_definition>
+    <status><text>private</text></status>
+    <name><text>b</text></name>
+    <type>calculated</type>
+    <distribution><text>uniform</text></distribution>
+    <minimum><text>4</text></minimum>
+    <maximum><text>24</text></maximum>
+    <decimals><text>0</text></decimals>
+    <itemcount>10</itemcount>
+    <dataset_items>
+      <dataset_item><number>1</number><value>4</value></dataset_item>
+      <dataset_item><number>2</number><value>8</value></dataset_item>
+      <dataset_item><number>3</number><value>12</value></dataset_item>
+      <dataset_item><number>4</number><value>12</value></dataset_item>
+      <dataset_item><number>5</number><value>15</value></dataset_item>
+      <dataset_item><number>6</number><value>16</value></dataset_item>
+      <dataset_item><number>7</number><value>24</value></dataset_item>
+      <dataset_item><number>8</number><value>21</value></dataset_item>
+      <dataset_item><number>9</number><value>20</value></dataset_item>
+      <dataset_item><number>10</number><value>24</value></dataset_item>
+    </dataset_items>
+    <number_of_items>10</number_of_items>
+  </dataset_definition>
+</dataset_definitions>
+</question>
+</quiz>

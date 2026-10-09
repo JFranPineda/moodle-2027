@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="80 105 280 230">
+  <defs>
+    <!-- Fondo suave general para contraste óptimo -->
+    <linearGradient id="bgCanvasGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F8FAFC" />
+    </linearGradient>
+
+    <!-- Gradientes 3D Corporativos Ejecutivos para la letra R (Azul Marino Profundo / Zafiro Corporativo) -->
+    <linearGradient id="corpRFront" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A" />
+      <stop offset="45%" stop-color="#1E40AF" />
+      <stop offset="100%" stop-color="#172554" />
+    </linearGradient>
+    <linearGradient id="corpRSide" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="corpRTop" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60A5FA" />
+      <stop offset="50%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+
+    <!-- Gradientes 3D Corporativos para la letra M (Gris Acero / Titanio / Plata Cepillada Tecnológica) -->
+    <linearGradient id="corpMFront" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="50%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="corpMSide" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#090D16" />
+    </linearGradient>
+    <linearGradient id="corpMTop" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#94A3B8" />
+      <stop offset="50%" stop-color="#CBD5E1" />
+      <stop offset="100%" stop-color="#F1F5F9" />
+    </linearGradient>
+
+    <!-- Sombras y luces contenidas -->
+    <filter id="drop3dCorp" x="-20%" y="-20%" width="160%" height="160%">
+      <feDropShadow dx="6" dy="14" stdDeviation="12" flood-color="#0B1329" flood-opacity="0.18" />
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#1E293B" flood-opacity="0.12" />
+    </filter>
+
+    <!-- Pedestal corporativo sobrio -->
+    <linearGradient id="pedestalBgCorp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F1F5F9" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(45, 45)">
+    <g transform="translate(40, 44) scale(1.30)">
+      <!-- Sombra de suelo de las letras con masa ensanchada -->
+      <path d="M 18 155 C 52 168 152 168 182 150 C 158 140 52 140 18 155 Z" fill="#020617" opacity="0.25" filter="blur(5px)" />
+
+      <!-- LETRA 'M' (3D Detrás: Titanio y Grafito Ejecutivo con astas ensanchadas) -->
+      <g id="corp-M-3D">
+        <!-- Caras 3D superiores y laterales adaptadas al mayor calibre de trazo -->
+        <polygon points="76,144 92,152 92,68 76,58" fill="url(#corpMSide)" />
+        <polygon points="92,152 118,152 102,144 76,144" fill="#090D16" />
+        <polygon points="106,58 122,68 135,108 123,98" fill="url(#corpMSide)" />
+        <polygon points="135,108 149,116 161,78 149,68" fill="#0F172A" />
+        <polygon points="149,68 165,78 165,152 149,144" fill="url(#corpMSide)" />
+        <polygon points="149,68 165,78 190,78 174,68" fill="url(#corpMTop)" />
+        <polygon points="174,68 190,78 190,152 174,144" fill="#090D16" />
+        <!-- Tapa superior bisel frontal de la M -->
+        <polygon points="76,58 92,68 106,68 106,58" fill="url(#corpMTop)" />
+
+        <!-- Frontal de la M con trazos significativamente más gruesos y robustos -->
+        <path d="M 76 144 L 76 58 L 106 58 L 126 102 L 146 58 L 174 58 L 174 144 L 148 144 L 148 95 L 133 124 L 119 124 L 104 95 L 104 144 Z" 
+              fill="url(#corpMFront)" stroke="#94A3B8" stroke-width="1.4" stroke-linejoin="round" />
+        <polyline points="77,143 77,59 105,59 125,102" stroke="#CBD5E1" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />
+        <polyline points="147,59 173,59 173,143" stroke="#CBD5E1" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />
+      </g>
+
+      <!-- LETRA 'R' (3D Frente: Azul Zafiro Ejecutivo con astas gruesas y curvas contundentes) -->
+      <g id="corp-R-3D">
+        <!-- Oclusión de sombra proyectada por la R sobre la M -->
+        <path d="M 74 50 L 104 80 L 104 146 L 78 136 Z" fill="#020617" opacity="0.4" filter="blur(2.2px)" />
+        
+        <!-- Caras 3D laterales y superiores de la R -->
+        <polygon points="42,42 56,52 56,150 42,140" fill="url(#corpRSide)" />
+        <polygon points="16,42 30,32 56,32 42,42" fill="url(#corpRTop)" />
+        <polygon points="42,42 56,32 82,32 70,42" fill="url(#corpRTop)" />
+        
+        <!-- Curvatura lateral 3D de la cabeza de la R -->
+        <path d="M 70 42 C 92 42 106 54 106 72 C 106 87 92 98 70 98 L 82 108 C 112 108 122 89 122 72 C 122 49 100 32 82 32 Z" fill="url(#corpRSide)" />
+        
+        <!-- Pata diagonal 3D engrosada -->
+        <polygon points="50,96 64,106 96,150 82,140" fill="url(#corpRSide)" />
+        <polygon points="82,140 96,150 114,150 100,140" fill="#020617" />
+
+        <!-- Cara Frontal de la R con trazo Ultra Bold: asta de 24px de grosor y curva maciza -->
+        <path d="M 16 42 L 70 42 C 90 42 104 54 104 72 C 104 87 90 98 70 98 L 48 98 L 78 142 L 48 142 L 20 98 L 40 98 L 40 42 Z 
+                 M 40 58 L 40 82 L 66 82 C 76 82 82 78 82 70 C 82 62 76 58 66 58 Z"
+              fill="url(#corpRFront)" stroke="#93C5FD" stroke-width="1.6" stroke-linejoin="round" />
+              
+        <!-- Reflejos de luz especular en los bordes de la R Bold -->
+        <path d="M 17 43 L 70 43 C 88 43 102 54 102 71" stroke="#DBEAFE" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.95" />
+        <line x1="17" y1="43" x2="17" y2="98" stroke="#DBEAFE" stroke-width="2" stroke-linecap="round" opacity="0.95" />
+        <line x1="48" y1="141" x2="78" y2="141" stroke="#DBEAFE" stroke-width="1.8" opacity="0.85" />
+        <circle cx="21" cy="45" r="3.6" fill="#FFFFFF" opacity="0.98" filter="blur(0.4px)" />
+      </g>
+    </g>
+  </g>
+</svg>

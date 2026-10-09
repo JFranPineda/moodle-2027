@@ -169,14 +169,28 @@ Guarda, y sigue los pasos de «En cada curso donde lo quieras» de arriba.
 - **Distractores con sentido**: en «6 y 8», el 14 (los suma) y el 48 (los
   multiplica) son los errores reales. Un distractor absurdo no enseña nada.
 
-### Importar el cuestionario
+### Importar el cuestionario (Moodle 5.3)
 
-1. Curso → **Más** → **Banco de preguntas** → **Importar**
-2. Formato **XML de Moodle** → sube `assets/h5p/kepler-preguntas.xml`
-3. Importar. Aparecen las 5 en la categoría «Estación Kepler»
+Desde 5.0 las preguntas viven en **bancos de preguntas**, que son actividades
+del curso (`mod_qbank`). Al actualizar desde 4.3, el banco antiguo del curso se
+convierte solo en uno llamado «Banco de preguntas de curso»: las preguntas de
+Kepler que ya estaban importadas siguen ahí.
+
+1. Curso → **Más** → **Bancos de preguntas**. Si el curso no tiene ninguno,
+   **Crear banco de preguntas por defecto**.
+2. Abre **Banco de preguntas de curso** → en el selector de arriba elige
+   **Importar**.
+3. Formato **XML de Moodle** → sube `assets/h5p/kepler-preguntas.xml` →
+   Importar. Aparecen las 5 en la categoría «Estación Kepler».
 4. Curso → **Añadir actividad** → **Cuestionario**, nombre
-   «Consola de reparación»
-5. Dentro: **Preguntas** → *Agregar* → *del banco de preguntas* → las cinco
+   «Consola de reparación».
+5. Dentro: **Preguntas** → *Agregar* → *del banco de preguntas* → elige el
+   **Banco de preguntas de curso** → las cinco. *(Nombre exacto del botón por
+   confirmar en la Fase 2: este paso no se pudo probar en 5.3 porque el
+   cuestionario de prueba ya tenía intentos.)*
+
+> Un banco **del propio cuestionario** solo sirve a ese cuestionario. Para
+> reutilizar las preguntas en otro, impórtalas en el banco del curso.
 6. *Comportamiento de las preguntas*: **Interactivo con varios intentos**, para
    que la retroalimentación de cada error se lea al momento
 

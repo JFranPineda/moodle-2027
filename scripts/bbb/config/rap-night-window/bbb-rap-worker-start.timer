@@ -1,0 +1,8 @@
+[Unit]
+Description=Open the nightly window for recording processing
+
+[Timer]
+OnCalendar=*-*-* 23:00:00
+
+[Install]
+WantedBy=timers.target

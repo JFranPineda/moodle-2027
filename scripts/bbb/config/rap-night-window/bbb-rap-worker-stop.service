@@ -1,0 +1,6 @@
+[Unit]
+Description=Close the nightly window for recording processing
+
+[Service]
+Type=oneshot
+ExecStart=/bin/systemctl stop bbb-rap-resque-worker.service
