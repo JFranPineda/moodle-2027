@@ -4,7 +4,9 @@ Cómo llevar la plataforma de `richiacademy.com` de **Moodle 4.3.12** (sin
 parches de seguridad desde el 21 abr 2025) a **Moodle 5.3 LTS** (publicada el
 5 oct 2026), con todo lo propio funcionando y sin perder datos de alumnos.
 
-Lo que se migra, ticket por ticket: [migration-tickets.md](migration-tickets.md).
+Lo que se migra, ticket por ticket: [migration-tickets.md](migration-tickets.md)
+— 25 tickets funcionales (`FUN`, lo que ve el usuario, con sus commits) y 23
+técnicos (`MIG`, cómo se porta el código).
 Este documento dice **en qué orden, dónde y cómo se vuelve atrás**.
 
 Redactado el 2026-10-08.
@@ -99,8 +101,9 @@ paso depende del anterior):
   lado).
 - Plantillas de core: **siempre** partiendo de la de 5.3 (MIG-21).
 
-**Sale de la fase**: los 23 tickets con su «Hecho cuando» cumplido sobre una
-base **vacía**. Todavía sin datos reales.
+**Sale de la fase**: los 23 tickets técnicos (`MIG`) cerrados y los 25
+funcionales (`FUN`) con su «Hecho cuando» cumplido sobre una base **vacía**.
+Todavía sin datos reales.
 
 ---
 
@@ -139,7 +142,8 @@ producción.
   (MIG-40).
 
 ### 5.3 Pruebas de aceptación sobre la copia
-La lista completa de «Hecho cuando» de los 23 tickets, **más** estos casos que
+La lista completa de «Hecho cuando» de los **25 tickets funcionales**
+(`FUN-01…25`), **más** estos casos que
 solo existen con datos reales:
 
 - [ ] Un alumno real de cada nivel entra y ve **su** tema (planes, MIG-12).
