@@ -159,6 +159,18 @@ class routes {
             $lines[] = "    RewriteRule ^{$name}/?$ " . ltrim($route['target'], '/') . ' [L,QSA]';
         }
 
+        // 3. The Moodle router (5.3 flags it as a critical check when it is
+        // not configured). It has to live HERE: the rules of an .htaccess
+        // replace those of the vhost's <Directory> block instead of adding to
+        // them. Last, so the pretty addresses above win; and a rewrite rather
+        // than FallbackResource, because PHP answers a missing *.php with its
+        // own 404 before the fallback runs, and core tests exactly that.
+        $lines[] = '';
+        $lines[] = '    # 3. Moodle router: anything that is neither a file nor a directory.';
+        $lines[] = '    RewriteCond %{REQUEST_FILENAME} !-f';
+        $lines[] = '    RewriteCond %{REQUEST_FILENAME} !-d';
+        $lines[] = '    RewriteRule ^ /r.php [L]';
+
         $lines[] = '</IfModule>';
         $lines[] = self::BLOCK_END;
 
