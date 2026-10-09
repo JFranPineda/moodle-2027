@@ -4116,6 +4116,20 @@ body#page-mod-quiz-summary {
     }
 }
 
+// The solution box (F4b): paper the RM watermark reads through, and one
+// colour per level of the solution. Fixed, not taken from the od palette: a
+// level theme's primary can be red (Preuniversitario) and its secondary teal,
+// and in a solution red and green must mean wrong and right on every level.
+$rm-solution-paper: #fffbf2 !default;
+$rm-solution-step: #004ccd !default;
+$rm-solution-formula: #5b2bb5 !default;
+$rm-solution-right: #006d40 !default;
+$rm-solution-wrong: #ba1a1a !default;
+$rm-solution-partial: #9a3600 !default;
+// The verdict is the answer's feedback when it is one short line. Some
+// teachers paste the whole solution there; that one keeps the ink colour.
+$rm-verdict: '.specificfeedback:not(:has(ul, ol, div, table))';
+
 body#page-mod-quiz-attempt,
 body#page-mod-quiz-review {
     .que {
@@ -4242,14 +4256,98 @@ body#page-mod-quiz-review {
             }
         }
 
-        .outcome,
-        .feedback {
+        // A displayed formula wider than a phone scrolls sideways instead of
+        // being cut off: .que hides its overflow, so it used to vanish.
+        mjx-container[display="true"] {
+            max-width: 100%;
+            padding: 0.1em 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: thin;
+        }
+
+        // F4b) The solution box: verdict, worked solution (the general
+        // feedback teachers write) and right answer. Core paints it as a
+        // yellow warning, which read brown on lavender. It is paper with
+        // Richi's watermark instead, like the statement, and each level of
+        // the solution has its own colour, so a student finds the verdict,
+        // the steps and the answer before reading line by line.
+        .outcome {
             margin: 1rem 0 0;
-            padding: 0.85rem 1rem;
+            padding: 1rem 1.25rem;
             border: 0;
-            border-left: 3px solid $od-exam-accent;
+            border-left: 4px solid $od-exam-accent;
             border-radius: 0;
-            background-color: $od-surface-low;
+            color: $od-on-surface;
+            line-height: 1.6;
+            background-color: $rm-solution-paper;
+            background-image:
+                linear-gradient(rgba($rm-solution-paper, 0.86), rgba($rm-solution-paper, 0.86)),
+                url([[pix:theme|examground]]);
+            background-size: 15rem auto;
+            background-position: right 1.5rem center;
+            background-repeat: no-repeat;
+
+            // One box: the feedback wrapper inside it used to draw a second.
+            .feedback {
+                margin: 0;
+                padding: 0;
+                border: 0;
+                background: none;
+            }
+
+            // Each step's heading, as the author set it in bold.
+            strong,
+            b {
+                color: $rm-solution-step;
+            }
+
+            li::marker {
+                color: $rm-solution-step;
+            }
+
+            // The first bold of the solution is its title ("Resolución
+            // Detallada:"): a quiet label, in the grammar of the exam's own.
+            .generalfeedback :is(div, p):first-child > strong:first-child {
+                @include rm-exam-label;
+                color: $od-on-surface-variant;
+                font-size: 0.75rem;
+            }
+
+            // Displayed formulas: the result each step arrives at.
+            mjx-container[display="true"] {
+                color: $rm-solution-formula;
+            }
+
+            // The answer the solution lands on.
+            .rightanswer {
+                margin-top: 0.85rem;
+                padding-top: 0.75rem;
+                border-top: 1px dashed $od-outline-variant;
+                color: $rm-solution-right;
+                font-weight: 700;
+            }
+
+            a {
+                color: $od-primary;
+            }
+
+            // The verdict ("Respuesta incorrecta."), coloured by the result
+            // below — when it is that short line and not a pasted solution.
+            #{$rm-verdict} {
+                font-weight: 700;
+
+                strong,
+                b {
+                    color: inherit;
+                }
+            }
+
+            @include media-breakpoint-down(sm) {
+                padding: 0.85rem 1rem;
+                background-size: 9rem auto;
+                background-position: right 0.75rem center;
+            }
         }
     }
 
@@ -4266,6 +4364,32 @@ body#page-mod-quiz-review {
 
     .que.partiallycorrect .info {
         border-left: 3px solid $od-tertiary;
+    }
+
+    // The solution box takes the colour of the result on its edge and verdict.
+    .que.correct .outcome {
+        border-left-color: $rm-solution-right;
+
+        #{$rm-verdict} {
+            color: $rm-solution-right;
+        }
+    }
+
+    .que.incorrect .outcome,
+    .que.notanswered .outcome {
+        border-left-color: $rm-solution-wrong;
+
+        #{$rm-verdict} {
+            color: $rm-solution-wrong;
+        }
+    }
+
+    .que.partiallycorrect .outcome {
+        border-left-color: $rm-solution-partial;
+
+        #{$rm-verdict} {
+            color: $rm-solution-partial;
+        }
     }
 }
 
