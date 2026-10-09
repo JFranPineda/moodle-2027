@@ -1,6 +1,6 @@
 # MEMORY.md — estado vivo de la migración a 5.3 (actualizar al terminar cada tarea)
 
-Última actualización: 2026-10-09 (Fase 1 en curso: 1.1–1.4 hechos — MIG-10, 20, 21, 22; siguiente 1.5 = MIG-24).
+Última actualización: 2026-10-09 (Fase 1 en curso: 1.1–1.8 hechos; siguiente 1.9 = MIG-25).
 
 ## Árboles en disco
 
@@ -19,7 +19,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 | Fase | Estado |
 |---|---|
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
-| 1 Portar código | en curso: MIG-10 ✅, MIG-20 ✅, MIG-21 ✅, MIG-22 ✅ |
+| 1 Portar código | en curso: 1.1–1.8 ✅ (MIG-10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24); faltan 1.9 MIG-25, 1.10 MIG-26/27 (decisión de Richi), 1.11 MIG-30/31/32 |
 | 2 Ensayo con copia de producción | — |
 | 3 Preparar servidor | — |
 | 4 Corte | — |
@@ -86,3 +86,22 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    core_5.3` (fusión a tres bandas) y se resuelven los choques a mano.
 9. `pix_plugins/mod` (iconos de 4.3) y la sección §J **fuera** hasta que Richi
    decida MIG-27: tapaban los iconos nuevos de 5.3 o los ponían negros.
+
+## Paso 1.8 verificado sin cambios de código (2026-10-09)
+
+- **Privacidad (MIG-17)**: participantes sin permiso, perfil de curso y de
+  sitio de la compañera bloqueados, compañera fuera del buscador de mensajes,
+  profesor visible. La instalación nueva aplica el bloqueo desde `install.php`.
+- **WhatsApp (MIG-15)**: FAB con `wa.me/51987654321` en el curso como alumno.
+- **Planes (MIG-12)**: el alumno recibe `rmprimaria` al entrar.
+- **Invitaciones (MIG-11)**: enlace → cuenta con el correo invitado →
+  matriculado → invitación usada.
+- **Invitados BBB (MIG-16)**: registro → lead → traspaso con
+  `_qf__mod_bigbluebuttonbn_form_guest_login` → core acepta y consulta la sala.
+  El error final («URL using bad/illegal format») es que en local no hay
+  servidor BBB: 5.3 ya no trae el servidor de pruebas por defecto.
+- **Datos de prueba creados**: árbol de categorías tipo producción, 14 cursos
+  `PAG*` (paginación), `estudiante.dos`, actividad BBB en `BASE53`.
+- **Ajustes nuevos de 5.3 que difieren en instalación limpia**: `forcelogin=1`
+  (rompía el sitio público), `enablemyhome/enablemycourses=0`. En local se
+  pusieron como producción; están en la sección E de los tickets.
