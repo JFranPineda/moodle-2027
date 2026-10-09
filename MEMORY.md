@@ -1,6 +1,6 @@
 # MEMORY.md — estado vivo de la migración a 5.3 (actualizar al terminar cada tarea)
 
-Última actualización: 2026-10-09 (Fase 1 en curso: 1.1–1.8 hechos; siguiente 1.9 = MIG-25).
+Última actualización: 2026-10-09 (Fase 1 TERMINADA salvo 1.10: MIG-26/27 esperan la decisión de Richi — docs/migration/decisions/; siguiente: Fase 2).
 
 ## Árboles en disco
 
@@ -19,7 +19,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 | Fase | Estado |
 |---|---|
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
-| 1 Portar código | en curso: 1.1–1.8 ✅ (MIG-10, 11, 12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24); faltan 1.9 MIG-25, 1.10 MIG-26/27 (decisión de Richi), 1.11 MIG-30/31/32 |
+| 1 Portar código | ✅ salvo 1.10 (MIG-26/27 = decisión de Richi, sin bloquear la Fase 2). 21 de 23 MIG cerrados |
 | 2 Ensayo con copia de producción | — |
 | 3 Preparar servidor | — |
 | 4 Corte | — |
@@ -105,3 +105,36 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 - **Ajustes nuevos de 5.3 que difieren en instalación limpia**: `forcelogin=1`
   (rompía el sitio público), `enablemyhome/enablemycourses=0`. En local se
   pusieron como producción; están en la sección E de los tickets.
+
+## Paso 1.9 (MIG-25) — lo que 5.3 cambió en pantallas (2026-10-09)
+
+1. **Navegación secundaria = componente React `core/nav/Nav`** (`a.mds-nav-pill`,
+   `--selected`, punto indicador). Mueve pestañas a «Más» si la lista es más
+   alta que la barra (`Nav.tsx: menu.offsetHeight > container.offsetHeight`);
+   core fija la barra en `$moremenu-height` → crecerla lo que añade el
+   control segmentado o TODO acaba en «Más».
+2. **Cajones «anclados» en páginas de curso** (tarjeta gris redondeada, tope
+   de altura): se anulan en nuestro layout con barra lateral.
+3. **`.que` es flex en FILA en 5.3**: nuestra barra de estado a todo el ancho
+   expulsaba la pregunta de la tarjeta → preguntas EN BLANCO. Ahora columna.
+4. **Iconos de actividad**: quitar el tamaño/padding de baldosa de 4.3 (5.3 los
+   pinta sin baldosa y el contenedor mide 32px).
+5. **§H (lista de usuarios) borrada**: el formulario de 4.3 no existe en 5.3.
+6. **El calificador desborda la página en horizontal**: es core 5.3 (columnas
+   de 200px), igual en Boost puro. No se toca.
+7. **`frontpageloggedin`**: 5.3 nuevo trae 6 (lista de cursos); producción usa
+   2 (categorías, con nuestras tarjetas). Puesto a 2 en local.
+8. **Pruebas con agent-browser**: el tour de bienvenida de Moodle se come los
+   clics (`button[data-role=end]` lo cierra); el desplegable de categorías se
+   abre con el `h3`, no con el enlace; tras `purge_caches` hay que
+   `build_theme_css.php` ANTES de abrir el navegador (si no, guarda el CSS
+   viejo con la URL nueva — pasó 3 veces).
+
+## Paso 1.11 (MIG-30/31/32)
+
+- `scripts/` de 5.3 YA EXISTÍA en core (lib, packages, swizzle.mjs…): lo nuestro
+  se añadió sin sobrescribir (`rsync --ignore-existing`).
+- `build-theme-logos.py` regenera idéntico en `public/theme`.
+- `build-activity-icons.py` NO correr hasta MIG-27.
+- `dev-up.sh` construye el CSS de los 5 temas al final.
+- Manual de Kepler: importar en «Bancos de preguntas» (mod_qbank).
