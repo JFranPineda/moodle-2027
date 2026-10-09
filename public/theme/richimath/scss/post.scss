@@ -1,0 +1,5823 @@
+// theme_richimath post.scss — all custom rules, compiled after the Boost preset.
+//
+// Every token below carries !default: a child theme (rm_primaria, rm_secundaria,
+// rm_preu, rm_universidad) prepends its own palette file and re-skins the whole
+// site without copying a single rule. See docs/plans/multi-theme-plan.md.
+//
+// Palette. Sections A-D were built on a navy/gold Blackboard language; since
+// 2026-09-03 the site follows the "Primary Moodle Odyssey" design system
+// (docs/design/primary_moodle_odyssey/DESIGN.md, applied in section E). The
+// token NAMES stay — a thousand rules read them — but each now points at the
+// role it plays in that system, so every older section follows along instead
+// of needing an override of its own. The login artwork keeps the real gold.
+$richimath-navy: #111c2c !default;          // on-surface: headings and body copy.
+$richimath-purple: #0f62fe !default;        // primary-container: accents and actions.
+$richimath-purple-light: #b4c5ff !default;  // inverse-primary: hover borders, dashes.
+$richimath-page-bg: #f9f9ff !default;       // surface: the calm blue-tinted canvas.
+$richimath-line: #c3c6d8 !default;          // outline-variant: structural hairlines.
+// Brand gold (the login cubes, the banner tagline); tinted for badges.
+$richimath-gold: #e0b453 !default;
+
+// Roles from DESIGN.md, named as the design system names them so the
+// rules below read like the spec.
+$od-primary: #004ccd !default;
+$od-primary-container: #0f62fe !default;
+$od-on-primary-container: #f3f3ff !default;
+$od-primary-shadow: #003da9 !default;
+$od-secondary: #006d40 !default;
+$od-secondary-container: #95f3b8 !default;
+$od-tertiary: #9a3600 !default;
+$od-tertiary-fixed: #ffdbce !default;
+$od-surface: #f9f9ff !default;
+$od-surface-lowest: #ffffff !default;
+$od-surface-low: #f0f3ff !default;
+$od-surface-container: #e7eeff !default;
+$od-surface-high: #dee8ff !default;
+$od-on-surface: #111c2c !default;
+$od-on-surface-variant: #424656 !default;
+$od-outline: #737687 !default;
+$od-outline-variant: #c3c6d8 !default;
+$od-key-shadow: #cbd5e1 !default;
+$od-headline: 'Quicksand', 'Nunito Sans', sans-serif !default;
+$od-body: 'Nunito Sans', sans-serif !default;
+// The technical face both docs/ux_pro systems share. Metadata, timers,
+// identifiers and formulas only — never prose, or the level loses its voice.
+$od-mono: 'JetBrains Mono', ui-monospace, sfmono-regular, menlo, monospace !default;
+
+// Exam flow — Imperial Academic Precision (docs/ux_pro): obsidian chrome, sharp
+// corners, one high-order accent. The mockup's gold is a role, not a colour:
+// each level fills it with its own key so the plan keeps its identity.
+$od-exam-ink: #090d16 !default;
+$od-exam-ink-high: #0f172a !default;
+$od-exam-accent: $od-primary-container !default;
+$od-exam-hairline: rgba(226, 232, 240, 0.22) !default;
+// The accent again, lightened for type on the obsidian: the key colour of a
+// level is chosen against a light canvas and drops under 4.5:1 on black.
+$od-exam-accent-bright: mix($od-exam-accent, #ffffff, 62%) !default;
+
+// The pressable-key depth DESIGN.md asks for: a solid bottom edge, no
+// blur, so the surface reads as a physical key rather than a haze.
+@mixin od-key($colour: $od-key-shadow) {
+    box-shadow: 0 4px 0 0 $colour;
+}
+
+// Sidebar widths. Every derived offset (page margin, drawer left, sidebar
+// itself) reads the --richimath-sidebar-width custom property seeded in D4,
+// so the compact variant only has to re-point it once.
+$richimath-sidebar-width: 240px !default;
+$richimath-sidebar-width-compact: 88px !default;
+// Blackboard Ultra global skin (sections C1-C8).
+$richimath-ground: #f9f9ff !default;
+$richimath-navy-dark: #00174c !default;
+$richimath-input-line: #c3c6d8 !default;
+$richimath-hover-tint: #f0f3ff !default;
+// Quicksand carries every heading now; the name stayed for the call sites.
+$richimath-serif: 'Quicksand', 'Nunito Sans', sans-serif !default;
+$richimath-card-shadow: 0 4px 12px -2px rgba(15, 98, 254, 0.06) !default;
+// Frosted-glass surface: the gray-and-gold backdrop shows through, blurred,
+// so text keeps steady contrast. Full transparency would put type straight
+// on the texture; opaque white hides the backdrop. This is the middle path.
+$richimath-frost: #ffffff !default;
+// Veil tiers for surfaces ABOVE the frosted card: pick by how much the
+// backdrop may show through vs. how dense the text on the surface is.
+// With a flat canvas there is nothing to let through: the tiers survive as
+// the surface ladder of the system (lowest -> container).
+$richimath-veil-light: #f9f9ff !default;  // cells, chat panes
+$richimath-veil: #ffffff !default;        // standard planes
+$richimath-veil-heavy: #ffffff !default;  // data tables, course cards
+$richimath-veil-solid: #f0f3ff !default;  // highlighted cells (today)
+
+// The frosted-glass surface pair; falls back to plain 66% white where
+// backdrop-filter is unsupported.
+@mixin richimath-frosted {
+    background-color: $richimath-frost;
+    backdrop-filter: blur(6px);
+}
+// Course-card accent bars, cycled by position on /my/courses.php.
+// Activity-type accents from DESIGN.md: quiz blue, assignment coral, forum
+// violet, lesson emerald, live class ruby, resources deep teal.
+$richimath-course-accents: (#0f62fe, #d94f00, #6929c4, #0e7a4a, #da1e28, #005d5d) !default;
+
+// One card of the category grid (C9), painted in one accent of that rotation.
+// Emitted as custom properties so a single set of rules serves the six colours
+// and the children of an open card inherit their parent's without repeating it.
+@mixin richimath-category-accent($accent) {
+    --rm-cat-accent: #{$accent};
+    // Ink is the accent pulled towards the level's near-black. The raw accent
+    // would be the obvious choice and fails 4.5:1 wherever the rotation holds
+    // an amber or a lime.
+    --rm-cat-ink: #{mix($accent, $richimath-navy, 55%)};
+    --rm-cat-wash: #{rgba($accent, 0.13)};
+    --rm-cat-wash-soft: #{rgba($accent, 0.04)};
+    --rm-cat-wash-strong: #{rgba($accent, 0.2)};
+    --rm-cat-edge: #{rgba($accent, 0.34)};
+    --rm-cat-glow: #{rgba($accent, 0.22)};
+}
+// Every logged-in chrome page; never the login artwork page nor the bare
+// popup/embedded/maintenance/print/secure layouts (theme_boost config.php).
+$richimath-skin: 'body:not(.richimath-site):not(.pagelayout-login):not(.pagelayout-popup):not(.pagelayout-frametop):not(.pagelayout-embedded):not(.pagelayout-maintenance):not(.pagelayout-print):not(.pagelayout-redirect):not(.pagelayout-secure)';
+
+/* ------------------------------------------------------------------
+   A) Login page — Crystalline Academic Glass (docs/ux_pro/LOGIN DE USUARIO).
+   Identity bar, a two-pane card (brand hero + credentials) and a credits
+   line, over a calm canvas with the ambient glyph field behind it.
+   ------------------------------------------------------------------ */
+body.pagelayout-login {
+    background-color: $od-surface;
+
+    // Layer 0 of the design system: a diamond-refraction aura plus the faint
+    // dot grid, on a viewport-fixed layer — iOS ignores background-attachment
+    // and would size a body background against the scrollable document.
+    &::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
+        background-color: $od-surface;
+        background-image:
+            radial-gradient(circle at 18% 12%, rgba($od-primary-container, 0.10), transparent 45%),
+            radial-gradient(circle at 82% 78%, rgba($od-secondary, 0.08), transparent 42%),
+            radial-gradient(rgba($od-on-surface, 0.07) 1px, transparent 1px);
+        background-size: auto, auto, 22px 22px;
+    }
+
+    #page-wrapper,
+    #page,
+    #region-main,
+    .login-wrapper,
+    .login-container {
+        background: transparent;
+        box-shadow: none;
+        border: 0;
+        padding: 0;
+        max-width: none;
+    }
+
+    // Boost pins the container to a 500px column with !important; the
+    // two-pane card needs the whole row, so this has to answer in kind.
+    .login-container {
+        width: 100% !important; /* stylelint-disable-line declaration-no-important */
+        margin-bottom: 0;
+    }
+
+    .login-wrapper {
+        align-items: flex-start;
+    }
+
+    #page {
+        position: relative;
+        z-index: 1;
+    }
+
+    // The glyph animation is ambient here: it must never compete with the card.
+    .richimath-mathfield {
+        opacity: 0.35;
+    }
+
+    // The login layout wraps the region in a Bootstrap row whose negative
+    // gutters push 15px past the viewport and raise a horizontal scrollbar.
+    .row {
+        margin-right: 0;
+        margin-left: 0;
+    }
+}
+
+.richimath-loginform {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: clamp(0.75rem, 3vw, 2rem) clamp(0.75rem, 3vw, 1.5rem) 1.5rem;
+    text-align: left;
+    font-family: $od-body;
+}
+
+// Shared: monospaced technical label, the one type rule taken from ux_pro.
+.rm-login-mono,
+.rm-login-chip,
+.richimath-field-label,
+.rm-login-logocard-sub,
+.rm-login-status {
+    font-family: $od-mono;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.rm-login-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: clamp(1rem, 4vh, 2.25rem);
+}
+
+.rm-login-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    img,
+    .icon {
+        width: auto;
+        height: 40px;
+        margin: 0;
+    }
+}
+
+.rm-login-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.rm-login-brand-name {
+    color: $od-on-surface;
+    font-family: $od-headline;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+}
+
+.rm-login-brand-sub {
+    color: $od-on-surface-variant;
+    font-size: 0.75rem;
+}
+
+.rm-login-topbar-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.rm-login-chip {
+    align-self: flex-start;  // The hero is a stretching flex column.
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid rgba($od-primary-container, 0.35);
+    border-radius: 0.375rem;  // Soft Diamond Cut: chips stay near-square.
+    background-color: rgba($od-primary-container, 0.07);
+    color: $od-primary;
+}
+
+.rm-login-chip-secure {
+    @include media-breakpoint-down(sm) {
+        display: none;
+    }
+}
+
+.rm-login-chip-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: $od-primary-container;
+}
+
+.rm-login-lang .dropdown-toggle {
+    padding: 0.3rem 0.6rem;
+    border: 1px solid $od-outline-variant;
+    border-radius: 0.375rem;
+    background-color: $od-surface-lowest;
+    color: $od-on-surface-variant;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+// Layer 1 of the design system: the pristine glass module holding both panes.
+.rm-login-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    overflow: hidden;
+    border: 1px solid $od-outline-variant;
+    border-radius: 0.75rem;
+    background-color: $od-surface-lowest;
+    box-shadow: 0 12px 32px -4px rgba($od-on-surface, 0.08), 0 0 16px 1px rgba($od-primary-container, 0.06);
+
+    @include media-breakpoint-up(lg) {
+        grid-template-columns: 6fr 6fr;
+    }
+}
+
+.rm-login-hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.25rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-bottom: 1px solid $od-outline-variant;
+    background:
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.9), transparent 65%),
+        linear-gradient(135deg, $od-surface-low 0%, $od-surface 55%, $od-surface-container 100%);
+
+    @include media-breakpoint-up(lg) {
+        border-bottom: 0;
+        border-right: 1px solid $od-outline-variant;
+    }
+}
+
+.richimath-login-heading {
+    margin: 1rem 0 0;
+    max-width: 18ch;
+    color: $od-on-surface;
+    font-family: $od-headline;
+    font-weight: 800;
+    font-size: clamp(1.5rem, 3.2vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-align: left;
+    text-transform: none;
+}
+
+.rm-login-lead {
+    margin: 0.75rem 0 0;
+    max-width: 46ch;
+    color: $od-on-surface-variant;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+// The RM isotype on its own facet: the brand asset, not decoration.
+.rm-login-logocard {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid rgba($od-primary-container, 0.18);
+    border-radius: 0.5rem;
+    background-color: rgba($od-surface-lowest, 0.85);
+    box-shadow: 0 4px 20px -2px rgba($od-primary-container, 0.08);
+
+    img,
+    .icon {
+        width: auto;
+        height: clamp(56px, 12vw, 84px);
+        margin: 0;
+    }
+}
+
+.rm-login-logocard-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.rm-login-logocard-name {
+    color: $od-on-surface;
+    font-family: $od-headline;
+    font-weight: 800;
+    font-size: 1.05rem;
+    line-height: 1.2;
+}
+
+.rm-login-logocard-sub {
+    color: $od-on-surface-variant;
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+}
+
+.rm-login-hero-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid $od-outline-variant;
+    color: $od-on-surface-variant;
+}
+
+.rm-login-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: $od-secondary;
+}
+
+.rm-login-status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: $od-secondary;
+}
+
+.rm-login-panel {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.rm-login-panel-title {
+    margin: 0;
+    color: $od-on-surface;
+    font-family: $od-headline;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+}
+
+.rm-login-panel-sub {
+    margin: 0.25rem 0 1.5rem;
+    color: $od-on-surface-variant;
+    font-size: 0.875rem;
+}
+
+.richimath-loginform .login-form {
+    .form-group {
+        margin-bottom: 1.15rem;
+    }
+
+    .richimath-field-label {
+        display: block;
+        min-width: 0;
+        margin: 0 0 0.4rem;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: $od-on-surface-variant;
+        font-size: 0.6875rem;
+    }
+}
+
+.rm-login-label-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.rm-login-forgot {
+    color: $od-primary;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+// Input Fields per the design system: inset face, icon gutter, diamond halo.
+.rm-login-field {
+    position: relative;
+
+    input.form-control {
+        height: auto;
+        padding: 0.7rem 2.75rem;
+        border: 1px solid $od-outline-variant;
+        border-radius: 0.375rem;
+        background-color: rgba($od-surface-low, 0.85);
+        box-shadow: inset 0 1px 2px rgba($od-on-surface, 0.05);
+        color: $od-on-surface;
+        font-size: 0.9375rem;
+
+        &::placeholder {
+            color: $od-outline;
+        }
+
+        &:focus {
+            border-color: $od-primary-container;
+            background-color: $od-surface-lowest;
+            box-shadow: 0 0 0 3px rgba($od-primary-container, 0.2);
+        }
+    }
+}
+
+.rm-login-field-icon {
+    position: absolute;
+    top: 50%;
+    left: 0.9rem;
+    transform: translateY(-50%);
+    color: $od-outline;
+    pointer-events: none;
+}
+
+.rm-login-reveal {
+    position: absolute;
+    top: 50%;
+    right: 0.35rem;
+    transform: translateY(-50%);
+    padding: 0.4rem 0.55rem;
+    border: 0;
+    border-radius: 0.375rem;
+    background: none;
+    color: $od-outline;
+
+    &:hover,
+    &:focus {
+        color: $od-primary;
+    }
+}
+
+// Primary Diamond Button.
+.richimath-loginform #loginbtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba($od-primary-container, 0.4);
+    border-radius: 0.375rem;
+    background: linear-gradient(135deg, $od-primary-container 0%, $od-primary 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 6px 16px -6px rgba($od-primary, 0.55);
+    color: $od-on-primary-container;
+    font-weight: 700;
+    font-size: 0.9375rem;
+
+    &:hover,
+    &:focus {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 18px rgba($od-primary-container, 0.45);
+    }
+}
+
+.rm-login-divider {
+    position: relative;
+    margin: 1.5rem 0;
+    text-align: center;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 0;
+        left: 0;
+        border-top: 1px solid $od-outline-variant;
+    }
+
+    span {
+        position: relative;
+        padding: 0 0.75rem;
+        background-color: $od-surface-lowest;
+        color: $od-on-surface-variant;
+        font-family: $od-mono;
+        font-size: 0.625rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+}
+
+.rm-login-idps {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+
+    .login-identityprovider-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.6rem 0.75rem;
+        border: 1px solid $od-outline-variant;
+        border-radius: 0.375rem;
+        background-color: $od-surface-lowest;
+        color: $od-on-surface;
+        font-size: 0.8125rem;
+        font-weight: 600;
+
+        &:hover {
+            border-color: rgba($od-primary-container, 0.5);
+            background-color: rgba($od-primary-container, 0.06);
+        }
+    }
+}
+
+.rm-login-guest {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid $od-outline-variant;
+
+    .btn-secondary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        border: 1px solid $od-outline-variant;
+        border-radius: 0.375rem;
+        background-color: $od-surface-low;
+        color: $od-on-surface-variant;
+        font-size: 0.8125rem;
+        font-weight: 600;
+    }
+}
+
+.rm-login-signup,
+.rm-login-subheading {
+    margin: 1rem 0 0;
+    color: $od-on-surface-variant;
+    font-size: 0.8125rem;
+    text-align: center;
+
+    a {
+        color: $od-primary;
+        font-weight: 700;
+    }
+}
+
+.rm-login-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid rgba($od-primary-container, 0.25);
+    border-radius: 0.375rem;
+    background-color: rgba($od-primary-container, 0.06);
+    color: $od-on-surface-variant;
+    font-size: 0.75rem;
+
+    .fa {
+        margin-top: 0.15rem;
+        color: $od-primary;
+    }
+
+    .btn-link {
+        padding: 0;
+        border: 0;
+        color: $od-primary;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-align: left;
+        vertical-align: baseline;
+    }
+}
+
+.rm-login-legal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid $od-outline-variant;
+    color: $od-on-surface-variant;
+    font-size: 0.75rem;
+}
+
+/* ------------------------------------------------------------------
+   A2) Student catalog (/students): hero (site name, pitch, the one call
+   to action) plus the real catalog as tabs, one per top-level category,
+   from the renderer (offer_categories). Course names are plain text: an
+   anonymous click would only reach the enrolment dead end.
+
+   This was the front page until the institutional site took the root;
+   it kept its markup and moved whole, so the rules only changed the
+   page they hang from.
+   ------------------------------------------------------------------ */
+body.richimath-has-landing .richimath-landing {
+    margin: clamp(1.5rem, 4vh, 2.5rem) auto clamp(1rem, 3vh, 2rem);
+    padding: 0 1rem;
+    max-width: 1040px;
+    text-align: center;
+
+    .richimath-landing-hero {
+        margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
+
+        h1 {
+            margin: 0 0 0.5rem;
+            color: $richimath-navy;
+            font-family: $richimath-serif;
+            font-size: clamp(1.75rem, 5vw, 2.75rem);
+            font-weight: 700;
+            line-height: 1.15;
+        }
+    }
+
+    .richimath-landing-pitch {
+        margin: 0 auto;
+        max-width: 42ch;
+        color: $gray-700;
+        font-size: clamp(0.95rem, 2.5vw, 1.125rem);
+        line-height: 1.4;
+    }
+
+    // A sentence, not a control: there is nothing to click here (enrolment
+    // is manual, so the visitor is told to ask their teacher). It used to be
+    // dressed as a filled pill, which promised a button that never was one.
+    .richimath-landing-cta {
+        margin: 1.25rem 0 0;
+        color: $richimath-navy;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    .richimath-landing-heading {
+        margin-bottom: 1rem;
+        color: #000;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    // Progressive enhancement: without the JS at the foot of drawers.mustache
+    // the tablist is a control that does nothing, so it only appears once
+    // that JS has flagged the section ready.
+    .richimath-landing-tablist {
+        display: none;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .richimath-landing-tab {
+        // Not $richimath-line: at 1.05:1 over the page the boundary of an
+        // unselected tab was invisible (WCAG 1.4.11 wants 3:1 for controls).
+        // $gray-600 measures 4.00:1 there.
+        border: 1px solid $gray-600;
+        border-radius: 999px;
+        padding: 0.45rem 1.1rem;
+        background-color: $richimath-veil-heavy;
+        color: $richimath-navy;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+
+        &:hover {
+            border-color: $richimath-purple-light;
+        }
+
+        // Roving tabindex: only one tab is tabbable, so its focus ring is the
+        // only cue telling the visitor the arrow keys are live.
+        &:focus-visible {
+            outline: 2px solid $richimath-purple;
+            outline-offset: 2px;
+        }
+
+        &.is-active {
+            border-color: $richimath-purple;
+            background-color: $richimath-purple;
+            color: #fff;
+        }
+    }
+
+    .richimath-landing-panel-title {
+        margin: 0 0 0.75rem;
+        color: $richimath-navy;
+        font-family: $richimath-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+    }
+
+    .richimath-landing-panel + .richimath-landing-panel {
+        margin-top: 1.5rem;
+    }
+
+    .richimath-landing-chips {
+        display: grid;
+        gap: 0.75rem;
+        margin: 0;
+        grid-template-columns: 1fr;
+
+        @include media-breakpoint-up(sm) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @include media-breakpoint-up(lg) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    .richimath-landing-chip {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+        border: 1px solid $richimath-line;
+        border-left: 3px solid $richimath-purple;
+        border-radius: 8px;
+        padding: 0.85rem 1rem;
+        background-color: $richimath-veil-heavy;
+        text-align: left;
+    }
+
+    .richimath-landing-chip-name {
+        color: $richimath-navy;
+        font-family: $richimath-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    // The catalog repeats fullnames across levels ("MATEMÁTICA" four times
+    // under PRE): the subcategory is what tells the chips apart.
+    .richimath-landing-chip-context {
+        color: $gray-700;
+        font-size: 0.75rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+    }
+
+    .richimath-landing-more {
+        margin: 0.75rem 0 0;
+        color: $gray-700;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    &.richimath-landing-ready {
+        .richimath-landing-tablist {
+            display: flex;
+        }
+
+        // The tab is the panel's visible label once tabs work.
+        .richimath-landing-panel-title {
+            display: none;
+        }
+
+        .richimath-landing-panel:not(.is-active) {
+            display: none;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   A2b) With the landing in place, what core still prints on the front
+   page for a visitor is dead weight: the site heading (the hero owns it
+   now) and the section-0 summary card. The course list itself is gone
+   through the site config 'frontpage' (empty; documented in
+   docs/theme-richimath.md, it does NOT travel by git), so all that is
+   left here is chrome. Gated on 'richimath-has-landing', the class the
+   renderer adds from show_offer() itself — core's 'notloggedin' is a
+   different set (a guest is logged in) and drifted from the PHP gate.
+   A real session still gets 'frontpageloggedin' and must look as it did.
+   ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------
+   A2c) Landing ambience: math glyphs drifting up behind the hero and
+   tabs. Pure CSS keyframes seeded by a tiny JS in drawers.mustache;
+   ~1 in 3 glyphs "pops" near the top. Fully disabled under
+   prefers-reduced-motion.
+   ------------------------------------------------------------------ */
+// Full-viewport glyph layer: above the backdrop texture (body::before at
+// z -1), below all content (landing children get z 1; cards are stacking
+// contexts of their own).
+body.richimath-has-landing .richimath-mathfield,
+body.pagelayout-login .richimath-mathfield {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body.richimath-has-landing .richimath-landing {
+    position: relative;
+
+    > :not(.richimath-mathfield) {
+        position: relative;
+        z-index: 1;
+    }
+
+}
+
+body.richimath-has-landing .richimath-mathfield,
+body.pagelayout-login .richimath-mathfield {
+    .richimath-glyph {
+        position: absolute;
+        bottom: -12%;
+        // Responsive size: the seeder only sets a unitless --size factor
+        // (1-3.4); the viewport clamp scales every glyph down on small
+        // screens with no JS resize handling. Desktop big glyph ~68px,
+        // same glyph on a phone ~31px.
+        font-size: calc(var(--size, 1.5) * clamp(9px, 1.4vw, 20px));
+
+        &.is-deep {
+            // Deepest layer: slightly blurred for depth.
+            filter: blur(1.2px);
+        }
+        font-family: $richimath-serif;
+        font-weight: 700;
+        will-change: transform, opacity;
+        animation: richimath-floatup linear infinite, richimath-sway ease-in-out infinite alternate;
+
+        &.pop {
+            animation-name: richimath-floatpop, richimath-sway;
+        }
+    }
+}
+
+@keyframes richimath-floatup {
+    0% { transform: translateY(0) rotate(var(--r0)); opacity: 0; }
+    8% { opacity: var(--op); }
+    86% { opacity: var(--op); }
+    100% { transform: translateY(-118vh) rotate(var(--r1)); opacity: 0; }
+}
+
+@keyframes richimath-floatpop {
+    0% { transform: translateY(0) scale(1) rotate(var(--r0)); opacity: 0; }
+    8% { opacity: var(--op); }
+    74% { transform: translateY(-92vh) scale(1) rotate(var(--r1)); opacity: var(--op); }
+    82% { transform: translateY(-100vh) scale(1.6) rotate(var(--r1)); opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@keyframes richimath-sway {
+    from { margin-left: 0; }
+    to { margin-left: var(--sway); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.richimath-has-landing .richimath-glyph,
+    body.pagelayout-login .richimath-glyph {
+        display: none;
+    }
+}
+
+body.richimath-has-landing {
+    // The page heading: the hero carries the site name itself.
+    #page-header {
+        display: none;
+    }
+
+    #page-content {
+        padding-bottom: 0 !important; /* stylelint-disable-line declaration-no-important */
+    }
+}
+
+// Nothing visible left inside: drop the frosted card so the landing does not
+// sit on top of an empty plane. Carries the whole $richimath-skin prefix on
+// purpose — C1 paints this card from that same selector, and a shorter one
+// would lose the cascade to it.
+#{$richimath-skin}.richimath-has-landing #page.drawers .main-inner {
+    border: 0;
+    background-color: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+/* ------------------------------------------------------------------
+   B1) Site-wide top bar. White, 72px, one structural hairline at the
+   bottom — the chrome the design system asks for; the login page has
+   no navbar anyway.
+   ------------------------------------------------------------------ */
+body:not(.pagelayout-login) .navbar.fixed-top {
+    height: 72px;
+    background-color: $od-surface-lowest !important; /* stylelint-disable-line declaration-no-important */
+    border-bottom: 1px solid $od-outline-variant;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+
+    .navbar-brand {
+        color: $od-primary;
+        font-family: $od-headline;
+        font-weight: 700;
+
+        &:hover,
+        &:focus {
+            color: $od-primary-container;
+        }
+    }
+
+    .navbar-toggler {
+        color: $od-on-surface;
+    }
+
+    .primary-navigation .moremenu .nav-link {
+        color: $od-on-surface-variant;
+        font-weight: 700;
+
+        &:hover,
+        &:focus {
+            color: $od-primary;
+            border-bottom-color: $od-primary-container;
+        }
+
+        &.active {
+            color: $od-primary;
+            background-color: $od-surface-low;
+            border-bottom-color: $od-primary-container;
+        }
+    }
+
+    #usernavigation {
+        .nav-link {
+            color: $od-on-surface;
+        }
+
+        .divider {
+            background-color: $od-outline-variant;
+        }
+
+        .usertext,
+        .login,
+        .login a {
+            color: $od-on-surface;
+        }
+
+        .editmode-switch-form label {
+            color: $od-on-surface;
+        }
+
+        .simplesearchform .btn .icon {
+            color: $od-on-surface-variant;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   B2) Calendar (day / month / upcoming): white content, thin gray
+   grid, purple "today" circle, compact event pills, card events.
+   ------------------------------------------------------------------ */
+body.path-calendar .maincalendar {
+    .calendarwrapper {
+        background-color: transparent;
+    }
+
+    // Month view grid.
+    .calendarmonth {
+        background-color: $richimath-veil;
+        border: 1px solid $richimath-line;
+
+        th.header {
+            background-color: transparent;
+            border: 0;
+            border-bottom: 1px solid $richimath-line;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            color: $gray-600;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        td.day,
+        td.dayblank {
+            background-color: $richimath-veil-light;
+            border: 1px solid $richimath-line;
+        }
+
+        td.today {
+            background-color: $richimath-veil-solid;
+
+            .day-number-circle {
+                background-color: $richimath-purple;
+                color: #fff;
+            }
+        }
+
+        // Events as compact pills.
+        td.day li[data-region="event-item"] {
+            background-color: $od-surface-low;
+            border-radius: 1rem;
+            padding: 0.1rem 0.5rem;
+            margin-bottom: 0.2rem;
+            font-size: 0.8rem;
+            line-height: 1.4;
+
+            > a {
+                color: $richimath-navy;
+            }
+        }
+    }
+
+    // Day and upcoming views: white event cards with a left accent bar.
+    .event > .card {
+        background-color: #fff;
+        border: 1px solid $richimath-line;
+        border-left: 4px solid $richimath-purple;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(38, 45, 61, 0.08);
+
+        .card-header {
+            background-color: transparent;
+            border-bottom: 0;
+
+            .name {
+                color: $richimath-navy;
+                font-size: 1.05rem;
+                font-weight: 700;
+            }
+        }
+
+        .description.card-body {
+            color: $gray-600;
+            font-size: 0.9rem;
+        }
+
+        .card-footer {
+            border-top: 1px solid $richimath-line;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   B2a) Blackboard-style day view: centred week strip, all-day chip
+   row and an hourly 06:00-22:00 grid. Markup + inline JS live in
+   templates/core_calendar/day_detailed.mustache; the JS adds
+   .richimath-dayview-ready to the calendarwrapper when done, which
+   swaps the stock event list for the grid. JS failure = stock list.
+   ------------------------------------------------------------------ */
+body.path-calendar .maincalendar {
+    // Hidden until the JS has built it (and always for the raw stubs).
+    .richimath-dayview,
+    .richimath-dayview-stubs {
+        display: none;
+    }
+
+    .richimath-dayview-ready .richimath-dayview {
+        display: block;
+    }
+
+    .richimath-dayview-ready .richimath-dayview-fallback {
+        display: none;
+    }
+
+    // Week strip: weekday initial over a 32px day circle, centred.
+    .richimath-dayview-strip {
+        display: flex;
+        justify-content: center;
+        gap: 1.25rem;
+        margin: 0.75rem 0 1rem;
+    }
+
+    .richimath-dayview-strip-day {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            text-decoration: none;
+
+            .richimath-dayview-strip-num {
+                box-shadow: 0 0 0 2px rgba($richimath-purple, 0.35);
+            }
+        }
+    }
+
+    .richimath-dayview-strip-initial {
+        color: $gray-600;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .richimath-dayview-strip-num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        color: $richimath-navy;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    // Today (when it is not the viewed day): outlined purple circle.
+    .richimath-dayview-strip-day.is-today .richimath-dayview-strip-num {
+        border: 2px solid $richimath-purple;
+        color: $richimath-purple;
+    }
+
+    // Viewed day (today included): filled purple circle, white number.
+    .richimath-dayview-strip-day.is-viewed .richimath-dayview-strip-num {
+        background-color: $richimath-purple;
+        border: 0;
+        color: #fff;
+    }
+
+    // All-day / multi-day events: chip row between strip and grid.
+    .richimath-dayview-allday {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .richimath-dayview-chip {
+        display: inline-block;
+        max-width: 100%;
+        padding: 0.25rem 0.75rem;
+        background-color: #fff;
+        border: 1px solid $richimath-line;
+        border-left: 4px solid $richimath-purple;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(38, 45, 61, 0.08);
+        color: $richimath-navy;
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        &:hover,
+        &:focus {
+            color: $richimath-purple;
+            text-decoration: none;
+        }
+    }
+
+    // Hour grid. The JS reads row height / gutter from these vars, so the
+    // mobile override below is picked up without duplicated constants.
+    .richimath-dayview-grid {
+        --richimath-hour: 56px;
+        --richimath-gutter: 48px;
+        position: relative;
+        background-color: $richimath-veil;
+    }
+
+    .richimath-dayview-row {
+        position: relative;
+        height: var(--richimath-hour);
+        margin-left: var(--richimath-gutter);
+        border-top: 1px solid $richimath-line;
+
+        // 22:00 closing rule + label only.
+        &.is-last {
+            height: 0;
+        }
+    }
+
+    .richimath-dayview-halfrule {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        left: 0;
+        border-top: 1px solid rgba($richimath-line, 0.55);
+    }
+
+    .richimath-dayview-hourlabel {
+        position: absolute;
+        top: 0;
+        left: calc(-1 * var(--richimath-gutter));
+        width: var(--richimath-gutter);
+        padding-right: 0.5rem;
+        transform: translateY(-50%);
+        color: $gray-600;
+        font-size: 0.7rem;
+        text-align: right;
+    }
+
+    // Event cards on the grid: same card language as the list views.
+    // top/height/left/width are set by the JS (time -> pixels).
+    .richimath-dayview-card {
+        position: absolute;
+        z-index: 2;
+        padding: 0.25rem 0.5rem;
+        overflow: hidden;
+        background-color: #fff;
+        border: 1px solid $richimath-line;
+        border-left: 4px solid $richimath-purple;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(38, 45, 61, 0.08);
+
+        &:hover,
+        &:focus {
+            z-index: 3;
+            text-decoration: none;
+        }
+    }
+
+    .richimath-dayview-card-title {
+        display: block;
+        color: $richimath-navy;
+        font-size: 13px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    // Current-time bar (viewed day == browser today only).
+    .richimath-dayview-nowline {
+        position: absolute;
+        z-index: 4;
+        right: 0;
+        left: var(--richimath-gutter);
+        border-top: 2px solid #000;
+    }
+
+    .richimath-dayview-nowpill {
+        position: absolute;
+        top: -1px;
+        left: calc(-1 * var(--richimath-gutter));
+        transform: translateY(-50%);
+        padding: 1px 8px;
+        background-color: #000;
+        border-radius: 999px;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.5;
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    body.path-calendar .maincalendar {
+        .richimath-dayview-grid {
+            --richimath-hour: 48px;
+            --richimath-gutter: 40px;
+        }
+
+        .richimath-dayview-strip {
+            gap: 0.6rem;
+        }
+
+        .richimath-dayview-strip-num {
+            width: 28px;
+            height: 28px;
+            font-size: 0.8rem;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   B2b) Blackboard-style fixed left sidebar (lg+ only). Below lg the
+   sidebar is display:none (d-lg-flex) and the navy top navbar from
+   B1 remains the navigation — that is the whole responsive strategy.
+   Scoped to the drawers layout (body.uses-drawers), which the login
+   page never uses.
+   ------------------------------------------------------------------ */
+@include media-breakpoint-up(lg) {
+    body.uses-drawers:not(.pagelayout-login) {
+        .richimath-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: var(--richimath-sidebar-width);
+            z-index: $zindex-fixed;
+            background-color: $od-surface-lowest;
+            border-right: 1px solid $od-outline-variant;
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+            color: $od-on-surface;
+        }
+
+        .richimath-sidebar-brand {
+            display: block;
+            padding: 1rem 1rem 0.5rem;
+
+            // The pix helper ships icon sizing; the brand logo needs its own.
+            img,
+            .icon {
+                width: auto;
+                height: 56px;
+                max-width: 100%;
+            }
+        }
+
+        .richimath-sidebar-user {
+            padding: 0 0.75rem 0.75rem;
+            border-bottom: 1px solid $od-outline-variant;
+
+            .nav-link,
+            .usertext,
+            .login,
+            .login a {
+                color: $od-on-surface;
+            }
+
+            .richimath-sidebar-userlink {
+                color: $od-on-surface;
+                font-family: $od-headline;
+                font-weight: 600;
+
+                &:hover,
+                &:focus {
+                    color: $od-primary;
+                    text-decoration: none;
+                }
+            }
+        }
+
+        .richimath-sidebar-nav {
+            flex: 1 1 auto;
+            // Scroll lives here, not on the sidebar itself, so the user-menu
+            // dropdown at the top is never clipped by an overflow container.
+            overflow-y: auto;
+            margin: 0.75rem 0 0;
+        }
+
+        .richimath-sidebar-divider {
+            margin: 0.5rem 1rem;
+            border-top: 1px solid $od-outline-variant;
+        }
+
+        // Rounded rows, not a bar with a left tick: the current page is the
+        // pressable blue key of the design system.
+        .richimath-sidebar-link {
+            display: flex;
+            align-items: center;
+            margin: 0 0.5rem 0.25rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 0.75rem;
+            color: $od-on-surface-variant;
+            font-weight: 700;
+
+            > .fa {
+                width: 1.5rem;
+                margin-right: 0.5rem;
+                text-align: center;
+            }
+
+            &:hover,
+            &:focus {
+                color: $od-on-surface;
+                background-color: $od-surface-low;
+                text-decoration: none;
+            }
+
+            &.active {
+                color: $od-on-primary-container;
+                background-color: $od-primary-container;
+                @include od-key($od-primary-shadow);
+
+                > .fa {
+                    color: $od-on-primary-container;
+                }
+            }
+        }
+
+        .richimath-sidebar-bottom {
+            padding: 0.5rem 0 0.75rem;
+            border-top: 1px solid $od-outline-variant;
+
+            // edit_switch ships a leading vertical divider meant for the navbar.
+            > .divider {
+                display: none;
+            }
+
+            .editmode-switch-form {
+                padding: 0.25rem 1rem 0.5rem;
+
+                label {
+                    color: $od-on-surface-variant;
+                }
+            }
+        }
+
+        // The sidebar replaces the top navbar entirely on lg+.
+        .navbar.fixed-top {
+            display: none;
+        }
+
+        // Reclaim the navbar strip and push the page (footer included,
+        // it lives inside #page) to the right of the sidebar.
+        #page.drawers {
+            margin-top: 0;
+            margin-left: var(--richimath-sidebar-width);
+
+            &.show-drawer-left {
+                margin-left: calc(var(--richimath-sidebar-width) + #{$drawer-left-width});
+                margin-right: 0;
+            }
+
+            &.show-drawer-right {
+                margin-left: var(--richimath-sidebar-width);
+                margin-right: $drawer-right-width;
+            }
+
+            &.show-drawer-left.show-drawer-right {
+                margin-left: calc(var(--richimath-sidebar-width) + #{$drawer-left-width});
+                margin-right: $drawer-right-width;
+            }
+        }
+
+        // Boost pins the drawers below the top navbar; with it gone they run
+        // full height and the left one opens right after the sidebar.
+        .drawer-left,
+        .drawer-right {
+            top: 0;
+            height: 100vh;
+        }
+
+        // Keep the drawers clear of the sticky footer (edit mode, quiz nav),
+        // matching Boost's own .hasstickyfooter compensation minus the navbar.
+        &.hasstickyfooter {
+            .drawer-left,
+            .drawer-right {
+                height: calc(100vh - #{$stickyfooter-height});
+            }
+        }
+
+        // The sticky footer and the drawer togglers live INSIDE the frosted
+        // .main-inner, whose backdrop-filter makes it their containing
+        // block — viewport offsets never worked here. C5 anchors them
+        // to the card instead.
+
+        // Same navbar compensation for the messaging drawer...
+        [data-region="right-hand-drawer"].drawer {
+            top: 0;
+            height: 100%;
+        }
+
+        // ...and for the grader report's sticky heading row.
+        .gradeparent tr.heading {
+            top: 0;
+        }
+
+        .drawer.drawer-left.show {
+            left: var(--richimath-sidebar-width);
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   B2c) Full-width dashboard and calendar pages + Blackboard-style
+   enlarged mini calendar on the dashboard.
+   ------------------------------------------------------------------ */
+// /my ships body.limitedwidth (830px cap); the calendar pages get the
+// standard-layout cap. Lift both so the month grid uses the full width.
+body#page-my-index #page.drawers .main-inner,
+body.path-calendar #page.drawers .main-inner {
+    max-width: none;
+}
+
+@include media-breakpoint-up(md) {
+    body#page-my-index #page.drawers .main-inner,
+    body.path-calendar #page.drawers .main-inner {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+// View toggle row injected by templates/core_calendar/calendar_mini.mustache.
+.block_calendar_month .richimath-calendar-toggle {
+    display: flex;
+    width: 100%;
+    margin-bottom: 0.75rem;
+
+    .btn {
+        flex: 1 1 0;
+        background-color: #fff;
+        border: 1px solid $richimath-line;
+        color: $richimath-navy;
+        font-weight: 600;
+
+        &:hover,
+        &:focus {
+            background-color: $richimath-navy;
+            border-color: $richimath-navy;
+            color: #fff;
+        }
+    }
+}
+
+// The dashboard calendar block renders core_calendar/month_detailed
+// (view 'monthblock'), the same markup as the big month view — not
+// month_mini. Enlarge it Blackboard-style.
+body#page-my-index .block_calendar_month .maincalendar {
+    .calendarwrapper {
+        background-color: transparent;
+    }
+
+    .calendarmonth {
+        width: 100%;
+        table-layout: fixed;
+        background-color: $richimath-veil;
+        border: 1px solid $richimath-line;
+
+        th.header {
+            padding: 0.6rem 0.25rem;
+            border: 0;
+            border-bottom: 1px solid $richimath-line;
+            color: $gray-600;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        td.day,
+        td.dayblank {
+            // height acts as min-height on table cells.
+            height: 90px;
+            vertical-align: top;
+            border: 1px solid $richimath-line;
+            padding: 0.25rem;
+        }
+
+        // Day number pinned top-right.
+        td.day .d-md-block > a[data-action="view-day-link"],
+        td.day .d-md-block > span[aria-hidden="true"] {
+            display: block;
+            text-align: right;
+        }
+
+        td.day .day-number-circle {
+            width: 26px;
+            height: 26px;
+        }
+
+        td.today .day-number-circle {
+            border-radius: 50%;
+            background-color: $richimath-purple;
+            color: #fff;
+        }
+
+        // Events as compact pills.
+        td.day li[data-region="event-item"] {
+            background-color: $od-surface-low;
+            border-radius: 1rem;
+            padding: 0.1rem 0.4rem;
+            margin-bottom: 0.2rem;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            text-align: left;
+
+            a {
+                color: $richimath-navy;
+            }
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   B2d) Small-screen polish (below md): month grids shrink, wrappers
+   scroll horizontally instead of the page body, dashboard cards
+   stack full width.
+   ------------------------------------------------------------------ */
+@include media-breakpoint-down(sm) {
+    body.path-calendar .maincalendar .calendarwrapper,
+    body#page-my-index .block_calendar_month .calendarwrapper {
+        overflow-x: auto;
+    }
+
+    body.path-calendar .maincalendar .calendarmonth {
+        th.header {
+            padding: 0.4rem 0.15rem;
+            font-size: 0.65rem;
+        }
+
+        td.day {
+            height: 48px;
+            padding: 0.15rem;
+            font-size: 0.75rem;
+        }
+
+        td.day .day-number-circle {
+            width: 22px;
+            height: 22px;
+        }
+    }
+
+    body#page-my-index .block_calendar_month .maincalendar .calendarmonth {
+        th.header {
+            padding: 0.4rem 0.15rem;
+            font-size: 0.65rem;
+        }
+
+        td.day,
+        td.dayblank {
+            height: 48px;
+            padding: 0.15rem;
+            font-size: 0.75rem;
+        }
+
+        td.day .day-number-circle {
+            width: 22px;
+            height: 22px;
+        }
+    }
+
+    body#page-my-index {
+        #page.drawers .main-inner {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        .block {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   B3) Dashboard: light page, white rounded cards, navy headings.
+   ------------------------------------------------------------------ */
+body#page-my-index {
+    background-color: $od-surface;
+
+    #page.drawers .main-inner {
+        background-color: transparent;
+    }
+
+    .block {
+        @include richimath-frosted;
+        border: 1px solid $richimath-line;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(38, 45, 61, 0.08);
+
+        .card-title {
+            color: $richimath-navy;
+            font-weight: 600;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   B4) Blackboard-style mobile navigation (below lg, i.e. <992px:
+   media-breakpoint-down(md) on this stock BS4 map). The top navbar
+   keeps only hamburger + brand + user area; the full navigation
+   lives in the Boost primary offcanvas drawer, restyled as a white
+   panel to match the desktop rail. Drawer markup: our copy of
+   templates/theme_boost/primary-drawer-mobile.mustache, which
+   appends the .richimath-mobilenav fixed items.
+   ------------------------------------------------------------------ */
+@include media-breakpoint-down(md) {
+    body:not(.pagelayout-login) .navbar.fixed-top {
+        // Boost only hides the inline primary nav below sm; Blackboard
+        // wants it gone below lg — the drawer carries the full nav.
+        .primary-navigation {
+            display: none;
+        }
+
+        // The toggler ships d-block d-md-none (display utilities are
+        // !important): re-show it across the whole below-lg range.
+        .navbar-toggler {
+            display: block !important; /* stylelint-disable-line declaration-no-important */
+        }
+
+        // The brand ships d-none d-md-flex; Blackboard keeps it next to
+        // the hamburger at every width.
+        .navbar-brand {
+            display: flex !important; /* stylelint-disable-line declaration-no-important */
+        }
+    }
+}
+
+// The navy drawer panel. No media query needed: the toggler is the only
+// opener and it exists below lg only (above, B2b hides the whole navbar).
+body:not(.pagelayout-login) #theme_boost-drawers-primary {
+    width: 280px;
+    max-width: 280px;
+    background-color: $od-surface-lowest;
+    border-right: 1px solid $od-outline-variant;
+
+    .drawerheader {
+        border-bottom: 1px solid $od-outline-variant;
+
+        .sitename {
+            color: $od-primary;
+            font-family: $od-headline;
+        }
+    }
+
+    .drawertoggle {
+        color: $od-on-surface;
+
+        &:hover,
+        &:focus {
+            color: $od-on-surface;
+            background-color: $od-surface-low;
+        }
+    }
+
+    // Same link language as the desktop rail: rounded rows, blue key on
+    // the current page. Covers both the native list and the injected
+    // .richimath-mobilenav one.
+    .drawercontent .list-group {
+        background-color: transparent;
+
+        .list-group-item {
+            margin-bottom: 0.25rem;
+            background-color: transparent;
+            border: 0;
+            border-radius: 0.75rem;
+            color: $od-on-surface-variant;
+            font-weight: 700;
+
+            &:hover,
+            &:focus {
+                background-color: $od-surface-low;
+                color: $od-on-surface;
+            }
+
+            &.active {
+                background-color: $od-primary-container;
+                color: $od-on-primary-container;
+                @include od-key($od-primary-shadow);
+            }
+
+            // Submenu children ship the .bg-light utility (!important).
+            &.bg-light {
+                background-color: transparent !important; /* stylelint-disable-line declaration-no-important */
+            }
+        }
+    }
+
+    .richimath-mobilenav {
+        .fa {
+            width: 1.5rem;
+            margin-right: 0.5rem;
+            text-align: center;
+        }
+    }
+
+    .richimath-mobilenav-divider {
+        margin: 0.5rem 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* ==================================================================
+   C) Blackboard Ultra global skin for every logged-in route.
+   C1 chrome, C2 nav, C3 forms/tables, C4 course cards, C5 course
+   page, C6 profile/grades/messages, C7 modals/alerts, C8 mobile.
+   All scoped to $richimath-skin (see the palette block).
+   ================================================================== */
+
+/* ------------------------------------------------------------------
+   C1) Global chrome: near-white ground, content in a white card,
+   serif page titles, small gray breadcrumbs, light footer.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} {
+    background-color: $richimath-ground;
+
+    // Same layered backdrop as the login (minus the logo): gray texture
+    // covering the viewport, golden squares pinned bottom-right and scaling
+    // with clamp(). A fixed pseudo-element, not background-attachment,
+    // because iOS ignores the latter. z-index -1 keeps it behind everything.
+    &::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
+        background-image:
+            url([[pix:theme_richimath|loginsquare]]),
+            url([[pix:theme_richimath|loginground]]);
+        background-repeat: no-repeat;
+        background-position: right bottom, center;
+        background-size: clamp(170px, 30vw, 420px) auto, cover;
+    }
+
+    // Boost already paints .main-inner white and rounded; finish the
+    // Blackboard card: hairline border, 8px radius, soft shadow, air.
+    #page.drawers .main-inner {
+        @include richimath-frosted;
+        border: 1px solid $richimath-line;
+        border-radius: 8px;
+        box-shadow: $richimath-card-shadow;
+        padding: 1.25rem 1rem;
+    }
+
+    #page-header {
+        padding-bottom: 0.5rem;
+
+        h1,
+        .page-header-headings h1 {
+            font-family: $richimath-serif;
+            font-size: 2.125rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: $richimath-navy;
+        }
+    }
+
+    #page-navbar .breadcrumb {
+        margin-bottom: 0.25rem;
+        font-size: 0.8rem;
+        color: $gray-600;
+
+        a {
+            color: $gray-600;
+
+            &:hover,
+            &:focus {
+                color: $richimath-navy;
+            }
+        }
+    }
+
+    // Floating footer popover: keep the mechanics, soften to the card look.
+    #page-footer .footer-content-popover {
+        border: 1px solid $richimath-line;
+        border-radius: 8px;
+        box-shadow: $richimath-card-shadow;
+    }
+}
+
+@include media-breakpoint-up(md) {
+    #{$richimath-skin} #page.drawers .main-inner {
+        padding: 2rem 1.5rem;
+    }
+}
+
+// The dashboard cards its blocks individually (B3): no outer card there.
+body#page-my-index #page.drawers .main-inner {
+    border: 0;
+    box-shadow: none;
+}
+
+/* ------------------------------------------------------------------
+   C1b) Boost paints these opaque white ON TOP of the frosted
+   .main-inner card (which is why the backdrop only showed on the
+   dashboard — it has no #region-main). Full transparent: the frost
+   below already provides the readable plane.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} {
+    #region-main,
+    #region-main-box {
+        background-color: transparent;
+    }
+
+    // .bg-white is a Bootstrap utility (!important), so match it.
+    #page-footer.bg-white {
+        background-color: transparent !important; /* stylelint-disable-line declaration-no-important */
+    }
+}
+
+/* ------------------------------------------------------------------
+   C2) Secondary navigation as a Blackboard segmented control,
+   navy/white buttons, purple badges.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} {
+    .secondary-navigation .navigation {
+        background-color: transparent;
+        border-bottom: 0;
+        // moremenu.js auto-collapses items whenever the UL outgrows this
+        // fixed-height parent; grow it by the segmented control's vertical
+        // padding (2 x 0.25rem) + border (2px) so the collapse only fires
+        // on a real second row.
+        height: calc(#{$moremenu-height} + 0.5rem + 2px);
+
+        .nav-tabs {
+            padding: 0.25rem;
+            background-color: $richimath-veil;
+            border: 1px solid $richimath-line;
+            border-radius: 8px;
+
+            .nav-link {
+                border: 0;
+                border-radius: 6px;
+                margin: 0 0.125rem;
+                color: $richimath-navy;
+                font-weight: 500;
+
+                &:hover {
+                    background-color: rgba($richimath-navy, 0.06);
+                }
+
+                &.active {
+                    background-color: $richimath-navy;
+                    color: #fff;
+
+                    &:hover,
+                    &:focus {
+                        background-color: $richimath-navy;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+
+    // Tertiary route selects share the control language (C3 does borders).
+    .tertiary-navigation .urlselect .form-select {
+        color: $richimath-navy;
+        font-weight: 500;
+    }
+
+    .btn {
+        border-radius: 6px;
+    }
+
+    .btn-primary {
+        background-color: $richimath-navy;
+        border-color: $richimath-navy;
+        color: #fff;
+
+        &:hover,
+        &:focus,
+        &:not(:disabled):not(.disabled):active {
+            background-color: $richimath-navy-dark;
+            border-color: $richimath-navy-dark;
+            color: #fff;
+        }
+
+        &:focus,
+        &.focus {
+            box-shadow: 0 0 0 0.2rem rgba($richimath-navy, 0.3);
+        }
+    }
+
+    .btn-secondary {
+        background-color: #fff;
+        border: 1px solid $richimath-input-line;
+        color: $richimath-navy;
+
+        &:hover,
+        &:focus,
+        &:not(:disabled):not(.disabled):active {
+            background-color: $richimath-hover-tint;
+            border-color: $richimath-input-line;
+            color: $richimath-navy;
+        }
+    }
+
+    // Bootstrap 5's .bg-* utilities carry !important, so these must too.
+    .badge.bg-primary {
+        background-color: $richimath-purple !important; /* stylelint-disable-line declaration-no-important */
+        color: #fff;
+    }
+
+    .badge.bg-info {
+        background-color: $od-surface-low !important; /* stylelint-disable-line declaration-no-important */
+        color: $richimath-purple;
+    }
+}
+
+/* ------------------------------------------------------------------
+   C3) Forms and tables, admin routes included.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} {
+    .form-control,
+    .form-select {
+        border: 1px solid $richimath-input-line;
+        border-radius: 6px;
+
+        &:focus {
+            border-color: $richimath-purple;
+            box-shadow: 0 0 0 0.2rem rgba($richimath-purple, 0.15);
+        }
+    }
+
+    .generaltable {
+        background-color: $richimath-veil-heavy;
+        border: 1px solid $richimath-line;
+
+        th,
+        td {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid $richimath-line;
+            border-left: 0;
+            border-right: 0;
+        }
+
+        thead th {
+            border-top: 0;
+            border-bottom: 1px solid $richimath-line;
+            background-color: $richimath-hover-tint;
+            // $gray-700: $gray-600 on the tint is 4.38:1, under WCAG AA
+            // for this 0.72rem type.
+            color: $gray-700;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        tbody tr:hover {
+            background-color: $richimath-hover-tint;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   C4) /my/courses.php (block_myoverview): Blackboard course cards
+   with a positional accent bar, in card grid and list view.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} .block_myoverview {
+    .dashboard-card-deck .card.dashboard-card {
+        border: 1px solid $richimath-line;
+        border-left: 5px solid nth($richimath-course-accents, 1);
+        border-radius: 8px;
+        box-shadow: $richimath-card-shadow;
+
+        // No overflow:hidden (it would clip the card action dropdown), so
+        // round the image top corners against the card radius by hand.
+        .card-img {
+            border-top-left-radius: 2px;
+            border-top-right-radius: 7px;
+        }
+    }
+
+    .list-group {
+        background-color: $richimath-veil-heavy;
+        border: 1px solid $richimath-line;
+        border-radius: 8px;
+
+        .course-listitem {
+            // The template zeroes left/right/top borders; paint the accent
+            // as an inset shadow instead of fighting the utility classes.
+            box-shadow: inset 5px 0 0 nth($richimath-course-accents, 1);
+            border-bottom-color: $richimath-line;
+
+            // No overflow:hidden on the container (it would clip the row
+            // action dropdown); round the end rows by hand instead.
+            &:first-child {
+                border-top-left-radius: 7px;
+                border-top-right-radius: 7px;
+            }
+
+            &:last-child {
+                border-bottom-left-radius: 7px;
+                border-bottom-right-radius: 7px;
+                border-bottom: 0;
+            }
+        }
+    }
+
+    @for $i from 1 through 6 {
+        .dashboard-card-deck .card.dashboard-card:nth-of-type(6n + #{$i}) {
+            border-left-color: nth($richimath-course-accents, $i);
+        }
+
+        .list-group .course-listitem:nth-of-type(6n + #{$i}) {
+            box-shadow: inset 5px 0 0 nth($richimath-course-accents, $i);
+        }
+    }
+
+    .coursename {
+        color: $richimath-navy;
+        font-weight: 700;
+    }
+
+    .categoryname,
+    .text-muted {
+        font-size: 0.8rem;
+    }
+}
+
+/* ------------------------------------------------------------------
+   C5 revised) Course view, Blackboard Ultra pass.
+
+   Positioning fact this section is built on: the frosted .main-inner
+   (C1) carries backdrop-filter, which makes it the CONTAINING BLOCK
+   for position:fixed descendants — and Boost renders .drawer-toggles
+   and the course sticky footer inside .main-inner. Their "fixed"
+   viewport offsets therefore resolve against the card (the old B2b
+   left: 240px landed the course-index toggle on top of the serif
+   title). Own that: togglers pinned to the card's top corners,
+   sticky footer re-anchored with position:sticky. Skin-wide, since
+   every skinned page is frosted.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} {
+    #page.drawers .main-inner {
+        // Deterministic anchor for the corner togglers, with or
+        // without backdrop-filter support.
+        position: relative;
+    }
+
+    // Corner pinning is desktop-only: below md Boost turns the
+    // togglers into floating buttons near the viewport bottom
+    // (layout.scss, media-breakpoint-down(sm)) — leave those alone,
+    // or the toggler scrolls away with the card's top corner.
+    @include media-breakpoint-up(md) {
+        .drawer-toggles .drawer-toggler {
+            position: absolute;
+            top: 0.9rem;
+            z-index: 2;
+
+            .btn {
+                // Boost's 16px edge-pill padding reads huge on the card
+                // corner; compact it (and drop the hover width wiggle
+                // that only made sense flush against the viewport edge).
+                padding: 8px 10px;
+                border-radius: 8px;
+
+                &:hover {
+                    padding-left: 10px;
+                    padding-right: 10px;
+                }
+            }
+        }
+
+        .drawer-toggles .drawer-left-toggle {
+            left: 0.75rem;
+        }
+
+        .drawer-toggles .drawer-right-toggle {
+            left: auto;
+            right: 0.75rem;
+        }
+    }
+
+    // fixed-bottom is captured by the frost too: sticky against the
+    // page scroller restores the pinned bulk-actions / edit bar.
+    .stickyfooter {
+        position: sticky;
+    }
+
+    // Boost parks the inactive bar below the viewport (bottom: -96px),
+    // which sticky cannot reproduce — hide it outright instead
+    // (.d-flex on the bar is !important, so match it). Desktop only:
+    // below md Boost's scroll-spy toggles hasstickyfooter on every
+    // scroll direction change, and an in-flow sticky bar popping in
+    // and out of the layout would jump the content on each flip.
+    @include media-breakpoint-up(md) {
+        &:not(.hasstickyfooter) .stickyfooter {
+            display: none !important; /* stylelint-disable-line declaration-no-important */
+        }
+    }
+}
+
+// Any skinned page with a corner toggler (course view, gradebook,
+// dashboard, admin…): reserve header air on that side while its
+// drawer is closed, so the serif title and the header actions sit
+// clear. Keyed on toggler presence, not pagelayout; desktop-only to
+// match the corner pinning above (mobile keeps Boost's bottom FABs).
+#{$richimath-skin} {
+    @include media-breakpoint-up(md) {
+        #page.drawers:not(.show-drawer-left):has(.drawer-left-toggle) #page-header {
+            padding-left: 3.5rem;
+        }
+
+        #page.drawers:not(.show-drawer-right):has(.drawer-right-toggle) #page-header {
+            padding-right: 3.5rem;
+        }
+    }
+}
+
+#{$richimath-skin} {
+    .block_myoverview .dashboard-card,
+    .block_myoverview .dashboard-card-footer {
+        background-color: $richimath-veil-heavy;
+    }
+
+    // Edit mode: "Acciones masivas" as a quiet control on the header
+    // baseline (the row is already align-items-center; the outline
+    // keeps it from floating visually next to the serif title).
+    #page-header .header-actions-container {
+        align-self: center;
+
+        .bulkEnable {
+            background-color: $richimath-veil-solid;
+            border: 1px solid $richimath-input-line;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            // .text-primary on the button is !important; match it.
+            color: $richimath-navy !important; /* stylelint-disable-line declaration-no-important */
+
+            &:hover,
+            &:focus {
+                background-color: $richimath-hover-tint;
+            }
+        }
+    }
+
+    .course-content li.section.course-section {
+        margin-bottom: 1.25rem;
+        padding: 0;
+        background-color: $richimath-veil;
+        border: 1px solid $richimath-line;
+        // Purple accent, same language as the calendar event cards.
+        border-left: 3px solid $richimath-purple;
+        border-radius: 8px;
+        box-shadow: $richimath-card-shadow;
+
+        // The shorthand border above out-specifies Boost's
+        // body.dragging drop feedback (core.scss) — restate the
+        // section drop indicators here, 2px so they read against
+        // the hairline card border.
+        &.drop-up {
+            border-top: 2px solid $dropzone-border;
+        }
+
+        &.drop-down {
+            border-bottom: 2px solid $dropzone-border;
+        }
+
+        .course-section-header {
+            padding: 1.1rem 1.5rem;
+            border-radius: 7px;
+            transition: background-color 0.15s ease;
+
+            &:hover {
+                background-color: $richimath-hover-tint;
+            }
+
+            .sectionname {
+                font-family: $richimath-serif;
+                font-size: 1.35rem;
+                color: $richimath-navy;
+
+                // Covers the plain link and edit mode's inplace-edit link.
+                a {
+                    color: $richimath-navy;
+                }
+
+                .quickediticon .icon {
+                    color: $gray-600;
+                }
+            }
+
+            // The name block grows over the whole row so the collapse
+            // chevron (flex-reordered after the name) rides the right
+            // edge — and the stretched-link click area grows with it.
+            > .d-flex.position-relative {
+                flex: 1 1 auto;
+
+                > a[data-for="sectiontoggler"] {
+                    order: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-width: 40px;
+                    min-height: 40px;
+                    margin-left: auto;
+                    color: $richimath-navy;
+                }
+            }
+
+            // Section 0's "Colapsar todo" ships flex-fill (!important):
+            // stop it from splitting the grown name block in half.
+            > .flex-fill {
+                flex: 0 0 auto !important; /* stylelint-disable-line declaration-no-important */
+            }
+        }
+
+        // Divider between header and the expanded body (display:none
+        // while collapsed, so it never paints on a closed card).
+        // Bare .content: the course-content-item-content class is
+        // omitted on site home and in one-section-per-page mode.
+        > .content {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid $richimath-line;
+        }
+
+        li.activity + li.activity {
+            margin-top: 0.5rem;
+        }
+
+        .activity-item {
+            border-color: $richimath-line;
+            border-radius: 8px;
+            transition: background-color 0.15s ease;
+
+            &:not(.activityinline) {
+                padding: 0.9rem 1rem;
+            }
+
+            &:hover {
+                background-color: $richimath-veil-solid;
+            }
+
+            .activityname a {
+                color: $richimath-navy;
+                font-weight: 600;
+            }
+
+            .activityiconcontainer {
+                width: 40px;
+                height: 40px;
+                padding: 8px;
+                border-radius: 8px;
+            }
+        }
+    }
+
+
+    // Edit-mode CTAs, on-brand but JS-untouched.
+    .course-content {
+        .activity-add {
+            background-color: transparent;
+            border: 1px dashed $richimath-purple-light;
+            border-radius: 8px;
+            color: $richimath-purple;
+
+            .pluscontainer {
+                border-color: $richimath-purple-light;
+            }
+
+            &:hover,
+            &:focus {
+                background-color: rgba($richimath-purple, 0.06);
+                border-color: $richimath-purple-light;
+                color: $richimath-purple;
+            }
+        }
+
+        .changenumsections {
+            border-top: 0;
+
+            .add-sections {
+                // px-0 utility on the link is !important; match it.
+                padding: 0.45rem 1rem !important; /* stylelint-disable-line declaration-no-important */
+                border: 1px dashed $richimath-purple-light;
+                border-radius: 8px;
+                color: $richimath-purple;
+                text-decoration: none;
+
+                &:hover,
+                &:focus {
+                    background-color: rgba($richimath-purple, 0.06);
+                    color: $richimath-purple;
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+
+    .courseindex {
+        .courseindex-link,
+        .courseindex-chevron {
+            color: $od-on-surface-variant;
+        }
+
+        .courseindex-item {
+            border-radius: 0.5rem;
+        }
+
+        .courseindex-item.pageitem {
+            background-color: $od-primary-container;
+
+            a,
+            .courseindex-link,
+            .courseindex-chevron {
+                color: $od-on-primary-container;
+            }
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   C6) Profile cards, grader harmonization, messaging polish.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} {
+    .profile_tree section.node_category {
+        background-color: $richimath-veil;
+        border: 1px solid $richimath-line;
+        border-radius: 8px;
+        box-shadow: $richimath-card-shadow;
+
+        h3 {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid $richimath-line;
+            color: $richimath-navy;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        ul {
+            margin-bottom: 0;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        li {
+            margin-bottom: 0.35rem;
+        }
+
+        dl {
+            margin-bottom: 0;
+        }
+
+        dt {
+            color: $richimath-navy;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        dd {
+            color: $gray-600;
+        }
+    }
+
+    // Grader report: harmonize borders/heading with C3 tables; the sticky
+    // heading top-0 fix lives in B2b and stays untouched.
+    .gradeparent .gradereport-grader-table {
+        th,
+        td {
+            border-color: $richimath-line;
+        }
+
+        tr.heading th {
+            background-color: $richimath-hover-tint;
+        }
+    }
+
+    // Messaging: light polish only — never fight its JS layout. The app
+    // root ships Bootstrap's .bg-light (opaque + !important): clear it so
+    // the backdrop passes, then veil the panes for readability.
+    .message-app {
+        &.bg-light {
+            background-color: transparent !important; /* stylelint-disable-line declaration-no-important */
+        }
+
+        .section {
+            background-color: $richimath-veil-light;
+        }
+
+        .panel-header-container,
+        .header-container {
+            color: $richimath-navy;
+        }
+
+        .badge.bg-primary {
+            background-color: $richimath-purple !important; /* stylelint-disable-line declaration-no-important */
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   C7) Modals, alerts and toasts.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} {
+    .modal-content {
+        border: 1px solid $richimath-line;
+        border-radius: 8px;
+    }
+
+    .modal-header {
+        border-bottom-color: $richimath-line;
+    }
+
+    .modal-title {
+        color: $richimath-navy;
+        font-weight: 600;
+    }
+
+    .modal-footer {
+        border-top-color: $richimath-line;
+    }
+
+    .alert {
+        background-color: #fff;
+        border: 1px solid $richimath-line;
+        border-left-width: 4px;
+        border-radius: 8px;
+        box-shadow: $richimath-card-shadow;
+        color: $body-color;
+    }
+
+    .alert-info {
+        border-left-color: $richimath-navy;
+    }
+
+    .alert-success {
+        border-left-color: $success;
+    }
+
+    .alert-warning {
+        border-left-color: #ff6a13;
+    }
+
+    .alert-danger {
+        border-left-color: $danger;
+    }
+
+    .toast {
+        border-radius: 8px;
+        box-shadow: $richimath-card-shadow;
+    }
+}
+
+/* ------------------------------------------------------------------
+   C8) Mobile (<lg): tighter paddings, scrollable tables, 40px tap
+   targets in the restyled nav. Cards keep their radius.
+   ------------------------------------------------------------------ */
+@include media-breakpoint-down(md) {
+    #{$richimath-skin} {
+        #page.drawers .main-inner {
+            padding: 1rem 0.75rem;
+        }
+
+        #page-header h1,
+        #page-header .page-header-headings h1 {
+            font-size: 1.6rem;
+        }
+
+        .secondary-navigation .navigation .nav-tabs .nav-link {
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+        }
+
+        .block_calendar_month .richimath-calendar-toggle .btn {
+            min-height: 40px;
+        }
+
+        // Wide tables scroll inside themselves, never the page body. The
+        // grader report keeps its own frozen-pane scroller.
+        .generaltable:not(.gradereport-grader-table) {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        // Let header actions (edit mode's "Acciones masivas") wrap under
+        // the serif title instead of squeezing it into a word-wrap.
+        #page-header > .w-100 > .d-flex {
+            flex-wrap: wrap;
+        }
+
+        .course-content li.section.course-section {
+            .course-section-header {
+                padding: 0.9rem 1rem;
+            }
+
+            > .content {
+                padding: 0.9rem 1rem;
+            }
+
+            .activity-item:not(.activityinline) {
+                padding: 0.75rem;
+            }
+        }
+
+        .profile_tree section.node_category .card-body {
+            padding: 1rem;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   C9) Course/category browse pages as Blackboard category cards.
+   Markup (core course renderer, category-browse mode, both the top
+   index and inside a category): .course_category_tree > .content >
+   .subcategories > .category > .info > h3.categoryname > a, plus
+   .courses > .coursebox rows on leaf categories. AJAX expansion
+   loads nested content into .category > .content — those nested
+   lists keep the plain look on purpose. Cards sit ON the frosted
+   .main-inner, so veil tokens, never opaque white. The logged-in
+   front page prints the same tree (frontpage_categories_list — the
+   .frontpage-category-names class sits ON the tree node, so the body
+   id is the scope) and shares every rule here.
+   ------------------------------------------------------------------ */
+body#page-course-index,
+body#page-course-index-category,
+body#page-site-index {
+    .collapsible-actions {
+        margin-bottom: 0.75rem;
+
+        .collapseexpand {
+            color: $gray-600;
+            font-size: 0.85rem;
+
+            &:hover,
+            &:focus {
+                color: $richimath-navy;
+            }
+        }
+    }
+
+    // Top-level category rows -> responsive card grid, one colour per card.
+    // The rotation is the level's own ($richimath-course-accents, redefined by
+    // every child palette), so a card is painted in the appearance the
+    // student's plan gave them, never in a colour tied to the category.
+    .course_category_tree > .content > .subcategories {
+        display: grid;
+        grid-template-columns: 1fr;
+        // Each card ends where its own list ends: stretched to the tallest
+        // sibling, an open card trails a tall empty field of its own wash.
+        align-items: start;
+        gap: 1rem;
+        margin-top: 0.5rem;
+
+        // Paging bars span the full grid row, never a card cell.
+        > .paging,
+        > .pagination {
+            grid-column: 1 / -1;
+        }
+
+        > .category {
+            // Accent 1 as the floor: the loop below repaints every card, but a
+            // var() with no value drops the whole declaration, so nothing may
+            // depend on the loop having matched.
+            @include richimath-category-accent(nth($richimath-course-accents, 1));
+
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 104px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            // The wash rides ON the white face, so the tint reads the same
+            // whatever sits behind the frosted .main-inner.
+            background-color: $richimath-veil-heavy;
+            background-image: linear-gradient(155deg, var(--rm-cat-wash) 0%, var(--rm-cat-wash-soft) 62%, rgba(255, 255, 255, 0) 100%);
+            border: 1px solid var(--rm-cat-edge);
+            border-radius: 10px;
+            box-shadow: $richimath-card-shadow;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background-image 0.15s ease;
+
+            // Band across the top, in the card's own accent: gives every card a
+            // deliberate head instead of the thin bar that read as a leftover.
+            &::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                height: 6px;
+                background: linear-gradient(90deg, var(--rm-cat-accent), var(--rm-cat-ink));
+            }
+
+            // Hover deepens the card's own wash. Moving the title to the raw
+            // accent would be the obvious affordance and the wrong one: on a
+            // light accent (amber, lime) it falls under 4.5:1.
+            &:hover,
+            &:focus-within {
+                transform: translateY(-3px);
+                background-image: linear-gradient(155deg, var(--rm-cat-wash-strong) 0%, var(--rm-cat-wash) 62%, rgba(255, 255, 255, 0) 100%);
+                border-color: var(--rm-cat-accent);
+                box-shadow: 0 10px 24px var(--rm-cat-glow);
+            }
+
+            // The block anchor IS the card face while collapsed, so the
+            // whole card is clickable without any JS.
+            > .info > .categoryname {
+                margin: 0;
+                padding: 0;
+                // Boost paints the expand/collapse arrow here at x=0;
+                // move it clear of the accent bar.
+                background-position: 1rem center;
+
+                > a {
+                    display: block;
+                    padding: 1.5rem 1.25rem 0.75rem;
+                    color: var(--rm-cat-ink);
+                    font-family: $richimath-serif;
+                    // Long names ("CICLO PRE UNIVERSITARIO") must wrap at
+                    // spaces, never mid-word, and fit a ~250px card.
+                    font-size: 1.15rem;
+                    font-weight: 700;
+                    line-height: 1.3;
+                    overflow-wrap: normal;
+                    word-break: keep-all;
+                    hyphens: none;
+
+                    &:hover,
+                    &:focus {
+                        color: var(--rm-cat-ink);
+                        text-decoration: none;
+                    }
+                }
+
+                // Course count (shown in count mode): a pill under the
+                // name, so an empty-looking card still says what it holds.
+                .numberofcourse {
+                    display: inline-block;
+                    margin: 0 1.25rem 1.1rem;
+                    padding: 0.15rem 0.6rem;
+                    background-color: var(--rm-cat-wash-strong);
+                    border-radius: 999px;
+                    color: var(--rm-cat-ink);
+                    font-family: $font-family-base;
+                    font-size: 0.75rem;
+                    font-weight: 700;
+                }
+            }
+
+            // Arrowed cards: extra room for the Boost arrow glyph.
+            &.with_children > .info > .categoryname > a {
+                padding-left: 2.4rem;
+            }
+
+            // AJAX-expanded content inside the card: air around the
+            // children (the .content div itself may be whitespace-only,
+            // so the padding lives on the real children).
+            > .content > .subcategories,
+            > .content > .courses,
+            > .content > .paging {
+                margin: 0 1rem 1rem;
+            }
+
+            // Open card (the expander drops .collapsed): the children stay on
+            // the card's own wash. A panel behind them would read as a second
+            // card inside the first, which is what the white box was doing.
+            &:not(.collapsed) > .content > .subcategories,
+            &:not(.collapsed) > .content > .courses {
+                padding: 0.6rem 0 0;
+                border-top: 1px solid var(--rm-cat-edge);
+            }
+
+            // Children inherit --rm-cat-* from the card, so a subcategory and
+            // its course rows read in the division's colour without knowing it.
+            > .content .categoryname > a,
+            > .content .coursename > a {
+                color: var(--rm-cat-ink);
+                font-family: $richimath-serif;
+                font-weight: 600;
+
+                &:hover,
+                &:focus {
+                    color: var(--rm-cat-ink);
+                    text-decoration: underline;
+                }
+            }
+
+            // Same reason: a white course row on the wash is a card in a card.
+            > .content .courses > .coursebox {
+                background-color: transparent;
+                border-color: var(--rm-cat-edge);
+
+                &:hover {
+                    background-color: var(--rm-cat-wash);
+                }
+            }
+
+            @for $i from 1 through 6 {
+                &:nth-of-type(6n + #{$i}) {
+                    @include richimath-category-accent(nth($richimath-course-accents, $i));
+                }
+            }
+        }
+    }
+
+    // Course rows: clean list-cards, same language as C4.
+    .courses > .coursebox {
+        margin-bottom: 0.75rem;
+        padding: 0.9rem 1.1rem;
+        background-color: $richimath-veil-heavy;
+        border: 1px solid $richimath-line;
+        border-radius: 8px;
+        box-shadow: $richimath-card-shadow;
+
+        &:hover {
+            background-color: $richimath-veil-solid;
+        }
+
+        > .info > .coursename {
+            margin: 0;
+            padding: 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+
+            a {
+                // Kill Boost's dated bullet icon inside .subcategories.
+                background-image: none;
+                padding-left: 0;
+                color: $richimath-navy;
+
+                &:hover,
+                &:focus {
+                    color: $richimath-purple;
+                    text-decoration: none;
+                }
+            }
+        }
+
+        .content .summary {
+            color: $gray-600;
+            font-size: 0.9rem;
+        }
+    }
+}
+
+@include media-breakpoint-up(md) {
+    body#page-course-index,
+    body#page-course-index-category,
+    body#page-site-index {
+        .course_category_tree > .content > .subcategories {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    body#page-course-index,
+    body#page-course-index-category,
+    body#page-site-index {
+        .course_category_tree > .content > .subcategories {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+}
+
+/* ==================================================================
+   D) Tickets 2026-08-24. D1 grader headers, D2 mirrored paging bar,
+   D3 support button, D4 compact sidebar, D5 dashboard chips,
+   D6 logged-in front page, D7 invitation page (local_richimath),
+   D8 quiz question backdrop.
+   ================================================================== */
+
+/* ------------------------------------------------------------------
+   D1) Grader report: readable header cells and a table that uses the
+   width it has.
+
+   Real markup (Moodle 4.3, /grade/report/grader): the cell menu is
+   `div.action-menu.moodle-actionmenu.grader`, dropped INLINE right
+   after the title; core pins `.heading .header/.userfield` to
+   `white-space: nowrap`, so title, sort arrow and kebab end up glued
+   together — that was the original complaint.
+
+   Fix: keep the kebab in flow (pinning it to the cell's right edge
+   left ugly gaps once the table stretched) and simply give it air,
+   dimming it until the cell is hovered or it takes focus. The table
+   itself stretches to the content width so a course with few columns
+   no longer floats in a sea of white; `table-layout` stays auto so
+   many-column courses keep core's horizontal scroller. `th.header`
+   (frozen first column) and `tr.heading` (sticky, top:0 fix in B2b)
+   are untouched.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} .gradeparent {
+    .gradereport-grader-table {
+        min-width: 100%;
+
+        tr.heading th,
+        th.category {
+            .action-menu.grader {
+                margin-left: 0.5rem;
+                margin-right: 0;
+                padding-left: 0;
+                opacity: 0.45;
+                transition: opacity 0.12s ease;
+            }
+
+            &:hover .action-menu.grader,
+            .action-menu.grader:focus-within {
+                opacity: 1;
+            }
+        }
+
+        // Breathing room: core ships 0 side padding on these cells.
+        tr.heading th:not(.collapsed),
+        th.category:not(.collapsed) {
+            padding: 0.5rem 0.75rem;
+        }
+
+        td {
+            padding: 0.5rem 0.75rem;
+        }
+    }
+
+}
+
+// "Mostrar N" row: core renders it OUTSIDE .gradeparent as
+// `.stickyfooter.fixed-bottom.bg-white` — a viewport-pinned bar, and
+// .bg-white is a Bootstrap utility (!important), hence the match here.
+// On the grader it only holds a page-size select, so a full-width white
+// slab is noise: make it a quiet strip that lets the backdrop through.
+#{$richimath-skin}.path-grade-report-grader .stickyfooter.bg-white {
+    background-color: $richimath-frost !important; /* stylelint-disable-line declaration-no-important */
+    backdrop-filter: blur(6px);
+    border-top: 1px solid $richimath-line;
+
+    .form-select {
+        width: auto;
+    }
+}
+
+/* ------------------------------------------------------------------
+   D2) Mirrored paging bar above the course list on /my/courses.php
+   (built by the {{#js}} block in our theme_boost/drawers override).
+   The clone carries core's own markup, so Bootstrap already styles
+   it: all it needs is the air the original gets from its .mt-1.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} .richimath-paging-clone {
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+/* ------------------------------------------------------------------
+   D3) Floating "Consultas" button — one click from any page to the
+   conversation with the site admin.
+
+   Boost owns the same corner. From md up: `.btn-footer-popover` (the
+   "?") sits at bottom 2rem / right 2rem, rises with the sticky footer
+   and steps aside when the right drawer opens — shadow all three
+   moves one step higher so neither button ever covers the other.
+   Below md Boost turns the drawer togglers into floating buttons
+   ~89px off the viewport bottom (layout.scss), and a sticky footer
+   claims the bottom 96px: the measured-safe lane there is 7rem up.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} .richimath-support-fab {
+    position: fixed;
+    right: 1rem;
+    bottom: 7rem;
+    z-index: $zindex-dropdown;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background-color: $richimath-navy;
+    box-shadow: 0 4px 12px rgba(38, 45, 61, 0.28);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.2;
+
+    .fa {
+        margin-right: 0.5rem;
+        font-size: 1rem;
+    }
+
+    &:hover,
+    &:focus {
+        background-color: $richimath-purple;
+        color: #fff;
+        text-decoration: none;
+    }
+}
+
+@include media-breakpoint-up(md) {
+    #{$richimath-skin} {
+        .richimath-support-fab {
+            right: 2rem;
+            bottom: 5rem;
+        }
+
+        &.hasstickyfooter .richimath-support-fab {
+            bottom: calc(4rem + #{$stickyfooter-height});
+        }
+
+        #page.drawers.show-drawer-right .richimath-support-fab {
+            right: calc(#{$drawer-right-width} + 2rem);
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   D4) Sidebar width as a custom property + the Canvas-style compact
+   variant (theme setting `sidebarstyle`, body class added by
+   core_renderer::body_attributes).
+
+   B2b derives the page margin, the left drawer offset and the sidebar
+   itself from --richimath-sidebar-width, so re-pointing it here is
+   the whole geometry change; nothing is duplicated. In wide mode
+   nothing below applies and the sidebar is untouched.
+
+   Items from `mobileprimarynav` (Home, Dashboard, My courses, Site
+   administration) ship no icon of their own — a compact column of
+   bare labels reads as a list, not a nav — so the icon is mapped from
+   the link target with FontAwesome glyphs. The fixed items further
+   down the template already carry their own <i class="fa">.
+   ------------------------------------------------------------------ */
+:root {
+    --richimath-sidebar-width: #{$richimath-sidebar-width};
+}
+
+body.richimath-sidebar-compact {
+    --richimath-sidebar-width: #{$richimath-sidebar-width-compact};
+}
+
+@include media-breakpoint-up(lg) {
+    body.uses-drawers.richimath-sidebar-compact:not(.pagelayout-login) {
+        .richimath-sidebar-brand {
+            padding: 0.75rem 0.25rem 0.5rem;
+            text-align: center;
+
+            img,
+            .icon {
+                height: 34px;
+            }
+        }
+
+        // 88px has no room for a name next to the avatar; the link still
+        // reaches the profile and the navbar keeps the full user menu.
+        .richimath-sidebar-user {
+            justify-content: center;
+            padding: 0 0.25rem 0.6rem;
+
+            .usertext {
+                display: none;
+            }
+        }
+
+        // Canvas shape: icon over an 11px centred label. The label is a
+        // bare text node (anonymous flex item), so its size is set on the
+        // link and the icon overrides it.
+        .richimath-sidebar-link {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            // Floor for items with no icon (unmapped keys), which would
+            // otherwise fall below the tap target at ~36px.
+            min-height: 40px;
+            margin: 0 0.25rem 0.15rem;
+            padding: 0.45rem 0.1rem;
+            border-radius: 0.75rem;
+            // 10px at weight 600: the design system's 700 is wider than the
+            // Blackboard label it replaces and pushed "Administración del
+            // sitio" into hyphenation. Words wrap whole, never mid-word — a
+            // hyphenated nav label reads as a typo to a child.
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0;
+            line-height: 1.2;
+            text-align: center;
+            overflow-wrap: normal;
+            word-break: keep-all;
+            hyphens: none;
+
+            > .fa,
+            &::before {
+                width: auto;
+                margin: 0 0 0.25rem;
+                font-size: 19px;
+            }
+        }
+
+        // Icon per target for the primary-nav items, which arrive bare.
+        // Keyed off the node key, not the href: Home only carries redirect=0
+        // when the homepage is My/My courses, and /admin/ moves with $CFG->admin.
+        // Listed one by one on purpose — custom_menu_item nodes merged in by
+        // merge_primary_and_custom() have no key and must not get an empty box.
+        .richimath-sidebar-nav a[data-navkey="home"],
+        .richimath-sidebar-nav a[data-navkey="myhome"],
+        .richimath-sidebar-nav a[data-navkey="mycourses"],
+        .richimath-sidebar-nav a[data-navkey="siteadminnode"] {
+            &::before {
+                display: inline-block;
+                font-family: $fa-style-family;
+                font-style: normal;
+                font-weight: 900;
+                line-height: 1;
+                text-rendering: auto;
+            }
+        }
+
+        .richimath-sidebar-nav a[data-navkey="home"]::before {
+            content: fa-content($fa-var-house);
+        }
+
+        .richimath-sidebar-nav a[data-navkey="myhome"]::before {
+            content: fa-content($fa-var-gauge);
+        }
+
+        .richimath-sidebar-nav a[data-navkey="mycourses"]::before {
+            content: fa-content($fa-var-graduation-cap);
+        }
+
+        .richimath-sidebar-nav a[data-navkey="siteadminnode"]::before {
+            content: fa-content($fa-var-gear);
+        }
+
+        // A full-width scrollbar would eat a tenth of the column.
+        .richimath-sidebar-nav {
+            scrollbar-width: thin;
+        }
+
+        .richimath-sidebar-divider {
+            margin: 0.5rem 0.6rem;
+        }
+
+        .richimath-sidebar-bottom .editmode-switch-form {
+            padding: 0.4rem 0.2rem 0.5rem;
+            font-size: 10px;
+
+            .input-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            // Balances the .mr-2 utility the label ships so it reads centred.
+            label {
+                margin-left: 0.5rem;
+                text-align: center;
+            }
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   D5) T-03 quick-access chips at the top of the dashboard (markup in
+   our drawers override, data from core_renderer::dashboard_chips —
+   only ever rendered on pagelayout-mydashboard). Sits between the
+   header greeting and the blocks; B3 only paints .block, so the two
+   never meet.
+
+   The chips sit on B3's flat #f4f5f7 page, where $richimath-line is
+   as invisible as it was under the landing tabs (WCAG 1.4.11 wants
+   3:1 for a control boundary): same fix, $gray-600 hairline.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} .richimath-dashchips {
+    margin: 0.25rem 0 1.25rem;
+
+    .richimath-dashchips-row + .richimath-dashchips-row {
+        margin-top: 0.75rem;
+    }
+
+    .richimath-dashchips-label {
+        display: block;
+        margin-bottom: 0.4rem;
+        color: $gray-700;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .richimath-dashchips-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0;
+    }
+
+    .richimath-dashchip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        min-height: 36px;
+        padding: 0.35rem 0.9rem;
+        border: 1px solid $gray-600;
+        border-radius: 999px;
+        background-color: $richimath-veil-heavy;
+        color: $richimath-navy;
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.2;
+        transition: border-color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+
+        .fa {
+            color: $richimath-purple;
+            font-size: 0.85rem;
+        }
+
+        // 22ch keeps the longest real fullnames one-line without turning
+        // a chip into a banner; the course page itself shows the rest.
+        .richimath-dashchip-name {
+            max-width: 22ch;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        &:hover {
+            border-color: $richimath-purple;
+            box-shadow: $richimath-card-shadow;
+            color: $richimath-navy;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        &:focus-visible {
+            outline: 2px solid $richimath-purple;
+            outline-offset: 2px;
+        }
+    }
+}
+
+// Finger-sized targets once the rows start wrapping hard.
+@include media-breakpoint-down(sm) {
+    #{$richimath-skin} .richimath-dashchips .richimath-dashchip {
+        min-height: 44px;
+    }
+}
+
+/* ------------------------------------------------------------------
+   D6) Logged-in front page (body#page-site-index without the public
+   landing). Section 1 holds the banner label (scripts/
+   set-frontpage-banner.php, or any label Richi edits by hand): show it
+   as a bare rounded picture. C5's section card — border, purple bar,
+   header row — is course chrome and only added an empty band above
+   the image. Edit mode keeps the card so the section controls have a
+   place to sit. The category tree below shares the C9 cards.
+   ------------------------------------------------------------------ */
+#{$richimath-skin}#page-site-index:not(.richimath-has-landing):not(.editing) {
+    .course-content li.section.course-section {
+        margin-bottom: 1.5rem;
+        background-color: transparent;
+        border: 0;
+        box-shadow: none;
+
+        .course-section-header {
+            display: none;
+        }
+
+        // Until someone writes a section summary, the wrapper only holds
+        // the empty availability stub — and its margins.
+        [data-for="sectioninfo"]:not(:has(.summarytext)) {
+            display: none;
+        }
+
+        > .content {
+            padding: 0;
+            border: 0;
+        }
+
+        .activity-item.activityinline {
+            padding: 0;
+            background-color: transparent;
+        }
+
+        .modtype_label .activity-altcontent {
+            p:last-child {
+                margin-bottom: 0;
+            }
+
+            img {
+                display: block;
+                width: 100%;
+                height: auto;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px rgba(38, 45, 61, 0.18);
+            }
+        }
+    }
+
+    #frontpage-category-names > h2 {
+        margin-bottom: 0.25rem;
+        color: $richimath-navy;
+        font-family: $richimath-serif;
+        font-size: 1.5rem;
+    }
+}
+
+/* ------------------------------------------------------------------
+   D7) local_richimath invitation page (local/richimath/templates/
+   invite.mustache): the link just created in a share box the eye lands
+   on first, then the form, then the list. Sits on the frosted card, so
+   veil tokens; the copy button turns green for two seconds once the
+   link is on the clipboard (class set by the template's JS).
+   ------------------------------------------------------------------ */
+#{$richimath-skin} .richimath-invite {
+    .richimath-invite-title {
+        margin-bottom: 0.25rem;
+        color: $richimath-navy;
+        font-family: $richimath-serif;
+    }
+
+    .richimath-invite-intro {
+        max-width: 72ch;
+        color: $gray-700;
+    }
+
+    .richimath-invite-share {
+        margin: 1rem 0 1.5rem;
+        padding: 1rem 1.25rem;
+        background-color: $od-surface-low;
+        border: 1px solid $od-outline-variant;
+        border-left: 4px solid $od-primary-container;
+        border-radius: 8px;
+        box-shadow: $richimath-card-shadow;
+    }
+
+    .richimath-invite-share-status {
+        margin-bottom: 0.75rem;
+        color: $richimath-navy;
+        font-weight: 600;
+
+        .fa {
+            margin-right: 0.25rem;
+            color: $richimath-purple;
+        }
+    }
+
+    // The permanent shared link: navy accent, quieter than the
+    // just-created box so both can sit on the same page.
+    .richimath-invite-courselink {
+        border-left-color: $od-primary;
+
+        .richimath-invite-share-status .fa {
+            color: $richimath-navy;
+        }
+
+        .richimath-invite-courselink-intro {
+            margin: 0 0 0.75rem;
+            max-width: 72ch;
+            color: $gray-700;
+            font-size: 0.9rem;
+        }
+    }
+
+    .richimath-invite-share-label {
+        display: block;
+        margin-bottom: 0.35rem;
+        color: $gray-700;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .richimath-invite-linkrow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        input {
+            flex: 1 1 320px;
+            background-color: $richimath-veil-solid;
+            font-family: $font-family-monospace;
+            font-size: 0.85rem;
+        }
+    }
+
+    .richimath-invite-share-hint {
+        margin: 0.5rem 0 0;
+        color: $gray-600;
+        font-size: 0.85rem;
+    }
+
+    .richimath-invite-form {
+        margin-bottom: 1.75rem;
+    }
+
+    .richimath-invite-listtitle {
+        margin-bottom: 0.5rem;
+        color: $richimath-navy;
+        font-family: $richimath-serif;
+        font-size: 1.25rem;
+    }
+
+    .richimath-invite-empty {
+        color: $gray-600;
+    }
+
+    .richimath-invite-table {
+        td {
+            vertical-align: middle;
+        }
+
+        .richimath-invite-email {
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .richimath-invite-when {
+            display: block;
+            margin-top: 0.15rem;
+            color: $gray-600;
+            font-size: 0.8rem;
+        }
+
+        .richimath-invite-actions {
+            text-align: right;
+            white-space: nowrap;
+
+            .btn + .btn {
+                margin-left: 0.25rem;
+            }
+        }
+    }
+
+    .richimath-invite-badge {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+
+        &.is-pending {
+            background-color: rgba($richimath-gold, 0.3);
+            color: $richimath-navy;
+        }
+
+        &.is-accepted {
+            background-color: rgba(nth($richimath-course-accents, 4), 0.25);
+            color: $richimath-navy;
+        }
+
+        &.is-expired {
+            background-color: $gray-200;
+            color: $gray-700;
+        }
+    }
+
+    [data-richimath-copy].is-copied {
+        background-color: nth($richimath-course-accents, 4);
+        border-color: nth($richimath-course-accents, 4);
+        color: $white;
+    }
+}
+
+// Phones: the share row stacks and the list turns into one card per
+// invitation (a four-column table has no room at 390px).
+@include media-breakpoint-down(sm) {
+    #{$richimath-skin} .richimath-invite {
+        .richimath-invite-linkrow .btn {
+            flex: 1 1 100%;
+        }
+
+        .richimath-invite-table {
+            thead {
+                display: none;
+            }
+
+            tr {
+                display: block;
+                margin-bottom: 0.75rem;
+                padding: 0.75rem 0.9rem;
+                background-color: $richimath-veil-heavy;
+                border: 1px solid $richimath-line;
+                border-radius: 8px;
+            }
+
+            td {
+                display: block;
+                padding: 0.2rem 0;
+                border: 0;
+            }
+
+            .richimath-invite-actions {
+                margin-top: 0.5rem;
+                text-align: left;
+                white-space: normal;
+            }
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   D8) Quiz questions (attempt, review, preview): Boost paints each
+   statement box (.que .formulation) with the pale-blue "info" alert.
+   Richi's exam art (docs/design/logos/v3/17.svg → pix/examground.png,
+   the chrome RM with the wordmark, as a corner watermark) replaces it,
+   under a thin white veil so long statements and inline inputs keep
+   their contrast; the logo stays pinned to the corner whatever the
+   box height. Feedback boxes (.outcome/.comment) keep Boost's yellow.
+   ------------------------------------------------------------------ */
+#{$richimath-skin} .que .formulation {
+    color: $body-color;
+    background-color: $richimath-ground;
+    background-image: linear-gradient($richimath-veil-light, $richimath-veil-light), url([[pix:theme|examground]]);
+    // La marca v3 es un logotipo cuadrado, no una textura: con `cover` se
+    // ampliaría hasta llenar la caja. Va a tamaño fijo y separada de la
+    // esquina, como la marca de agua que es.
+    background-size: auto 70%;
+    background-position: right 1.25rem bottom 1rem;
+    background-repeat: no-repeat;
+    border-color: $richimath-line;
+}
+
+/* ==================================================================
+   E) Primary Moodle Odyssey — the design system in
+   docs/design/primary_moodle_odyssey/DESIGN.md, applied on top of
+   sections A-D. The Bootstrap side (palette, fonts, radii, control
+   sizes) is set in pre.scss; what follows is only what variables
+   cannot reach: the chrome this theme built itself (navy bar, fixed
+   sidebar, frosted card, gold backdrop) and the tactile component
+   language — pillowy surfaces, 4px solid bottom shadows, pill
+   badges, squircle activity glyphs.
+
+   Everything is scoped to $richimath-skin, so the login artwork and
+   the public landing keep the Richi Math brand untouched.
+   ================================================================== */
+
+#{$richimath-skin} {
+    background-color: $od-surface;
+    font-family: $od-body;
+
+    // The gold-and-texture backdrop belongs to the Richi Math login; the
+    // classroom canvas is the calm blue-tinted paper of the system.
+    &::before {
+        content: none;
+    }
+
+    // E1) Content card: white, 16px, hairline outline, ambient blue tint.
+    // Replaces the frosted glass, which only made sense over the artwork.
+    #page.drawers .main-inner {
+        background-color: $od-surface-lowest;
+        backdrop-filter: none;
+        border: 1px solid $od-outline-variant;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px -2px rgba(15, 98, 254, 0.06);
+        padding: 1.5rem;
+    }
+
+    // E2) Headings in Quicksand, not the Blackboard serif.
+    h1, h2, h3, h4, h5,
+    #page-header h1,
+    #page-header .page-header-headings h1,
+    .sectionname,
+    .card-title {
+        font-family: $od-headline;
+        color: $od-on-surface;
+        letter-spacing: -0.2px;
+    }
+
+    // E3/E4 (top bar and left rail) now live natively in B1, B2b and B4:
+    // the chrome was rewritten light rather than overridden twice.
+
+    // E5) Buttons as pressable keys.
+    .btn {
+        border-radius: 0.75rem;
+        font-weight: 700;
+        min-height: 48px;
+        transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease;
+
+        &.btn-sm {
+            min-height: 36px;
+            border-radius: 0.5rem;
+        }
+    }
+
+    .btn-primary {
+        background-color: $od-primary-container;
+        border-color: $od-primary-container;
+        @include od-key($od-primary-shadow);
+
+        &:hover,
+        &:focus {
+            background-color: $od-primary;
+            border-color: $od-primary;
+        }
+
+        &:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 0 $od-primary-shadow;
+        }
+    }
+
+    .btn-secondary,
+    .btn-outline-secondary {
+        background-color: $od-surface-low;
+        border: 2px solid $od-surface-high;
+        color: $od-primary;
+
+        &:hover,
+        &:focus {
+            background-color: $od-surface-container;
+            color: $od-primary;
+        }
+    }
+
+    // Keyboard and switch users need the ring the system mandates.
+    a:focus-visible,
+    .btn:focus-visible,
+    .form-control:focus-visible {
+        outline: 0;
+        box-shadow: 0 0 0 2px $od-surface-lowest, 0 0 0 5px $od-primary-container;
+    }
+
+    // E6) Activity rows: white card, 6px purpose bar on the left edge,
+    // squircle glyph, chevron affordance. The purpose colour already
+    // rides on .activityiconcontainer (pre.scss), so the bar reads it
+    // back from the icon square instead of duplicating the map.
+    .course-content .activity-item {
+        margin-bottom: 0.75rem;
+        padding: 0.9rem 1rem;
+        background-color: $od-surface-lowest;
+        border: 1px solid $od-outline-variant;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px -2px rgba(15, 98, 254, 0.06);
+        transition: box-shadow 0.12s ease, background-color 0.12s ease;
+
+        // No lift on hover. A transform makes the row a stacking context, so
+        // its edit menu (⋮) is painted UNDER the next row: the pointer lands
+        // on that row, this one loses :hover, the transform goes, the menu
+        // jumps on top, the pointer is on it again — and the menu flickers
+        // and cannot be clicked. The shadow alone carries the affordance.
+        &:hover {
+            background-color: $od-surface-low;
+            box-shadow: 0 8px 18px -4px rgba(15, 98, 254, 0.14);
+        }
+
+        .activityiconcontainer {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+        }
+
+        .activityname a,
+        .activityname .instancename {
+            font-family: $od-headline;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: $od-on-surface;
+        }
+    }
+
+    // Section cards: white, 16px, no more purple hairline on the left.
+    .course-content li.section.course-section {
+        background-color: $od-surface-lowest;
+        border: 1px solid $od-outline-variant;
+        border-left: 1px solid $od-outline-variant;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px -2px rgba(15, 98, 254, 0.06);
+
+        .course-section-header {
+            border-radius: 1rem 1rem 0 0;
+
+            &:hover {
+                background-color: $od-surface-low;
+            }
+
+            .sectionname {
+                font-family: $od-headline;
+                color: $od-on-surface;
+            }
+        }
+    }
+
+    // E7) Blocks (calendar, upcoming, badges) as the right-hand shelf.
+    .block {
+        background-color: $od-surface-lowest;
+        border: 1px solid $od-outline-variant;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px -2px rgba(15, 98, 254, 0.06);
+
+        .card-title,
+        h5 {
+            font-family: $od-headline;
+            color: $od-on-surface;
+        }
+    }
+
+    // E8) Badges and status tags: pills, always.
+    .badge {
+        padding: 0.3rem 0.7rem;
+        border-radius: 9999px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+    }
+
+    // Bootstrap 5's .bg-* utilities carry !important, so these must too.
+    .badge.bg-primary { background-color: $od-primary-container !important; } /* stylelint-disable-line declaration-no-important */
+    .badge.bg-success { background-color: $od-secondary !important; } /* stylelint-disable-line declaration-no-important */
+    .badge.bg-warning { background-color: $od-tertiary !important; color: #fff; } /* stylelint-disable-line declaration-no-important */
+
+    // E9) Breadcrumb on its own tinted strip, current page in blue.
+    #page-navbar .breadcrumb {
+        background-color: transparent;
+        font-weight: 700;
+
+        .breadcrumb-item a {
+            color: $od-on-surface-variant;
+
+            &:hover {
+                color: $od-primary;
+            }
+        }
+
+        .breadcrumb-item.active,
+        .breadcrumb-item:last-child span {
+            color: $od-primary;
+            font-family: $od-headline;
+        }
+    }
+
+    // E10) Inputs: 48px, 2px boundary, blue focus.
+    .form-control,
+    .form-select {
+        min-height: 48px;
+        border: 2px solid $od-outline-variant;
+        border-radius: 0.75rem;
+
+        &:focus {
+            border-color: $od-primary-container;
+        }
+    }
+
+    // E11) Surfaces the older sections tinted with veils sat over the
+    // artwork; with a flat canvas they only need to be white.
+    .card,
+    #region-main,
+    .block_myoverview .dashboard-card,
+    .block_myoverview .dashboard-card-footer,
+    .que .formulation {
+        background-color: $od-surface-lowest;
+    }
+
+    // Progress bars: rounded, secondary green, as the mockup shows.
+    .progress {
+        height: 0.75rem;
+        background-color: $od-surface-container;
+        border-radius: 9999px;
+
+        .progress-bar {
+            background-color: $od-secondary;
+            border-radius: 9999px;
+        }
+    }
+}
+
+// The exam backdrop (D8) belongs to the Richi Math brand and stays, but
+// on the new canvas it needs the white veil turned up to keep the
+// question text at the contrast the system demands.
+#{$richimath-skin} .que .formulation {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82)), url([[pix:theme|examground]]);
+    border-color: $od-outline-variant;
+    border-radius: 1rem;
+}
+
+// E12) Chrome that sections B-D painted navy or purple: the segmented
+// secondary navigation, the support FAB and the dashboard chips are the
+// same control language, so they take the primary blue of the system.
+#{$richimath-skin} {
+    .secondary-navigation .navigation .nav-tabs {
+        background-color: $od-surface-low;
+        border-radius: 0.75rem;
+
+        .nav-link {
+            border-radius: 0.75rem;
+            color: $od-on-surface-variant;
+            font-family: $od-headline;
+            font-weight: 600;
+
+            &:hover {
+                background-color: $od-surface-container;
+                color: $od-on-surface;
+            }
+
+            &.active {
+                background-color: $od-primary-container;
+                color: $od-on-primary-container;
+                @include od-key($od-primary-shadow);
+            }
+        }
+    }
+
+    .richimath-support-fab {
+        background-color: $od-primary-container;
+        @include od-key($od-primary-shadow);
+
+        &:hover,
+        &:focus {
+            background-color: $od-primary;
+        }
+    }
+
+    .richimath-dashchip {
+        border-color: $od-outline-variant;
+        border-radius: 9999px;
+        color: $od-on-surface;
+
+        .fa {
+            color: $od-primary;
+        }
+
+        &:hover {
+            background-color: $od-surface-low;
+            border-color: $od-primary-container;
+        }
+    }
+}
+
+// E13) The login call to action lives in section A now: Crystalline Academic
+// Glass gives it a gradient face and a diamond halo, so the key-shadow button
+// of the classroom would only fight it.
+
+/* ------------------------------------------------------------------
+   F) Exam flow — Imperial Academic Precision
+   (docs/ux_pro/FLUJO DE EXAMENES/.../imperial_academic_precision/DESIGN.md).
+
+   Four screens: mod_quiz view, attempt, summary and review. The spec's
+   grammar is adopted whole — obsidian chrome, sharp 0px corners, platinum
+   hairlines, monospaced metadata, tabular stratification. Its gold is read
+   as a ROLE, not a colour: $od-exam-accent is the level's own key, so an
+   exam still looks like Primaria in Primaria and like Universidad in
+   Universidad. The work surface stays light, as the attempt and summary
+   boards themselves do — an exam that turns the screen black would fight
+   every formula the students read.
+   ------------------------------------------------------------------ */
+$rm-exam: 'body#page-mod-quiz-view, body#page-mod-quiz-attempt, body#page-mod-quiz-summary, body#page-mod-quiz-review';
+
+@mixin rm-exam-label {
+    font-family: $od-mono;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+@mixin rm-exam-panel {
+    border: 1px solid $od-outline-variant;
+    border-radius: 0;  // Sharp: mathematical exactitude, per the spec.
+    background-color: $od-surface-lowest;
+    box-shadow: none;
+}
+
+#{$rm-exam} {
+    // F1) Top identity ribbon: the one obsidian stratum of the flow, so the
+    // student can tell an exam page from a lesson page at a glance.
+    #page-header {
+        margin-bottom: 1rem;
+        padding: 1.15rem 1.35rem;
+        border: 0;
+        border-left: 3px solid $od-exam-accent;
+        border-radius: 0;
+        background-color: $od-exam-ink;
+        color: $od-surface-lowest;
+
+        h1,
+        h2,
+        .page-context-header,
+        .h2 {
+            color: $od-surface-lowest;
+            font-family: $od-headline;
+        }
+
+        .page-header-headings h1 {
+            font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+            letter-spacing: -0.01em;
+        }
+
+        a {
+            color: $od-exam-accent-bright;
+        }
+
+        .breadcrumb,
+        .breadcrumb a,
+        .breadcrumb-item::before {
+            color: rgba($od-surface-lowest, 0.62);
+            @include rm-exam-label;
+        }
+    }
+
+    // F2) Every quiz surface: panes, not floating cards.
+    .box,
+    .table-responsive,
+    .que,
+    #quiz-timer-wrapper {
+        @include rm-exam-panel;
+        margin-bottom: 1rem;
+        padding: 1.15rem 1.35rem;
+    }
+
+    .generaltable {
+        margin: 0;
+
+        th,
+        td {
+            border-color: rgba($od-outline-variant, 0.7);
+        }
+
+        thead th {
+            border-bottom: 1px solid $od-on-surface;
+            color: $od-on-surface-variant;
+            @include rm-exam-label;
+        }
+    }
+
+    // Primary action: solid accent, obsidian type, zero radius.
+    .btn-primary,
+    .btn-finishattempt .btn,
+    .quizstartbuttondiv .btn,
+    a.mod_quiz-next-nav,
+    input.mod_quiz-next-nav {
+        border: 1px solid $od-exam-accent;
+        border-radius: 0;
+        background-color: $od-exam-accent;
+        box-shadow: none;
+        color: $od-on-primary-container;
+        @include rm-exam-label;
+        padding: 0.7rem 1.4rem;
+
+        &:hover,
+        &:focus {
+            background-color: $od-primary;
+            border-color: $od-primary;
+            color: $od-on-primary-container;
+        }
+    }
+
+    .btn-secondary {
+        border: 1px solid $od-on-surface;
+        border-radius: 0;
+        background-color: $od-surface-lowest;
+        color: $od-on-surface;
+        @include rm-exam-label;
+
+        &:hover,
+        &:focus {
+            background-color: $od-on-surface;
+            color: $od-surface-lowest;
+        }
+    }
+}
+
+// F3) Spec sheet (view.php): the quiz's own metadata, read as a data list.
+body#page-mod-quiz-view {
+    .quizinfo p {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        margin: 0;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid rgba($od-outline-variant, 0.6);
+        color: $od-on-surface;
+        font-family: $od-mono;
+        font-size: 0.8125rem;
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    .quizattempt {
+        border-left: 3px solid $od-exam-accent;
+
+        // Core prints this box even with nothing in it (a teacher looking at
+        // a quiz with no action pending); an empty framed pane reads as a bug.
+        &:empty {
+            display: none;
+        }
+    }
+
+    .quizstartbuttondiv {
+        margin-left: auto;
+    }
+}
+
+// F4) The attempt: timer, question cards, navigation grid.
+body#page-mod-quiz-attempt,
+body#page-mod-quiz-summary {
+    #quiz-timer-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        position: sticky;
+        top: 0.5rem;
+        z-index: 3;
+        padding: 0.6rem 0.9rem;
+        border: 1px solid $od-exam-hairline;
+        background-color: $od-exam-ink;
+        color: $od-surface-lowest;
+
+        // Boost paints the inner timer as a white pill with a red underline.
+        #quiz-timer {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background-color: transparent;
+            @include rm-exam-label;
+            color: rgba($od-surface-lowest, 0.7);
+        }
+
+        #quiz-time-left {
+            margin-left: 0.5rem;
+            color: $od-exam-accent-bright;
+            font-family: $od-mono;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        #toggle-timer {
+            border-color: rgba($od-surface-lowest, 0.45);
+            background-color: transparent;
+            color: rgba($od-surface-lowest, 0.9);
+
+            &:hover,
+            &:focus {
+                background-color: rgba($od-surface-lowest, 0.12);
+                color: $od-surface-lowest;
+            }
+        }
+    }
+}
+
+body#page-mod-quiz-attempt,
+body#page-mod-quiz-review {
+    .que {
+        padding: 0;
+        overflow: hidden;
+
+        // Header strip: number, state, flag — the spec's status bar. Boost
+        // floats this column 7em wide down the left; the spec wants a rule
+        // across the top, so the float has to go first.
+        .info {
+            float: none;
+            width: auto;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0.85rem 1.1rem;
+            border-bottom: 1px solid $od-outline-variant;
+            background-color: $od-surface-low;
+
+            h3.no {
+                display: flex;
+                align-items: baseline;
+                gap: 0.5rem;
+                margin: 0;
+                color: $od-on-surface-variant;
+                @include rm-exam-label;
+            }
+
+            .qno {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 1.9rem;
+                padding: 0.2rem 0.35rem;
+                background-color: $od-exam-accent;
+                color: $od-on-primary-container;
+                font-family: $od-mono;
+                font-size: 0.95rem;
+                font-weight: 700;
+            }
+
+            .state,
+            .grade {
+                margin: 0;
+                padding: 0.25rem 0.5rem;
+                border: 1px solid $od-outline-variant;
+                color: $od-on-surface-variant;
+                @include rm-exam-label;
+            }
+
+            .questionflag {
+                margin-left: auto;
+            }
+        }
+
+        .content {
+            margin: 0;
+            padding: 1.15rem 1.35rem;
+        }
+
+        // Richi's exam backdrop stays — it is brand, not decoration — but the
+        // Imperial grammar squares it off and turns the veil up so the RM
+        // watermark never competes with a formula.
+        .formulation {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            // 0.88 y no 0.9: la marca v3 es cromada y oscura, y con el velo
+            // anterior se borraba del todo. Sigue por detrás del enunciado.
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)),
+                url([[pix:theme|examground]]);
+        }
+
+        .qtext {
+            margin-bottom: 1.1rem;
+            color: $od-on-surface;
+            font-family: $od-headline;
+            font-size: 1.0625rem;
+            line-height: 1.45;
+        }
+
+        // Answers as open rows: no rules between options — Richi found the
+        // hairlines noisy next to a formula, and so do the students. Air
+        // separates them; the transparent left edge is the slot the accent
+        // fills on the chosen one, so choosing never shifts the text.
+        .answer > div {
+            margin: 0 0 0.35rem;
+            padding: 0.65rem 0.85rem;
+            border: 0;
+            border-left: 3px solid transparent;
+
+            &:hover {
+                background-color: $od-surface-low;
+            }
+
+            &.checked {
+                border-left: 3px solid $od-exam-accent;
+                background-color: rgba($od-exam-accent, 0.06);
+            }
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            border: 1px solid $od-outline-variant;
+            border-radius: 0;
+            background-color: $od-surface-low;
+            font-family: $od-mono;
+
+            &:focus {
+                border-color: $od-exam-accent;
+                box-shadow: none;
+                outline: 1px solid $od-exam-accent;
+            }
+        }
+
+        .outcome,
+        .feedback {
+            margin: 1rem 0 0;
+            padding: 0.85rem 1rem;
+            border: 0;
+            border-left: 3px solid $od-exam-accent;
+            border-radius: 0;
+            background-color: $od-surface-low;
+        }
+    }
+
+    // Marked-for-review and graded states, told by value, not by hue alone.
+    .que.correct .info,
+    .que.complete .info {
+        border-left: 3px solid $od-secondary;
+    }
+
+    .que.incorrect .info,
+    .que.notanswered .info {
+        border-left: 3px solid $od-on-surface-variant;
+    }
+
+    .que.partiallycorrect .info {
+        border-left: 3px solid $od-tertiary;
+    }
+}
+
+// F5) Navigation block: the question matrix of the spec. Core scopes its own
+// rules as `.path-mod-quiz #mod_quiz_navblock ...`, so anything shorter loses
+// the cascade — the body class is here to win it, not for decoration.
+body.path-mod-quiz #mod_quiz_navblock {
+    @include rm-exam-panel;
+
+    .card-title {
+        @include rm-exam-label;
+        color: $od-on-surface-variant;
+    }
+
+    .qn_buttons {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.4rem;
+    }
+
+    .qnbutton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 2.6rem;
+        margin: 0;
+        border: 1px solid $od-outline-variant;
+        border-radius: 0;
+        background-color: $od-surface-lowest;
+        color: $od-on-surface;
+        font-family: $od-mono;
+        font-size: 0.875rem;
+        font-weight: 600;
+
+        // Core pins this span over the whole button (top and bottom both 0)
+        // and paints it white, which would bury the number. Released from the
+        // top it becomes what the spec draws: a status rule under the digit.
+        .trafficlight {
+            position: absolute;
+            top: auto;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            margin: 0;
+            border: 0;
+            border-radius: 0;
+            background-color: $od-outline-variant;
+        }
+
+        &.answered .trafficlight,
+        &.complete .trafficlight {
+            background-color: $od-on-surface;
+        }
+
+        &.correct .trafficlight {
+            background-color: $od-secondary;
+        }
+
+        &.partiallycorrect .trafficlight {
+            background-color: $od-tertiary;
+        }
+
+        &.notanswered .trafficlight,
+        &.notyetanswered .trafficlight {
+            background-color: $od-outline-variant;
+        }
+
+        &.thispage {
+            border-color: $od-exam-accent;
+            background-color: $od-exam-accent;
+            color: $od-on-primary-container;
+        }
+
+        &.flagged::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: $od-exam-accent;
+        }
+    }
+
+    .othernav {
+        margin-top: 0.9rem;
+        padding-top: 0.9rem;
+        border-top: 1px solid $od-outline-variant;
+
+        .endtestlink {
+            display: block;
+            padding: 0.6rem 0.9rem;
+            border: 1px solid $od-on-surface;
+            color: $od-on-surface;
+            text-align: center;
+            @include rm-exam-label;
+
+            &:hover,
+            &:focus {
+                background-color: $od-on-surface;
+                color: $od-surface-lowest;
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+// F6) Attempt summary: the verification matrix.
+body#page-mod-quiz-summary {
+    .quizsummaryofattempt {
+        tbody tr:nth-child(even) {
+            background-color: $od-surface-low;
+        }
+
+        td {
+            padding: 0.85rem 0.75rem;
+            font-family: $od-mono;
+            font-size: 0.8125rem;
+        }
+
+        tr.notyetanswered td:nth-child(2) {
+            color: $od-tertiary;
+        }
+
+        tr.answersaved td:nth-child(2),
+        tr.complete td:nth-child(2) {
+            color: $od-secondary;
+        }
+    }
+
+    // The irreversible-submission block reads as the spec's warning stratum.
+    .submitbtns:last-of-type {
+        padding: 1.15rem 1.35rem;
+        border: 1px solid $od-outline-variant;
+        border-top: 3px solid $od-exam-accent;
+        background-color: $od-surface-lowest;
+    }
+}
+
+// F7) Review: the grade sheet.
+body#page-mod-quiz-review {
+    .quizreviewsummary {
+        th {
+            width: 14rem;
+            color: $od-on-surface-variant;
+            @include rm-exam-label;
+        }
+
+        td {
+            font-family: $od-mono;
+            font-size: 0.875rem;
+        }
+
+        // The overall grade is the one figure that must carry the page.
+        tr:last-child td {
+            color: $od-exam-accent;
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------
+   G) Institutional site — the front page for visitors without a
+   session (docs/design/website/DESIGN.md, "Dark Minimalist Neo-Glass").
+
+   Deep obsidian canvas, institutional gold for anything that speaks
+   for the school as a whole, and one neon key per academic division:
+   phosphor green for Escolar, electric cyan for Preuniversitario,
+   crimson for Universitario. Nothing here leaks into the classroom:
+   every rule hangs off body.richimath-site, and the classroom keeps
+   the light per-level themes.
+   ------------------------------------------------------------------ */
+$rm-site-canvas: #0b0b0e;
+$rm-site-surface: #121217;
+$rm-site-card: #16161d;
+$rm-site-hover: #22222b;
+$rm-site-ink: #ffffff;
+$rm-site-ink-muted: #94a3b8;
+$rm-site-ink-faint: #475569;
+$rm-site-line: rgba(255, 255, 255, 0.08);
+$rm-site-gold: #d4af37;
+$rm-site-gold-bright: #ffdf73;
+$rm-site-gold-deep: #997a15;
+$rm-site-divisions: (school: #00ff66, preuniversity: #00e5ff, university: #ff2a4d);
+// The five levels of the hero and the Levels menu. The three that match a
+// division keep its neon; Secundaria and IB add violet and orange, the two
+// hues the canvas did not use yet.
+$rm-site-levels: (
+    primaria: #00ff66,
+    secundaria: #b46bff,
+    preuniversitario: #00e5ff,
+    universitario: #ff2a4d,
+    ib: #ff9f1c,
+);
+$rm-site-display: 'Space Grotesk', $od-headline;
+$rm-site-body: 'Plus Jakarta Sans', $od-body;
+
+@mixin rm-site-label {
+    font-family: $rm-site-display;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+body.richimath-site {
+    background-color: $rm-site-canvas;
+    color: $rm-site-ink;
+    font-family: $rm-site-body;
+
+    // Two low-opacity blooms: the ambient depth the spec asks for instead
+    // of drop shadows. Fixed so they never scroll into a seam.
+    &::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image:
+            radial-gradient(circle at 12% 8%, rgba($rm-site-gold, 0.10), transparent 42%),
+            radial-gradient(circle at 88% 62%, rgba(0, 229, 255, 0.07), transparent 46%);
+    }
+
+    a {
+        color: $rm-site-gold;
+    }
+
+    .rm-site-shell {
+        width: 100%;
+        max-width: 80rem;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 4vw, 3rem);
+    }
+
+    .rm-site-mono {
+        font-family: $od-mono;
+        font-size: 0.6875rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .rm-gold { color: $rm-site-gold; }
+    .rm-cyan { color: map-get($rm-site-divisions, preuniversity); }
+}
+
+// G1) Command bar: 1px of glass over the canvas, sticky, gold key on the right.
+.rm-site-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid $rm-site-line;
+    background-color: rgba($rm-site-surface, 0.9);
+    backdrop-filter: blur(16px);
+}
+
+.rm-site-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 4.5rem;
+}
+
+.rm-site-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: inherit;
+
+    &:hover,
+    &:focus {
+        text-decoration: none;
+    }
+
+    img,
+    .icon {
+        width: auto;
+        height: 42px;
+        margin: 0;
+    }
+}
+
+.rm-site-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.rm-site-brand-name {
+    color: $rm-site-ink;
+    font-family: $rm-site-display;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.rm-site-brand-sub {
+    color: $rm-site-gold;
+    @include rm-site-label;
+}
+
+.rm-site-nav {
+    display: none;
+    align-items: center;
+    gap: 0.35rem;
+
+    @include media-breakpoint-up(lg) {
+        display: flex;
+    }
+
+    a {
+        padding: 0.45rem 0.75rem;
+        border-radius: 0.25rem;
+        color: $rm-site-ink-muted;
+        font-family: $rm-site-display;
+        font-size: 0.875rem;
+        font-weight: 600;
+
+        &:hover,
+        &:focus {
+            background-color: $rm-site-hover;
+            color: $rm-site-ink;
+            text-decoration: none;
+        }
+    }
+}
+
+// Same trap as the buttons: the site inks every link gold, and this label
+// has to stay dark on the gold fill.
+body.richimath-site .rm-site-key {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    border-radius: 0.25rem;
+    background: linear-gradient(135deg, $rm-site-gold-bright 0%, $rm-site-gold 100%);
+    color: $rm-site-canvas;
+    font-family: $rm-site-display;
+    font-size: 0.875rem;
+    font-weight: 700;
+
+    &:hover,
+    &:focus {
+        box-shadow: 0 0 16px rgba($rm-site-gold, 0.35);
+        color: $rm-site-canvas;
+        text-decoration: none;
+    }
+}
+
+// G2) Buttons: gold for the institution, ghost for everything else, and the
+// division button that borrows its own neon in G4.
+// Scoped to the body class on purpose: `body.richimath-site a` inks every
+// link gold, and a button label has to beat it.
+body.richimath-site .rm-site-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.35rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    font-family: $rm-site-display;
+    font-size: 0.9375rem;
+    font-weight: 700;
+
+    &:hover,
+    &:focus {
+        text-decoration: none;
+    }
+}
+
+body.richimath-site .rm-site-btn-gold {
+    background: linear-gradient(135deg, $rm-site-gold-bright 0%, $rm-site-gold 100%);
+    border-color: $rm-site-gold-deep;
+    color: $rm-site-canvas;
+
+    &:hover,
+    &:focus {
+        box-shadow: 0 0 16px rgba($rm-site-gold, 0.35);
+        color: $rm-site-canvas;
+    }
+}
+
+body.richimath-site .rm-site-btn-ghost {
+    border-color: $rm-site-line;
+    background-color: rgba(255, 255, 255, 0.04);
+    color: $rm-site-ink-muted;
+
+    &:hover,
+    &:focus {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: $rm-site-ink;
+    }
+}
+
+body.richimath-site .rm-site-btn-block {
+    width: 100%;
+}
+
+// G3) Chips: translucent surface, 1px keyline, monospaced-adjacent label.
+.rm-site-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.65rem;
+    border: 1px solid $rm-site-line;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.04);
+    color: $rm-site-ink-muted;
+    @include rm-site-label;
+}
+
+.rm-site-chip-gold {
+    border-color: rgba($rm-site-gold, 0.3);
+    background-color: rgba($rm-site-gold, 0.1);
+    color: $rm-site-gold;
+}
+
+// G4) Hero: the pitch on the left, the academy's solar system on the right.
+.rm-site {
+    position: relative;
+    z-index: 1;
+}
+
+.rm-site-hero {
+    padding: clamp(2.5rem, 7vw, 5rem) 0;
+    // A label on the outer orbit swings past the column edge for a moment;
+    // clipping here keeps it from opening a horizontal scroll on a phone.
+    overflow: hidden;
+}
+
+.rm-site-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+
+    @include media-breakpoint-up(lg) {
+        grid-template-columns: 7fr 5fr;
+        align-items: center;
+    }
+}
+
+.rm-site-title {
+    margin: 1rem 0 0;
+    max-width: 16ch;
+    color: $rm-site-ink;
+    font-family: $rm-site-display;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+
+    // The design highlights the middle of the headline in gold; the string is
+    // one sentence, so the gradient does the highlighting without markup.
+    background: linear-gradient(100deg, $rm-site-ink 0%, $rm-site-ink 46%, $rm-site-gold-bright 62%, $rm-site-gold 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.rm-site-lead {
+    margin: 1rem 0 0;
+    max-width: 52ch;
+    color: $rm-site-ink-muted;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+}
+
+.rm-site-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+}
+
+.rm-site-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin: 2.5rem 0 0;
+    border: 1px solid $rm-site-line;
+    background-color: $rm-site-line;
+
+    @include media-breakpoint-up(md) {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    > div {
+        padding: 1rem 1.15rem;
+        background-color: $rm-site-surface;
+    }
+
+    dt {
+        margin: 0;
+        color: $rm-site-ink-muted;
+        @include rm-site-label;
+        font-weight: 600;
+    }
+
+    dd {
+        margin: 0.35rem 0 0;
+        color: $rm-site-ink;
+        font-family: $rm-site-display;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+}
+
+// G5) The solar system: the academy at the centre, one level per planet.
+//
+// Each ring is a circle drawn by its border; an arm the size of the ring
+// spins, and carries an anchor at 12 o'clock. The planet sits on the anchor
+// and spins the other way at the same speed, so it travels the orbit while
+// its label stays upright. Negative delays start each planet at a different
+// angle, which is also where it rests when motion is reduced.
+$rm-orbit-diameters: (36%, 50%, 64%, 78%, 92%);
+$rm-orbit-diameters-sm: (34%, 47%, 60%, 73%, 84%);
+$rm-orbit-seconds: (32, 42, 54, 66, 80);
+$rm-orbit-phases: (0.08, 0.62, 0.3, 0.86, 0.46);
+$rm-orbit-planets: (1.05rem, 1.25rem, 1.4rem, 1.55rem, 1.3rem);
+
+@keyframes rm-orbit-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rm-orbit-counter {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(-360deg);
+    }
+}
+
+.rm-site-system {
+    width: 100%;
+    max-width: 34rem;
+    margin: 0 auto;
+}
+
+.rm-orbit {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+}
+
+.rm-orbit-sun {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle at 35% 30%, rgba($rm-site-gold-bright, 0.35), rgba($rm-site-gold, 0.12) 55%, transparent 72%);
+    box-shadow: 0 0 60px rgba($rm-site-gold, 0.28), inset 0 0 0 1px rgba($rm-site-gold, 0.35);
+
+    img,
+    .icon {
+        width: 64%;
+        height: auto;
+        margin: 0;
+    }
+}
+
+.rm-orbit-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    aspect-ratio: 1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.rm-orbit-arm {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    animation: rm-orbit-spin var(--rm-orbit-t) linear infinite;
+    animation-delay: var(--rm-orbit-delay);
+}
+
+.rm-orbit-anchor {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 0;
+}
+
+.rm-planet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--rm-planet-size);
+    height: var(--rm-planet-size);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    pointer-events: auto;
+    cursor: pointer;
+    animation: rm-orbit-counter var(--rm-orbit-t) linear infinite;
+    animation-delay: var(--rm-orbit-delay);
+    transition: box-shadow 0.2s ease;
+
+    &:focus {
+        outline: 0;
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 3px $rm-site-canvas, 0 0 0 5px $rm-site-gold-bright !important; /* stylelint-disable-line declaration-no-important */
+    }
+}
+
+// The label hangs under its planet and belongs to the button, so the pill is
+// as clickable as the sphere.
+.rm-planet-label {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 50%;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    color: $rm-site-canvas;
+    font-family: $rm-site-display;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    transition: transform 0.2s ease;
+}
+
+.rm-planet-short {
+    display: none;
+}
+
+.rm-planet:hover .rm-planet-label,
+.rm-planet[aria-expanded="true"] .rm-planet-label {
+    transform: translateX(-50%) scale(1.08);
+}
+
+@for $i from 1 through 5 {
+    $t: nth($rm-orbit-seconds, $i);
+    .rm-orbit-ring-#{$i} {
+        width: nth($rm-orbit-diameters, $i);
+        --rm-orbit-t: #{$t}s;
+        --rm-orbit-delay: #{-$t * nth($rm-orbit-phases, $i)}s;
+        --rm-planet-size: #{nth($rm-orbit-planets, $i)};
+    }
+}
+
+@each $key, $neon in $rm-site-levels {
+    .rm-orbit-ring.rm-level-#{$key} {
+        border-color: rgba($neon, 0.22);
+    }
+
+    .rm-level-#{$key} {
+        .rm-planet {
+            background: radial-gradient(circle at 32% 30%, #fff 0, $neon 38%, darken($neon, 32%) 100%);
+            box-shadow: 0 0 18px rgba($neon, 0.75), 0 0 2px rgba($neon, 0.9);
+        }
+
+        .rm-planet:hover,
+        .rm-planet[aria-expanded="true"] {
+            box-shadow: 0 0 28px rgba($neon, 0.95), 0 0 0 3px rgba($neon, 0.35);
+        }
+
+        .rm-level-dot {
+            background-color: $neon;
+            box-shadow: 0 0 10px rgba($neon, 0.8);
+        }
+
+        .rm-level-group-label {
+            color: $neon;
+        }
+
+        .rm-level-courses li::before {
+            background-color: $neon;
+        }
+    }
+}
+
+// Catch a planet: everything stops while the pointer or the keyboard is in
+// the system, or a sheet is open.
+.rm-orbit:hover,
+.rm-orbit:focus-within,
+.rm-orbit.is-open {
+    .rm-orbit-arm,
+    .rm-planet {
+        animation-play-state: paused;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rm-orbit-arm,
+    .rm-planet {
+        animation-play-state: paused;
+    }
+}
+
+.rm-orbit-hint {
+    // Room for the label of a planet passing under the outer orbit.
+    margin: 2.5rem 0 0;
+    color: $rm-site-ink-muted;
+    text-align: center;
+    @include rm-site-label;
+
+    .fa {
+        margin-right: 0.45rem;
+        color: $rm-site-gold;
+    }
+}
+
+// The sheet of a level: glass card over the system, its own scroll.
+.rm-level-sheet {
+    position: absolute;
+    top: 6%;
+    right: 2%;
+    bottom: 6%;
+    left: 2%;
+    z-index: 2;
+    overflow-y: auto;
+    padding: 1.15rem 1.25rem 1.25rem;
+    border: 1px solid $rm-site-line;
+    border-radius: 0.85rem;
+    background-color: $rm-site-card;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    // The browser's own white bar is the only light thing on the canvas.
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+    scrollbar-width: thin;
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.rm-level-sheet-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+
+    .rm-level-dot {
+        margin-top: 0.45rem;
+    }
+
+    > span:nth-child(2) {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+.rm-level-sheet-title {
+    display: block;
+    color: $rm-site-ink;
+    font-family: $rm-site-display;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.rm-level-sheet-tagline {
+    display: block;
+    margin-top: 0.15rem;
+    color: $rm-site-ink-muted;
+    font-size: 0.8125rem;
+}
+
+body.richimath-site .rm-level-sheet-close {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 1px solid $rm-site-line;
+    border-radius: 50%;
+    background-color: transparent;
+    color: $rm-site-ink-muted;
+
+    &:hover,
+    &:focus {
+        background-color: $rm-site-hover;
+        color: $rm-site-ink;
+    }
+}
+
+.rm-level-sheet-count {
+    margin: 0.75rem 0 0;
+    color: $rm-site-ink-faint;
+    @include rm-site-label;
+}
+
+.rm-level-sheet .rm-level-groups {
+    margin-top: 0.75rem;
+}
+
+// Shared by the sheet and the Levels menu: groups of course names, no links.
+.rm-level-dot {
+    display: inline-block;
+    flex: none;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+}
+
+.rm-level-group + .rm-level-group {
+    margin-top: 0.85rem;
+}
+
+.rm-level-group-label {
+    margin: 0 0 0.35rem;
+    @include rm-site-label;
+}
+
+.rm-level-courses {
+    margin: 0;
+
+    li {
+        position: relative;
+        padding: 0.2rem 0 0.2rem 0.95rem;
+        color: $rm-site-ink;
+        font-size: 0.875rem;
+        line-height: 1.35;
+        cursor: default;
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0.66rem;
+            left: 0.1rem;
+            width: 0.32rem;
+            height: 0.32rem;
+            border-radius: 50%;
+        }
+    }
+}
+
+.rm-level-soon {
+    margin: 0.85rem 0 0;
+    color: $rm-site-ink-muted;
+    font-size: 0.875rem;
+}
+
+.rm-level-soon-chip {
+    display: inline-block;
+    margin-right: 0.4rem;
+    padding: 0.15rem 0.55rem;
+    border: 1px solid rgba($rm-site-gold, 0.4);
+    border-radius: 999px;
+    color: $rm-site-gold;
+    @include rm-site-label;
+}
+
+@include media-breakpoint-down(sm) {
+    @for $i from 1 through 5 {
+        .rm-orbit-ring-#{$i} {
+            width: nth($rm-orbit-diameters-sm, $i);
+        }
+    }
+
+    .rm-planet-label {
+        padding: 0.22rem 0.55rem;
+        font-size: 0.6875rem;
+    }
+
+    .rm-planet-full {
+        display: none;
+    }
+
+    .rm-planet-short {
+        display: inline;
+    }
+}
+
+// G5b) The Levels menu of the site bar: the five levels on the left, the
+// courses of the one under the pointer on the right. Spans the whole bar so
+// the course columns have room, like the mega menus it is modelled on.
+.rm-site-bar-inner {
+    position: relative;
+}
+
+.rm-site-nav {
+    align-self: stretch;
+}
+
+.rm-site-levels {
+    display: flex;
+    align-items: center;
+}
+
+body.richimath-site .rm-levels-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.75rem;
+    border: 0;
+    border-radius: 0.25rem;
+    background-color: transparent;
+    // Gold like its neighbours: the site inks every nav link gold.
+    color: $rm-site-gold;
+    font-family: $rm-site-display;
+    font-size: 0.875rem;
+    font-weight: 600;
+
+    .fa {
+        font-size: 0.7rem;
+        transition: transform 0.2s ease;
+    }
+
+    &:hover,
+    &:focus {
+        background-color: $rm-site-hover;
+        color: $rm-site-ink;
+    }
+}
+
+.rm-site-levels.is-open .rm-levels-trigger {
+    background-color: $rm-site-hover;
+    color: $rm-site-ink;
+
+    .fa {
+        transform: rotate(180deg);
+    }
+}
+
+.rm-levels-menu {
+    position: absolute;
+    top: 100%;
+    right: clamp(1rem, 4vw, 3rem);
+    left: clamp(1rem, 4vw, 3rem);
+    display: none;
+    padding: 1.25rem;
+    border: 1px solid $rm-site-line;
+    border-radius: 0 0 0.85rem 0.85rem;
+    // Opaque: the hero headline showed through a translucent panel.
+    background-color: $rm-site-card;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+}
+
+.rm-site-levels.is-open .rm-levels-menu {
+    display: block;
+}
+
+// Every pane lands in the same cell of the grid: the tabs stack on the left
+// and only the active level's pane is drawn on the right. `display: contents`
+// on the item lets the button and its pane join the grid directly.
+.rm-levels-tabs {
+    display: grid;
+    grid-template-columns: 17rem minmax(0, 1fr);
+    grid-template-rows: repeat(5, auto) 1fr;
+    column-gap: 1.5rem;
+    margin: 0;
+}
+
+.rm-levels-tab {
+    display: contents;
+}
+
+body.richimath-site .rm-levels-tab-btn {
+    grid-column: 1;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 0.65rem;
+    width: 100%;
+    margin-bottom: 0.25rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    background-color: transparent;
+    color: $rm-site-ink-muted;
+    text-align: left;
+
+    .rm-level-dot {
+        grid-row: span 2;
+    }
+}
+
+.rm-levels-tab-name {
+    color: $rm-site-ink;
+    font-family: $rm-site-display;
+    font-size: 0.9375rem;
+    font-weight: 600;
+}
+
+.rm-levels-tab-count {
+    grid-column: 2;
+    color: $rm-site-ink-faint;
+    font-size: 0.75rem;
+}
+
+.rm-levels-tab.is-active .rm-levels-tab-btn {
+    border-color: $rm-site-line;
+    background-color: $rm-site-hover;
+}
+
+.rm-levels-pane {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    display: none;
+    padding: 0.35rem 0 0 1.5rem;
+    border-left: 1px solid $rm-site-line;
+}
+
+.rm-levels-tab.is-active .rm-levels-pane {
+    display: block;
+}
+
+.rm-levels-pane-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.75rem;
+    margin: 0 0 1rem;
+}
+
+.rm-levels-pane-name {
+    color: $rm-site-ink;
+    font-family: $rm-site-display;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.rm-levels-pane-tagline {
+    color: $rm-site-ink-muted;
+    font-size: 0.875rem;
+}
+
+// Up to three columns of groups; a group never splits across two.
+.rm-levels-pane .rm-level-groups {
+    columns: 3 13rem;
+    column-gap: 2rem;
+}
+
+.rm-levels-pane .rm-level-group {
+    break-inside: avoid;
+    margin: 0 0 1rem;
+}
+
+.rm-levels-pane .rm-level-group + .rm-level-group {
+    margin-top: 0;
+}
+
+.rm-levels-note {
+    margin: 1rem 0 0;
+    padding-top: 0.85rem;
+    border-top: 1px solid $rm-site-line;
+    color: $rm-site-ink-faint;
+    font-size: 0.75rem;
+}
+
+// El contenido de portada de Moodle (hoy, el banner de portada antiguo) no se
+// pinta aquí: el héroe de arriba ya lleva la marca y el banner la repetía.
+//
+// El marcador SÍ tiene que seguir en el HTML — Moodle se niega a renderizar un
+// layout que no lo contenga— así que esto oculta la caja, no el marcador.
+// Para recuperarlo, borra esta regla. Para quitar el banner de verdad (también
+// de la portada con sesión), bórralo desde la portada con el modo edición.
+body.richimath-site .rm-site-content {
+    display: none;
+}
+
+// G6) Sections and the three division cards.
+.rm-site-section {
+    padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+}
+
+.rm-site-section-alt {
+    border-top: 1px solid $rm-site-line;
+    border-bottom: 1px solid $rm-site-line;
+    background-color: $rm-site-surface;
+}
+
+.rm-site-section-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+
+    h2 {
+        margin: 0;
+        color: $rm-site-ink;
+        font-family: $rm-site-display;
+        font-size: clamp(1.5rem, 3vw, 2.25rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    p {
+        margin: 0;
+        max-width: 46ch;
+        color: $rm-site-ink-muted;
+    }
+}
+
+.rm-site-divisions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+
+    @include media-breakpoint-up(md) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include media-breakpoint-up(lg) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.rm-site-division {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+    overflow: hidden;
+    padding: 1.75rem 1.5rem 1.5rem;
+    border: 1px solid $rm-site-line;
+    border-radius: 0.5rem;
+    background-color: $rm-site-card;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+    h3 {
+        margin: 0;
+        color: $rm-site-ink;
+        font-family: $rm-site-display;
+        font-size: 1.375rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+
+    p {
+        margin: 0.5rem 0 0;
+        color: $rm-site-ink-muted;
+        font-size: 0.9375rem;
+        line-height: 1.6;
+    }
+
+    // The 2px neon rule the design puts across the top of every card.
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 2px;
+    }
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.rm-site-division-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1.15rem 0 0;
+
+    li {
+        padding: 0.25rem 0.55rem;
+        border-radius: 0.25rem;
+        background-color: $rm-site-hover;
+        font-family: $rm-site-display;
+        font-size: 0.6875rem;
+        font-weight: 600;
+    }
+}
+
+.rm-site-division-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.rm-site-division-meta {
+    color: $rm-site-ink-faint;
+    @include rm-site-label;
+}
+
+body.richimath-site .rm-site-btn-division {
+    border-color: $rm-site-line;
+    background-color: $rm-site-hover;
+}
+
+// Each division wears its own neon: the rule on top, the chip, the tags and
+// the button. Nothing else on the page is allowed to use these hues.
+@each $key, $neon in $rm-site-divisions {
+    .rm-site-division-#{$key} {
+        &::before {
+            background-color: $neon;
+        }
+
+        &:hover {
+            border-color: rgba($neon, 0.4);
+            box-shadow: 0 4px 20px rgba($neon, 0.12);
+        }
+
+        .rm-site-chip-division {
+            border-color: rgba($neon, 0.3);
+            background-color: rgba($neon, 0.1);
+            color: $neon;
+        }
+
+        .rm-site-division-tags li {
+            color: $neon;
+        }
+
+        .rm-site-btn-division {
+            color: $neon !important; /* stylelint-disable-line declaration-no-important */
+
+            &:hover,
+            &:focus {
+                background-color: rgba($neon, 0.12);
+                border-color: rgba($neon, 0.5);
+                color: $neon;
+            }
+        }
+    }
+}
+
+// G7) Method block and feature grid.
+.rm-site-method {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+
+    @include media-breakpoint-up(lg) {
+        grid-template-columns: 5fr 7fr;
+    }
+
+    h2 {
+        margin: 0.75rem 0 0;
+        color: $rm-site-ink;
+        font-family: $rm-site-display;
+        font-size: clamp(1.5rem, 3vw, 2.25rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    p {
+        margin: 0.75rem 0 0;
+        color: $rm-site-ink-muted;
+        line-height: 1.65;
+    }
+}
+
+.rm-site-features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    @include media-breakpoint-up(sm) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.rm-site-feature {
+    padding: 1.25rem;
+    border: 1px solid $rm-site-line;
+    border-radius: 0.5rem;
+    background-color: $rm-site-card;
+
+    .fa {
+        color: $rm-site-gold;
+        font-size: 1.15rem;
+    }
+
+    h3 {
+        margin: 0.75rem 0 0;
+        color: $rm-site-ink;
+        font-family: $rm-site-display;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    p {
+        margin: 0.4rem 0 0;
+        color: $rm-site-ink-muted;
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
+}
+
+// G8) The single call to action, in institutional gold.
+.rm-site-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border: 1px solid rgba($rm-site-gold, 0.35);
+    border-radius: 0.75rem;
+    background:
+        radial-gradient(circle at 15% 20%, rgba($rm-site-gold, 0.18), transparent 55%),
+        $rm-site-card;
+
+    h2 {
+        margin: 0.75rem 0 0;
+        color: $rm-site-ink;
+        font-family: $rm-site-display;
+        font-size: clamp(1.375rem, 2.6vw, 1.875rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    p {
+        margin: 0.5rem 0 0;
+        max-width: 52ch;
+        color: $rm-site-ink-muted;
+    }
+}
+
+// G9) Footer.
+.rm-site-foot {
+    position: relative;
+    z-index: 1;
+    padding-top: clamp(2rem, 5vw, 3rem);
+    border-top: 1px solid $rm-site-line;
+    background-color: $rm-site-surface;
+}
+
+.rm-site-foot-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+
+    @include media-breakpoint-up(md) {
+        grid-template-columns: 2fr 1fr 1fr;
+    }
+
+    h2 {
+        margin: 0 0 0.75rem;
+        color: $rm-site-ink;
+        @include rm-site-label;
+    }
+
+    li {
+        margin-bottom: 0.4rem;
+    }
+
+    a {
+        color: $rm-site-ink-muted;
+        font-size: 0.875rem;
+
+        &:hover,
+        &:focus {
+            color: $rm-site-gold;
+        }
+    }
+}
+
+.rm-site-foot-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+
+    img,
+    .icon {
+        width: auto;
+        height: 46px;
+        margin: 0;
+    }
+
+    p {
+        margin: 0;
+        max-width: 40ch;
+        color: $rm-site-ink-muted;
+        font-size: 0.875rem;
+    }
+}
+
+.rm-site-foot-legal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    padding: 1rem 0 1.5rem;
+    border-top: 1px solid $rm-site-line;
+    color: $rm-site-ink-faint;
+    font-size: 0.8125rem;
+}
+
+/* ==================================================================
+   H) Admin — la lista de usuarios (/admin/user.php).
+
+   La página es core y no se toca: esto es solo pintura sobre el
+   marcado que Moodle ya emite. Dos cosas la hacían incómoda y
+   ninguna era de estilo — están resueltas por AJUSTE, no aquí:
+
+   - Qué filtro sale sin pulsar "Mostrar más" lo decide el ajuste de
+     sitio `userfiltersdefault` (Usuarios → Gestión de usuarios). Para
+     esta academia va en `email`.
+   - El título "Examinar lista de usuarios" es la cadena `userlist`
+     de `admin`, y se cambia por Personalización de idioma.
+
+   Lo que sí es estilo: el formulario flotaba suelto sobre la página
+   sin agrupar, la fila del filtro se estiraba a tres columnas con un
+   hueco muerto en medio, y "Mostrar más" salía ENCIMA del campo, que
+   es donde nadie lo busca.
+   ================================================================== */
+
+body#page-admin-user {
+
+    // El recuento es un dato, no un titular: que no compita con la
+    // marca de la barra superior.
+    #region-main [role="main"] > h2 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: $richimath-navy;
+        margin-bottom: 1rem;
+
+        &::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 1em;
+            margin-right: 0.6rem;
+            vertical-align: -0.15em;
+            border-radius: 2px;
+            background: $od-primary-container;
+        }
+    }
+
+    // Cada fieldset (Nuevo filtro / Filtros activos) pasa a ser una
+    // tarjeta, para que se lea como un bloque y no como texto suelto.
+    form.mform fieldset.collapsible {
+        background: #fff;
+        border: 1px solid rgba($richimath-line, 0.7);
+        border-radius: 12px;
+        padding: 1rem 1.25rem 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    // La cabecera del bloque, en el tamaño de una etiqueta.
+    form.mform fieldset.collapsible > .d-flex h3 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        color: $richimath-navy;
+    }
+
+    // "Mostrar más" deja de ser lo primero que se ve: se va al final
+    // del bloque y con peso de enlace secundario.
+    .fitem.moreless-actions {
+        order: 99;
+        margin: 0.75rem 0 0;
+
+        .moreless-toggler {
+            font-size: 0.85rem;
+            color: $od-primary;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    }
+
+    // El contenedor pasa a columna para que ese `order` cuente.
+    #id_newfiltercontainer.fcontainer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    // La fila del filtro, en línea y pegada: etiqueta, operador,
+    // valor. Se acabó el hueco de tres columnas.
+    // OJO con el `display`: core esconde los campos de "Mostrar más" con
+    // `.jsenabled .mform .containsadvancedelements .advanced {display:none}`,
+    // y un selector con id le gana en especificidad — poner `display:flex`
+    // a secas aquí desplegaba TODOS los filtros de golpe. Por eso el
+    // display solo se declara en las filas que deben verse.
+    #id_newfiltercontainer .form-group.row.fitem:not(.advanced),
+    #id_newfiltercontainer .form-group.row.fitem.advanced.show {
+        display: flex;
+    }
+
+    #id_newfiltercontainer .form-group.row.fitem {
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem 0.75rem;
+        margin: 0 0 0.5rem;
+
+        > .col-md-3 {
+            flex: 0 0 auto;
+            width: auto;
+            max-width: none;
+            padding: 0;
+            font-size: 0.9rem;
+            color: $richimath-navy;
+        }
+
+        > .col-md-9 {
+            flex: 1 1 320px;
+            width: auto;
+            max-width: none;
+            padding: 0;
+        }
+
+        select,
+        input[type="text"] {
+            height: 2.4rem;
+        }
+
+        // El valor manda: que se lleve el espacio sobrante.
+        input[type="text"] {
+            min-width: 14rem;
+        }
+    }
+
+    // Los botones del formulario, alineados con el bloque y sin el
+    // peso de un botón principal de página.
+    form.mform .form-group.row:last-of-type,
+    .fitem.femptylabel {
+        margin-bottom: 0;
+
+        .btn {
+            font-size: 0.9rem;
+            padding: 0.45rem 1.1rem;
+        }
+    }
+
+    // Filtros activos: cada uno se lee como una línea con su casilla,
+    // no como un párrafo suelto.
+    #id_activefilter .fitem,
+    .fcontainer .felement > .form-check {
+        padding: 0.35rem 0;
+    }
+
+    @media (max-width: 575.98px) {
+        #id_newfiltercontainer .form-group.row.fitem {
+            > .col-md-3,
+            > .col-md-9 {
+                flex: 1 1 100%;
+            }
+
+            input[type="text"],
+            select {
+                width: 100%;
+            }
+        }
+    }
+}
+
+/* ==================================================================
+   I) El WhatsApp del profesor del curso.
+
+   Tercer botón flotante de la misma esquina: por debajo ya están el
+   "?" de Boost y el FAB de Consultas, y los offsets de aquí se leen
+   junto a los de la sección del FAB de soporte — tocar uno sin mirar
+   el otro deja dos botones superpuestos.
+
+   Redondo y solo con icono, para que no compita con Consultas, que sí
+   lleva texto. Verde de WhatsApp porque es la marca que el alumno
+   reconoce; no es un color del sistema de diseño y por eso va literal.
+   ================================================================== */
+
+#{$richimath-skin} .richimath-whatsapp-fab {
+    position: fixed;
+    right: 1rem;
+    bottom: 10.5rem;
+    z-index: $zindex-dropdown;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #25d366;
+    box-shadow: 0 4px 12px rgba(38, 45, 61, 0.28);
+    color: #fff;
+
+    .fa {
+        font-size: 1.5rem;
+    }
+
+    &:hover,
+    &:focus {
+        background-color: #1da851;
+        color: #fff;
+        text-decoration: none;
+    }
+}
+
+@include media-breakpoint-up(md) {
+    #{$richimath-skin} {
+        .richimath-whatsapp-fab {
+            right: 2rem;
+            bottom: 8.5rem;
+        }
+
+        &.hasstickyfooter .richimath-whatsapp-fab {
+            bottom: calc(7.5rem + #{$stickyfooter-height});
+        }
+
+        #page.drawers.show-drawer-right .richimath-whatsapp-fab {
+            right: calc(#{$drawer-right-width} + 2rem);
+        }
+    }
+}

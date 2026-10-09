@@ -1,0 +1,10 @@
+/* Webfonts for the Primary Moodle Odyssey design system (Quicksand for
+   headings, Nunito Sans for copy). A plain sheet, not an SCSS @import:
+   scssphp resolves @import as a file path and refuses a remote URL. */
+@import url("https://fonts.googleapis.com/css?family=Quicksand:500,600,700|Nunito+Sans:400,600,700,800&display=swap");
+/* JetBrains Mono is the technical layer both docs/ux_pro design systems share:
+   timers, identifiers, metadata and formulas. Never used for prose. */
+@import url("https://fonts.googleapis.com/css?family=JetBrains+Mono:400,500,600,700&display=swap");
+/* The institutional site (docs/design/website): Space Grotesk for structure,
+   Plus Jakarta Sans for reading. */
+@import url("https://fonts.googleapis.com/css?family=Space+Grotesk:500,600,700|Plus+Jakarta+Sans:400,500,600,700,800&display=swap");

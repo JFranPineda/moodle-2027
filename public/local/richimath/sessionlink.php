@@ -104,7 +104,7 @@ echo html_writer::start_tag('form', ['method' => 'post', 'class' => 'mt-3']);
 echo html_writer::empty_tag('input',
     ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
 echo html_writer::tag('label', get_string('sessionlinkemails', 'local_richimath'),
-    ['for' => 'rm-emails', 'class' => 'font-weight-bold']);
+    ['for' => 'rm-emails', 'class' => 'fw-bold']);
 echo html_writer::tag('textarea', '', [
     'id' => 'rm-emails', 'name' => 'emails', 'rows' => 5,
     'class' => 'form-control mb-2',

@@ -1,0 +1,79 @@
+// theme_richimath pre.scss — variable overrides compiled before the Boost preset.
+// Kept minimal on purpose; visual rules live in post.scss.
+//
+// Design system: "Primary Moodle Odyssey" (docs/design/primary_moodle_odyssey/
+// DESIGN.md). Setting the Bootstrap variables here re-skins every component
+// Boost builds — buttons, cards, forms, tables, alerts — before a single rule
+// of ours runs; post.scss section E only handles what variables cannot reach.
+
+// Quicksand for headings, Nunito Sans for copy. The @import that fetches them
+// lives in style/fonts.css: scssphp treats @import as a file path and refuses
+// a remote URL, so it cannot live here.
+
+// Palette (Material-3 roles from DESIGN.md).
+$odyssey-primary: #004ccd !default;
+$odyssey-primary-container: #0f62fe !default;
+$odyssey-secondary: #006d40 !default;
+$odyssey-tertiary: #9a3600 !default;
+$odyssey-surface: #f9f9ff !default;
+$odyssey-surface-low: #f0f3ff !default;
+$odyssey-surface-container: #e7eeff !default;
+$odyssey-surface-high: #dee8ff !default;
+$odyssey-on-surface: #111c2c !default;
+$odyssey-on-surface-variant: #424656 !default;
+$odyssey-outline: #737687 !default;
+$odyssey-outline-variant: #c3c6d8 !default;
+$odyssey-error: #ba1a1a !default;
+
+// Bootstrap semantic colours.
+$primary: $odyssey-primary !default;
+$secondary: $odyssey-on-surface-variant !default;
+$success: $odyssey-secondary !default;
+$info: $odyssey-primary-container !default;
+$warning: #b86b00 !default;
+$danger: $odyssey-error !default;
+$light: $odyssey-surface-low !default;
+$dark: $odyssey-on-surface !default;
+
+// Canvas and type.
+$body-bg: $odyssey-surface !default;
+$body-color: $odyssey-on-surface !default;
+$border-color: $odyssey-outline-variant !default;
+$link-color: $odyssey-primary !default;
+$font-family-sans-serif: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !default;
+$headings-font-family: 'Quicksand', 'Nunito Sans', sans-serif !default;
+$headings-font-weight: 700 !default;
+$headings-color: $odyssey-on-surface !default;
+$font-size-base: 0.9375rem !default; // 15px: the floor DESIGN.md sets for course text.
+$line-height-base: 1.55 !default;
+
+// Soft, organic contours: 16px cards, 12px controls, pills for badges.
+$border-radius: 0.75rem !default;
+$border-radius-sm: 0.5rem !default;
+$border-radius-lg: 1rem !default;
+$card-border-radius: 1rem !default;
+$card-border-color: $odyssey-outline-variant !default;
+$card-spacer-x: 1.25rem !default;
+$card-spacer-y: 1.25rem !default;
+$badge-border-radius: 9999px !default;
+$badge-font-weight: 700 !default;
+
+// Chunky tap targets (48px min) for young hands.
+$input-btn-padding-y: 0.6rem !default;
+$input-btn-padding-x: 1.1rem !default;
+$input-btn-font-size: 0.9375rem !default;
+$btn-font-weight: 700 !default;
+$input-height: 3rem !default;
+$input-border-color: $odyssey-outline-variant !default;
+$input-focus-border-color: $odyssey-primary-container !default;
+$table-border-color: $odyssey-outline-variant !default;
+
+// Activity icon squares (course page, activity header, blocks). Boost ships a
+// candy palette; DESIGN.md maps each purpose to a role of this system.
+$activity-icon-administration-bg: #6929c4 !default;
+$activity-icon-assessment-bg:     #0f62fe !default;
+$activity-icon-collaboration-bg:  #6929c4 !default;
+$activity-icon-communication-bg:  #005d5d !default;
+$activity-icon-content-bg:        #0e7a4a !default;
+// 5.3 renamed the "interface" purpose to "interactivecontent" (MOD_PURPOSE_*).
+$activity-icon-interactivecontent-bg: #d94f00 !default;

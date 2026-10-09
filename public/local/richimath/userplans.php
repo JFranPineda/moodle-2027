@@ -98,12 +98,12 @@ echo html_writer::tag('p', get_string('userplansintro', 'local_richimath', $defa
 // Filters: by plan and by name or email.
 $filter = html_writer::start_tag('form', ['method' => 'get', 'action' => $url->out_omit_querystring(), 'class' => 'form-inline mb-3']);
 $filter .= html_writer::select($planmenu, 'planid', $planid, ['' => get_string('allplans', 'local_richimath')],
-    ['class' => 'custom-select mr-2']);
+    ['class' => 'form-select me-2']);
 $filter .= html_writer::empty_tag('input', [
     'type' => 'text',
     'name' => 'search',
     'value' => $search,
-    'class' => 'form-control mr-2',
+    'class' => 'form-control me-2',
     'placeholder' => get_string('searchusers', 'local_richimath'),
 ]);
 $filter .= html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-secondary', 'value' => get_string('filter')]);
@@ -129,7 +129,7 @@ foreach ($users as $user) {
     $form .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'setuser', 'value' => $user->id]);
     $form .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'page', 'value' => $page]);
     $form .= html_writer::select($planmenu, 'setplan', $current, false, [
-        'class' => 'custom-select',
+        'class' => 'form-select',
         'onchange' => 'this.form.submit();',
     ]);
     $form .= html_writer::end_tag('form');

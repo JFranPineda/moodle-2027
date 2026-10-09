@@ -1,0 +1,194 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_richimath/local/sidebar
+
+    Blackboard-style fixed left sidebar, rendered on large screens only
+    (d-lg-flex); below lg the regular Boost top navbar takes over.
+
+    Context: the theme_boost/drawers layout context (sitename, output,
+    mobileprimarynav, usermenu).
+
+    Example context (json):
+    {
+        "sitename": "Moodle Site",
+        "mobileprimarynav": [
+            {
+                "text": "Dashboard",
+                "url": "/my",
+                "isactive": true
+            }
+        ]
+    }
+}}
+<nav class="richimath-sidebar d-none d-lg-flex flex-column d-print-none" aria-label="{{#str}} sitemenubar, admin {{/str}}">
+    {{! Static brand, Blackboard-style: the logo does not navigate. Keeps the
+        Dashboard nav item below as the only /my link. }}
+    <div class="richimath-sidebar-brand">
+        {{#pix}} whitelogo, theme_richimath {{/pix}}
+        <span class="visually-hidden">{{{ sitename }}}</span>
+    </div>
+    {{! core/user_menu can only exist once per page (fixed DOM ids + JS that
+        binds to the first .usermenu), so the full menu stays in the navbar
+        (visible below lg). Here: avatar + name linking to the profile.
+        Language switching stays reachable via the navbar below lg and via
+        user preferences. }}
+    <div class="richimath-sidebar-user d-flex align-items-center">
+        {{#usermenu}}
+            {{#unauthenticateduser}}
+                <span class="login">
+                    {{#url}}<a href="{{url}}">{{#str}} login, core {{/str}}</a>{{/url}}
+                </span>
+            {{/unauthenticateduser}}
+            {{^unauthenticateduser}}
+                <a href="{{{ output.routes.profile }}}" class="richimath-sidebar-userlink d-flex align-items-center">
+                    {{> core/user_menu_metadata }}
+                    <span class="usertext ms-2">{{userfullname}}</span>
+                </a>
+            {{/unauthenticateduser}}
+        {{/usermenu}}
+    </div>
+    <ul class="richimath-sidebar-nav list-unstyled">
+        {{#mobileprimarynav}}
+            {{#divider}}
+                <li class="richimath-sidebar-divider" role="separator"></li>
+            {{/divider}}
+            {{^divider}}
+                <li>
+                    {{! data-navkey drives the compact-mode icon map in post.scss:
+                        the node key is stable, unlike the href, which carries
+                        redirect=0 only for some homepage configurations. }}
+                    <a href="{{{url}}}" data-navkey="{{key}}" class="richimath-sidebar-link{{#isactive}} active{{/isactive}}" {{#isactive}}aria-current="true"{{/isactive}}>
+                        {{{text}}}
+                    </a>
+                </li>
+            {{/divider}}
+        {{/mobileprimarynav}}
+        {{! Catalog is a dead end for students (manual enrolments): staff only. }}
+        {{#output.show_catalog}}
+            <li>
+                <a href="{{{ output.routes.courses }}}" class="richimath-sidebar-link">
+                    <i class="fa fa-book-open" aria-hidden="true"></i>{{#str}} courses, moodle {{/str}}
+                </a>
+            </li>
+        {{/output.show_catalog}}
+        <li>
+            <a href="{{{ output.routes.calendar }}}" class="richimath-sidebar-link">
+                <i class="fa fa-calendar-days" aria-hidden="true"></i>{{#str}} calendar, calendar {{/str}}
+            </a>
+        </li>
+        <li>
+            <a href="{{{ output.routes.messages }}}" class="richimath-sidebar-link">
+                <i class="fa fa-envelope" aria-hidden="true"></i>{{#str}} messages, message {{/str}}
+            </a>
+        </li>
+        {{^usermenu.unauthenticateduser}}
+            <li>
+                <a href="{{{ output.routes.notifications }}}" class="richimath-sidebar-link">
+                    <i class="fa fa-bell" aria-hidden="true"></i>{{#str}} notifications, message {{/str}}
+                </a>
+            </li>
+        {{/usermenu.unauthenticateduser}}
+        <li>
+            <a href="{{{ output.routes.grades }}}" class="richimath-sidebar-link">
+                <i class="fa fa-graduation-cap" aria-hidden="true"></i>{{#str}} grades, grades {{/str}}
+            </a>
+        </li>
+        {{! Same enabled/capability gate the navbar search box uses. }}
+        {{#output.search_box}}
+            <li>
+                <a href="{{{ output.routes.search }}}" class="richimath-sidebar-link">
+                    <i class="fa fa-magnifying-glass" aria-hidden="true"></i>{{#str}} search, moodle {{/str}}
+                </a>
+            </li>
+        {{/output.search_box}}
+    </ul>
+    <div class="richimath-sidebar-bottom mt-auto">
+        {{{ output.edit_switch }}}
+        {{! No sesskey on purpose: Moodle answers with its logout confirm page. }}
+        {{^usermenu.unauthenticateduser}}
+            <a href="{{{ output.routes.logout }}}" class="richimath-sidebar-link">
+                <i class="fa fa-right-from-bracket" aria-hidden="true"></i>{{#str}} logout, moodle {{/str}}
+            </a>
+        {{/usermenu.unauthenticateduser}}
+    </div>
+</nav>
+{{#js}}
+// Defensive dedupe: custommenuitems (or future edits) can repeat the fixed
+// Calendar/Messages/Grades targets. Keep the first link for each resolved
+// pathname+search+hash, drop the rest. Skip non-navigating links (empty
+// href resolves to the current page URL; anchors never leave it).
+try {
+    var richimathSeen = {};
+    document.querySelectorAll('.richimath-sidebar .richimath-sidebar-nav a[href]').forEach(function(link) {
+        var raw = link.getAttribute('href');
+        if (!raw || raw.charAt(0) === '#') {
+            return;
+        }
+        var key = link.pathname + link.search + link.hash;
+        if (richimathSeen[key]) {
+            var item = link.closest('li');
+            (item || link).remove();
+        } else {
+            richimathSeen[key] = true;
+        }
+    });
+} catch (e) {
+    // Cosmetic cleanup only: never let it break the page.
+}
+
+// Active state for the fixed items (Calendar, Messages, Notifications,
+// Grades): Moodle's primary nav only knows its own entries, so we mark the
+// sidebar link whose URL best matches the current page. Exact pathname wins;
+// otherwise the longest matching link directory (so /grade/report/... lights
+// up Grades). The root path only matches exactly — else Home would match
+// every page.
+try {
+    var richimathHere = window.location.pathname;
+    var richimathBest = null;
+    var richimathBestLen = -1;
+    document.querySelectorAll('.richimath-sidebar .richimath-sidebar-nav a[href]').forEach(function(link) {
+        var raw = link.getAttribute('href');
+        if (!raw || raw.charAt(0) === '#') {
+            return;
+        }
+        var score = -1;
+        if (link.pathname === richimathHere) {
+            score = 10000 + link.pathname.length;
+        } else {
+            var dir = link.pathname.replace(/[^/]*$/, '');
+            if (dir !== '/' && richimathHere.indexOf(dir) === 0) {
+                score = dir.length;
+            }
+        }
+        if (score > richimathBestLen) {
+            richimathBestLen = score;
+            richimathBest = link;
+        }
+    });
+    if (richimathBest && richimathBestLen >= 0 && !richimathBest.classList.contains('active')) {
+        document.querySelectorAll('.richimath-sidebar .richimath-sidebar-nav a.active').forEach(function(link) {
+            link.classList.remove('active');
+            link.removeAttribute('aria-current');
+        });
+        richimathBest.classList.add('active');
+        richimathBest.setAttribute('aria-current', 'true');
+    }
+} catch (e) {
+    // Cosmetic highlight only: never let it break the page.
+}
+{{/js}}

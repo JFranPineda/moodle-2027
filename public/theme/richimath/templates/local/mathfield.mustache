@@ -1,0 +1,73 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_richimath/local/mathfield
+
+    Ambient math-glyph animation layer, shared by the public landing and
+    the login page. The JS only seeds the field: each glyph gets a random
+    symbol, colour, horizontal position, timing and a unitless --size
+    factor; the SCSS turns that factor into a viewport-responsive
+    font-size via clamp(), so glyphs shrink on small screens with no
+    resize listener. position: fixed resolves against the viewport —
+    keep this node OUT of any ancestor with backdrop-filter/transform
+    (MEMORY trap 3). Hidden from AT; prefers-reduced-motion kills it;
+    harmless if JS never runs.
+
+    Context: none.
+}}
+<div class="richimath-mathfield" aria-hidden="true"></div>
+{{#js}}
+try {
+    var field = document.querySelector('.richimath-mathfield');
+    if (field && !field.hasChildNodes()) {
+        var GLYPHS = ['π', '∑', '√', '∫', '∞', 'Δ',
+            'θ', 'λ', '÷', '×', '±', '≈',
+            '7', '3', '8', '5', 'x²', 'y'];
+        var COLORS = ['#b8860b', '#262d3d', '#7b2d8b', '#b07cc6', '#c9a227'];
+        var GLYPH_COUNT = 26;
+        var POP_RATIO = 0.3;      // share of glyphs that burst near the top
+        var DEEP_SIZE = 2.4;      // --size factor from which a glyph blurs
+        var FLOAT_MIN_S = 8;      // fastest full climb
+        var FLOAT_SPAN_S = 12;    // added to FLOAT_MIN_S for the slowest
+        var SWAY_MIN_S = 2.5;
+        var SWAY_SPAN_S = 3;
+
+        for (var i = 0; i < GLYPH_COUNT; i++) {
+            var size = 1 + Math.random() * 2.4; // unitless; CSS scales it
+            var floatSeconds = FLOAT_MIN_S + Math.random() * FLOAT_SPAN_S;
+            var glyph = document.createElement('span');
+            glyph.className = 'richimath-glyph'
+                + (Math.random() < POP_RATIO ? ' pop' : '')
+                + (size > DEEP_SIZE ? ' is-deep' : '');
+            glyph.textContent = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+            glyph.style.cssText = 'left:' + (Math.random() * 96).toFixed(1) + '%;'
+                + 'color:' + COLORS[Math.floor(Math.random() * COLORS.length)] + ';'
+                + '--size:' + size.toFixed(2) + ';'
+                + '--op:' + (0.10 + Math.random() * 0.22).toFixed(2) + ';'
+                + '--r0:' + ((Math.random() * 40 - 20) | 0) + 'deg;'
+                + '--r1:' + ((Math.random() * 80 - 40) | 0) + 'deg;'
+                + '--sway:' + ((Math.random() * 60 - 30) | 0) + 'px;'
+                + 'animation-duration:' + floatSeconds.toFixed(1) + 's,'
+                + (SWAY_MIN_S + Math.random() * SWAY_SPAN_S).toFixed(1) + 's;'
+                + 'animation-delay:-' + (Math.random() * floatSeconds).toFixed(1) + 's,0s;';
+            field.appendChild(glyph);
+        }
+    }
+} catch (e) {
+    // Decorative only: never let it break the page.
+}
+{{/js}}

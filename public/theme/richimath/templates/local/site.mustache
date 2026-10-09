@@ -1,0 +1,416 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_richimath/local/site
+
+    The institutional site (docs/design/website/DESIGN.md): dark obsidian
+    canvas, institutional gold, one neon key per academic division.
+
+    Everything on this page is real: the divisions are the site's own top
+    level categories, and the five levels — in the Levels menu and as the
+    planets of the hero — list the courses each one has today
+    (theme_richimath\levels). Logging in is the classroom key in the bar,
+    which opens Moodle's own login page. The figures and the prose are
+    language strings, so the academy edits its own claims without a deploy.
+
+    Context variables required for this template:
+    * output - the theme renderer
+    * bodyattributes - body tag attributes
+    * sitename - full site name
+    * shortname - short site name
+    * divisions - the three academic divisions
+    * levels - the five levels with their courses (theme_richimath\levels)
+    * login - login links (forgoturl, signupurl, ...)
+    * studentsurl - the student catalog
+    * loginurl - the login page
+
+    Example context (json):
+    {
+        "sitename": "Richi Math",
+        "shortname": "Richi Math",
+        "studentsurl": "/students",
+        "loginurl": "/login",
+        "divisions": [],
+        "levels": [],
+        "login": {"forgoturl": "/login/forgot_password.php"}
+    }
+}}
+{{{ output.doctype }}}
+<html {{{ output.htmlattributes }}}>
+<head>
+    <title>{{{ output.page_title }}}</title>
+    <link rel="shortcut icon" href="{{{ output.favicon }}}" />
+    {{{ output.standard_head_html }}}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body {{{ bodyattributes }}}>
+{{{ output.standard_top_of_body_html }}}
+
+<header class="rm-site-bar">
+    <div class="rm-site-shell rm-site-bar-inner">
+        <a class="rm-site-brand" href="{{{ config.wwwroot }}}">
+            {{! The site's own mark (docs/design/logos/web_logo): the isotype
+                alone, without the pedestal the login artwork carries. }}
+            {{#pix}} weblogo, theme_richimath {{/pix}}
+            <span class="rm-site-brand-text">
+                <span class="rm-site-brand-name">{{{ shortname }}}</span>
+                <span class="rm-site-brand-sub">{{#str}} sitekicker, theme_richimath {{/str}}</span>
+            </span>
+        </a>
+        <nav class="rm-site-nav" aria-label="{{#str}} sitenavlabel, theme_richimath {{/str}}">
+            {{! Levels: hover (or click, on touch) opens a panel with the five
+                levels; hovering a level shows its courses on the right. }}
+            <div class="rm-site-levels" data-region="rm-levels-nav">
+                <button type="button" class="rm-levels-trigger" aria-expanded="false" aria-controls="rm-levels-menu">
+                    {{#str}} sitenavlevels, theme_richimath {{/str}}<i class="fa fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="rm-levels-menu" id="rm-levels-menu" aria-label="{{#str}} sitelevelslabel, theme_richimath {{/str}}">
+                    <ul class="rm-levels-tabs list-unstyled">
+                        {{#levels}}
+                            <li class="rm-levels-tab rm-level-{{key}}{{#first}} is-active{{/first}}">
+                                <button type="button" class="rm-levels-tab-btn">
+                                    <span class="rm-level-dot" aria-hidden="true"></span>
+                                    <span class="rm-levels-tab-name">{{name}}</span>
+                                    <span class="rm-levels-tab-count">{{#empty}}{{#str}} levelsoon, theme_richimath {{/str}}{{/empty}}{{^empty}}{{countlabel}}{{/empty}}</span>
+                                </button>
+                                <div class="rm-levels-pane">
+                                    <p class="rm-levels-pane-head">
+                                        <span class="rm-levels-pane-name">{{name}}</span>
+                                        <span class="rm-levels-pane-tagline">{{tagline}}</span>
+                                    </p>
+                                    {{> theme_richimath/local/site_level_courses }}
+                                </div>
+                            </li>
+                        {{/levels}}
+                    </ul>
+                    <p class="rm-levels-note">{{#str}} sitelevelsreadonly, theme_richimath {{/str}}</p>
+                </div>
+            </div>
+            <a href="#rm-divisions">{{#str}} sitenavdivisions, theme_richimath {{/str}}</a>
+            <a href="{{{ studentsurl }}}">{{#str}} sitenavcourses, theme_richimath {{/str}}</a>
+            <a href="#rm-method">{{#str}} sitenavmethod, theme_richimath {{/str}}</a>
+            <a href="#rm-contact">{{#str}} sitenavcontact, theme_richimath {{/str}}</a>
+        </nav>
+        <a class="rm-site-key" href="{{{ loginurl }}}">
+            <i class="fa fa-key" aria-hidden="true"></i>{{#str}} siteclassroom, theme_richimath {{/str}}
+        </a>
+    </div>
+</header>
+
+<main id="rm-main" class="rm-site">
+
+    {{! ---- Hero: the pitch, and the console that lets you in ---- }}
+    <section class="rm-site-hero">
+        <div class="rm-site-shell rm-site-hero-grid">
+            <div class="rm-site-pitch">
+                <span class="rm-site-chip rm-site-chip-gold">{{#str}} sitekicker, theme_richimath {{/str}}</span>
+                <h1 class="rm-site-title">{{#str}} siteheadline, theme_richimath {{/str}}</h1>
+                <p class="rm-site-lead">{{#str}} sitelead, theme_richimath {{/str}}</p>
+                <div class="rm-site-actions">
+                    <a class="rm-site-btn rm-site-btn-gold" href="#rm-divisions">
+                        {{#str}} sitectadivisions, theme_richimath {{/str}}<i class="fa fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                    <a class="rm-site-btn rm-site-btn-ghost" href="{{{ studentsurl }}}">
+                        <i class="fa fa-graduation-cap" aria-hidden="true"></i>{{#str}} sitectacourses, theme_richimath {{/str}}
+                    </a>
+                </div>
+                <dl class="rm-site-stats">
+                    <div><dt>{{#str}} sitestatonelabel, theme_richimath {{/str}}</dt><dd class="rm-gold">{{#str}} sitestatonevalue, theme_richimath {{/str}}</dd></div>
+                    <div><dt>{{#str}} sitestattwolabel, theme_richimath {{/str}}</dt><dd class="rm-cyan">{{#str}} sitestattwovalue, theme_richimath {{/str}}</dd></div>
+                    <div><dt>{{#str}} sitestatthreelabel, theme_richimath {{/str}}</dt><dd>{{#str}} sitestatthreevalue, theme_richimath {{/str}}</dd></div>
+                    <div><dt>{{#str}} sitestatfourlabel, theme_richimath {{/str}}</dt><dd class="rm-gold">{{#str}} sitestatfourvalue, theme_richimath {{/str}}</dd></div>
+                </dl>
+            </div>
+
+            {{! The five levels as planets around the academy. Each planet
+                opens a sheet with that level's courses; the orbits pause
+                while the pointer is over them, so a planet can be caught. }}
+            <div class="rm-site-system">
+                <div class="rm-orbit" data-region="rm-orbit" aria-label="{{#str}} sitelevelslabel, theme_richimath {{/str}}">
+                    <div class="rm-orbit-sun" aria-hidden="true">
+                        {{#pix}} weblogo, theme_richimath {{/pix}}
+                    </div>
+                    {{#levels}}
+                        <div class="rm-orbit-ring rm-orbit-ring-{{position}} rm-level-{{key}}">
+                            <div class="rm-orbit-arm">
+                                <span class="rm-orbit-anchor">
+                                    <button type="button" class="rm-planet" aria-expanded="false"
+                                        aria-controls="rm-level-sheet-{{key}}" aria-label="{{name}} — {{#empty}}{{#str}} levelsoon, theme_richimath {{/str}}{{/empty}}{{^empty}}{{countlabel}}{{/empty}}">
+                                        <span class="rm-planet-label" aria-hidden="true">
+                                            <span class="rm-planet-full">{{planet}}</span>
+                                            <span class="rm-planet-short">{{short}}</span>
+                                        </span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    {{/levels}}
+                    {{#levels}}
+                        <div class="rm-level-sheet rm-level-{{key}}" id="rm-level-sheet-{{key}}" role="dialog"
+                            aria-labelledby="rm-level-sheet-title-{{key}}" hidden>
+                            <div class="rm-level-sheet-head">
+                                <span class="rm-level-dot" aria-hidden="true"></span>
+                                <span>
+                                    <span class="rm-level-sheet-title" id="rm-level-sheet-title-{{key}}">{{name}}</span>
+                                    <span class="rm-level-sheet-tagline">{{tagline}}</span>
+                                </span>
+                                <button type="button" class="rm-level-sheet-close" aria-label="{{#str}} levelclose, theme_richimath {{/str}}">
+                                    <i class="fa fa-xmark" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            {{^empty}}<p class="rm-level-sheet-count">{{countlabel}}</p>{{/empty}}
+                            {{> theme_richimath/local/site_level_courses }}
+                        </div>
+                    {{/levels}}
+                </div>
+                <p class="rm-orbit-hint"><i class="fa fa-hand-pointer" aria-hidden="true"></i>{{#str}} sitelevelshint, theme_richimath {{/str}}</p>
+            </div>
+        </div>
+    </section>
+
+    {{! Moodle refuses to render a layout without this placeholder, so it stays
+        in the markup — but the institutional site does not show it: the hero
+        above carries the brand and the old cover banner duplicated it. The
+        section is hidden in G5b; deleting that rule brings it back. }}
+    <section class="rm-site-content">
+        <div class="rm-site-shell">
+            {{{ output.main_content }}}
+        </div>
+    </section>
+
+    {{! ---- The three academic divisions ---- }}
+    <section class="rm-site-section" id="rm-divisions">
+        <div class="rm-site-shell">
+            <div class="rm-site-section-head">
+                <span class="rm-site-chip">{{#str}} sitedivisionskicker, theme_richimath {{/str}}</span>
+                <h2>{{#str}} sitedivisionstitle, theme_richimath {{/str}}</h2>
+                <p>{{#str}} sitedivisionslead, theme_richimath {{/str}}</p>
+            </div>
+            <div class="rm-site-divisions">
+                {{#divisions}}
+                    <article class="rm-site-division rm-site-division-{{key}}">
+                        <div class="rm-site-division-top">
+                            <span class="rm-site-chip rm-site-chip-division">{{{ name }}}</span>
+                            <h3>{{{ title }}}</h3>
+                            <p>{{{ summary }}}</p>
+                            <ul class="rm-site-division-tags list-unstyled">
+                                {{#courses}}
+                                    <li>{{{ fullname }}}</li>
+                                {{/courses}}
+                            </ul>
+                        </div>
+                        <div class="rm-site-division-foot">
+                            <span class="rm-site-division-meta">{{{ meta }}}</span>
+                            <a class="rm-site-btn rm-site-btn-division" href="{{{ url }}}">
+                                {{#str}} sitedivisionenter, theme_richimath {{/str}}<i class="fa fa-chevron-right" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </article>
+                {{/divisions}}
+            </div>
+        </div>
+    </section>
+
+    {{! ---- What the academy does, in four claims ---- }}
+    <section class="rm-site-section rm-site-section-alt" id="rm-method">
+        <div class="rm-site-shell rm-site-method">
+            <div class="rm-site-method-pitch">
+                <span class="rm-site-chip">{{#str}} sitemethodkicker, theme_richimath {{/str}}</span>
+                <h2>{{#str}} sitemethodtitle, theme_richimath {{/str}}</h2>
+                <p>{{#str}} sitemethodlead, theme_richimath {{/str}}</p>
+            </div>
+            <div class="rm-site-features">
+                <article class="rm-site-feature">
+                    <i class="fa fa-compass-drafting" aria-hidden="true"></i>
+                    <h3>{{#str}} sitefeatureonetitle, theme_richimath {{/str}}</h3>
+                    <p>{{#str}} sitefeatureonetext, theme_richimath {{/str}}</p>
+                </article>
+                <article class="rm-site-feature">
+                    <i class="fa fa-book-open" aria-hidden="true"></i>
+                    <h3>{{#str}} sitefeaturetwotitle, theme_richimath {{/str}}</h3>
+                    <p>{{#str}} sitefeaturetwotext, theme_richimath {{/str}}</p>
+                </article>
+                <article class="rm-site-feature">
+                    <i class="fa fa-chart-line" aria-hidden="true"></i>
+                    <h3>{{#str}} sitefeaturethreetitle, theme_richimath {{/str}}</h3>
+                    <p>{{#str}} sitefeaturethreetext, theme_richimath {{/str}}</p>
+                </article>
+                <article class="rm-site-feature">
+                    <i class="fa fa-users" aria-hidden="true"></i>
+                    <h3>{{#str}} sitefeaturefourtitle, theme_richimath {{/str}}</h3>
+                    <p>{{#str}} sitefeaturefourtext, theme_richimath {{/str}}</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    {{! ---- The one call to action of the page ---- }}
+    <section class="rm-site-section" id="rm-contact">
+        <div class="rm-site-shell">
+            <div class="rm-site-cta">
+                <div>
+                    <span class="rm-site-chip rm-site-chip-gold">{{#str}} sitectakicker, theme_richimath {{/str}}</span>
+                    <h2>{{#str}} sitectatitle, theme_richimath {{/str}}</h2>
+                    <p>{{#str}} offercta, theme_richimath {{/str}}</p>
+                </div>
+                <a class="rm-site-btn rm-site-btn-gold" href="{{{ studentsurl }}}">
+                    {{#str}} sitectabutton, theme_richimath {{/str}}<i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="rm-site-foot">
+    <div class="rm-site-shell rm-site-foot-grid">
+        <div class="rm-site-foot-brand">
+            {{#pix}} weblogo, theme_richimath {{/pix}}
+            <span class="rm-site-brand-name">{{{ shortname }}}</span>
+            <p>{{#str}} welcometagline, theme_richimath {{/str}}</p>
+        </div>
+        <nav aria-label="{{#str}} sitenavdivisions, theme_richimath {{/str}}">
+            <h2>{{#str}} sitenavdivisions, theme_richimath {{/str}}</h2>
+            <ul class="list-unstyled">
+                {{#divisions}}
+                    <li><a href="{{{ url }}}">{{{ name }}}</a></li>
+                {{/divisions}}
+            </ul>
+        </nav>
+        <nav aria-label="{{#str}} siteclassroom, theme_richimath {{/str}}">
+            <h2>{{#str}} siteclassroom, theme_richimath {{/str}}</h2>
+            <ul class="list-unstyled">
+                <li><a href="{{{ loginurl }}}">{{#str}} login {{/str}}</a></li>
+                <li><a href="{{{ studentsurl }}}">{{#str}} sitenavcourses, theme_richimath {{/str}}</a></li>
+                <li><a href="{{{ login.forgoturl }}}">{{#str}} forgotaccount {{/str}}</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="rm-site-shell rm-site-foot-legal">
+        <span>&copy; {{ year }} {{{ sitename }}}</span>
+        <span class="rm-site-mono">{{#str}} logincredits, theme_richimath {{/str}}</span>
+    </div>
+</footer>
+
+{{#js}}
+(function() {
+    // Planets: one sheet open at a time; Escape, the close button or a click
+    // outside closes it and gives focus back to its planet.
+    var orbit = document.querySelector('[data-region="rm-orbit"]');
+    if (orbit) {
+        var open = null;
+        var close = function(refocus) {
+            if (!open) {
+                return;
+            }
+            open.sheet.hidden = true;
+            open.planet.setAttribute('aria-expanded', 'false');
+            orbit.classList.remove('is-open');
+            if (refocus) {
+                open.planet.focus();
+            }
+            open = null;
+        };
+        orbit.querySelectorAll('.rm-planet').forEach(function(planet) {
+            planet.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var sheet = document.getElementById(planet.getAttribute('aria-controls'));
+                var same = open && open.sheet === sheet;
+                close(false);
+                if (same) {
+                    return;
+                }
+                sheet.hidden = false;
+                planet.setAttribute('aria-expanded', 'true');
+                orbit.classList.add('is-open');
+                open = {planet: planet, sheet: sheet};
+                sheet.querySelector('.rm-level-sheet-close').focus();
+            });
+        });
+        orbit.querySelectorAll('.rm-level-sheet-close').forEach(function(button) {
+            button.addEventListener('click', function() {
+                close(true);
+            });
+        });
+        document.addEventListener('click', function(e) {
+            if (open && !open.sheet.contains(e.target)) {
+                close(false);
+            }
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                close(true);
+            }
+        });
+    }
+
+    // Levels menu: hover opens it on a mouse, a tap toggles it on touch. The
+    // level under the pointer stays selected when the pointer travels to its
+    // courses — pure :hover would flick back to the first level on the way.
+    var nav = document.querySelector('[data-region="rm-levels-nav"]');
+    if (nav) {
+        var trigger = nav.querySelector('.rm-levels-trigger');
+        var setOpen = function(value) {
+            nav.classList.toggle('is-open', value);
+            trigger.setAttribute('aria-expanded', value ? 'true' : 'false');
+        };
+        // Asked of the pointer, not of the device: a laptop with a touch
+        // screen has both, and a tap must not open and close in one go.
+        nav.addEventListener('pointerenter', function(e) {
+            if (e.pointerType === 'mouse') {
+                setOpen(true);
+            }
+        });
+        nav.addEventListener('pointerleave', function(e) {
+            if (e.pointerType === 'mouse') {
+                setOpen(false);
+            }
+        });
+        trigger.addEventListener('click', function(e) {
+            // The mouse already opened it on the way in: its click keeps it open.
+            setOpen(e.pointerType === 'mouse' ? true : !nav.classList.contains('is-open'));
+        });
+        nav.addEventListener('focusout', function(e) {
+            if (!nav.contains(e.relatedTarget)) {
+                setOpen(false);
+            }
+        });
+        nav.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                setOpen(false);
+                trigger.focus();
+            }
+        });
+        var tabs = nav.querySelectorAll('.rm-levels-tab');
+        tabs.forEach(function(tab) {
+            var activate = function() {
+                tabs.forEach(function(other) {
+                    other.classList.toggle('is-active', other === tab);
+                });
+            };
+            var button = tab.querySelector('.rm-levels-tab-btn');
+            button.addEventListener('mouseenter', activate);
+            button.addEventListener('focus', activate);
+            button.addEventListener('click', activate);
+        });
+    }
+})();
+{{/js}}
+
+{{{ output.standard_after_main_region_html }}}
+{{{ output.standard_end_of_body_html }}}
+</body>
+</html>

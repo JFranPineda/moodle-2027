@@ -98,8 +98,8 @@ if ($total) {
             s($r->email),
             $r->joincount,
             $r->marketingconsent
-                ? html_writer::tag('span', get_string('yes'), ['class' => 'badge badge-success'])
-                : html_writer::tag('span', get_string('no'), ['class' => 'badge badge-secondary']),
+                ? html_writer::tag('span', get_string('yes'), ['class' => 'badge bg-success text-white'])
+                : html_writer::tag('span', get_string('no'), ['class' => 'badge bg-secondary text-dark']),
             userdate($r->timecreated, get_string('strftimedatefullshort')),
         ];
     }

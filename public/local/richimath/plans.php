@@ -86,7 +86,7 @@ foreach ($service->all_plans() as $item) {
 
     $rows[] = [
         s($item->name) . ($item->isdefault
-            ? ' ' . html_writer::span(get_string('plandefaultbadge', 'local_richimath'), 'badge badge-primary')
+            ? ' ' . html_writer::span(get_string('plandefaultbadge', 'local_richimath'), 'badge bg-primary text-white')
             : ''),
         html_writer::tag('code', s($item->shortname)),
         s($item->appearance_name()) .

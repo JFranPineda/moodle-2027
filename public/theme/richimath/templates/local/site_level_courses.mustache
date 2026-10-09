@@ -1,0 +1,57 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_richimath/local/site_level_courses
+
+    The courses of one level, grouped by the subcategory they sit in. Shared
+    by the Levels menu of the site bar and the planets of the hero.
+
+    Read-only on purpose: the public site shows what the academy teaches, it
+    is not a way into a course. Course names are plain text, not links.
+
+    Context variables required for this template:
+    * empty - true when the level has no visible course yet
+    * groups - label (subcategory path, may be empty) and courses (name)
+
+    Example context (json):
+    {
+        "empty": false,
+        "groups": [
+            {"label": "PRE - CAYETANO", "courses": [{"name": "APTITUD MATEMÁTICA"}, {"name": "MATEMÁTICA"}]}
+        ]
+    }
+}}
+{{#empty}}
+    <p class="rm-level-soon">
+        <span class="rm-level-soon-chip">{{#str}} levelsoon, theme_richimath {{/str}}</span>
+        {{#str}} levelsoontext, theme_richimath {{/str}}
+    </p>
+{{/empty}}
+{{^empty}}
+    <div class="rm-level-groups">
+        {{#groups}}
+            <section class="rm-level-group">
+                {{#label}}<h4 class="rm-level-group-label">{{{ label }}}</h4>{{/label}}
+                <ul class="rm-level-courses list-unstyled">
+                    {{#courses}}
+                        <li>{{{ name }}}</li>
+                    {{/courses}}
+                </ul>
+            </section>
+        {{/groups}}
+    </div>
+{{/empty}}

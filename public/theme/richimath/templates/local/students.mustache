@@ -1,0 +1,153 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_richimath/local/students
+
+    The student catalog page (/students). This is the landing the site had
+    until the institutional site took over the root: the hero, the tagline and
+    the real course catalog in tabs. It moved out of the front page whole, so
+    a visitor who had it bookmarked still finds the same page.
+
+    Context variables required for this template:
+    * none — the data comes from the theme renderer (offer_categories).
+
+    Example context (json):
+    {
+    }
+}}
+        {{! Public landing: front page, visitors only (renderer gate
+            show_offer). The catalog is real data — offer_categories
+            returns the visible top-level categories with their courses.
+            Course names are PLAIN TEXT on purpose: an anonymous click on
+            a course only reaches the enrolment dead end ("no self
+            enrolment"), so the single call to action is offercta.
+            Progressive enhancement: every panel is open and the tablist
+            is hidden until the JS at the end of this file marks the
+            section ready, so the whole catalog is readable without JS.
+            That JS also owns the tab ARIA (roles, aria-controls,
+            aria-labelledby, the panel tab stop): shipping it in the
+            markup left the tabpanels exposed with their tablist hidden.
+            Names print through the unescaped tag: they already came out
+            of format_string, so escaping again shows the visitor a raw
+            "&amp;" where the catalog has an ampersand. }}
+        <section class="richimath-landing" aria-labelledby="richimath-landing-title">
+            {{> theme_richimath/local/mathfield }}
+            <div class="richimath-landing-hero">
+                <h1 id="richimath-landing-title">{{{ output.offer_sitename }}}</h1>
+                <p class="richimath-landing-pitch">{{#str}} welcometagline, theme_richimath {{/str}}</p>
+                <p class="richimath-landing-cta">{{#str}} offercta, theme_richimath {{/str}}</p>
+            </div>
+            <h2 class="richimath-landing-heading">{{#str}} offertitle, theme_richimath {{/str}}</h2>
+            <div class="richimath-landing-tablist">
+                {{#output.offer_categories}}
+                    <button type="button"
+                        class="richimath-landing-tab{{#first}} is-active{{/first}}"
+                        id="richimath-landing-tab-{{id}}"
+                    >{{{name}}}</button>
+                {{/output.offer_categories}}
+            </div>
+            {{#output.offer_categories}}
+                <div class="richimath-landing-panel{{#first}} is-active{{/first}}"
+                    id="richimath-landing-panel-{{id}}"
+                >
+                    <h3 class="richimath-landing-panel-title">{{{name}}}</h3>
+                    <ul class="richimath-landing-chips list-unstyled">
+                        {{#courses}}
+                            <li class="richimath-landing-chip">
+                                <span class="richimath-landing-chip-name">{{{fullname}}}</span>
+                                {{#context}}<span class="richimath-landing-chip-context">{{{.}}}</span>{{/context}}
+                            </li>
+                        {{/courses}}
+                    </ul>
+                    {{#more}}
+                        <p class="richimath-landing-more">{{#str}} offermore, theme_richimath, {{more}} {{/str}}</p>
+                    {{/more}}
+                </div>
+            {{/output.offer_categories}}
+        </section>
+
+{{#js}}
+// Public landing: turn the catalog into tabs. The markup ships with every
+// panel open (no-JS readable); this only narrows it to one panel at a time
+// and reveals the tablist, so a failure here degrades to the full list.
+// The tab ARIA is set HERE and not in the template on purpose: without this
+// JS the tablist is display:none, so roles shipped in the markup left three
+// tabpanels exposed to screen readers with no tablist owning them.
+(function() {
+    try {
+        var root = document.querySelector('.richimath-landing');
+        if (!root) {
+            return;
+        }
+        var tabs = Array.prototype.slice.call(root.querySelectorAll('.richimath-landing-tab'));
+        if (tabs.length < 2) {
+            // A single level: tabs would be a control with nothing to choose.
+            return;
+        }
+        var tablist = root.querySelector('.richimath-landing-tablist');
+        if (tablist) {
+            tablist.setAttribute('role', 'tablist');
+            tablist.setAttribute('aria-label', {{#quote}}{{#str}} offertablist, theme_richimath {{/str}}{{/quote}});
+        }
+        tabs.forEach(function(tab) {
+            var panel = document.getElementById(tab.id.replace('-tab-', '-panel-'));
+            tab.setAttribute('role', 'tab');
+            if (!panel) {
+                return;
+            }
+            tab.setAttribute('aria-controls', panel.id);
+            panel.setAttribute('role', 'tabpanel');
+            panel.setAttribute('aria-labelledby', tab.id);
+            // Course names are plain text by design, so a panel holds nothing
+            // focusable: without this the catalog is unreachable by keyboard.
+            panel.setAttribute('tabindex', '0');
+        });
+        var select = function(index, movefocus) {
+            tabs.forEach(function(tab, i) {
+                var on = i === index;
+                var panel = document.getElementById(tab.getAttribute('aria-controls'));
+                tab.setAttribute('aria-selected', on ? 'true' : 'false');
+                tab.setAttribute('tabindex', on ? '0' : '-1');
+                tab.classList.toggle('is-active', on);
+                if (panel) {
+                    panel.classList.toggle('is-active', on);
+                }
+            });
+            if (movefocus) {
+                tabs[index].focus();
+            }
+        };
+        tabs.forEach(function(tab, i) {
+            tab.addEventListener('click', function() {
+                select(i, false);
+            });
+            tab.addEventListener('keydown', function(e) {
+                var targets = {ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1};
+                if (!Object.prototype.hasOwnProperty.call(targets, e.key)) {
+                    return;
+                }
+                e.preventDefault();
+                select((targets[e.key] + tabs.length) % tabs.length, true);
+            });
+        });
+        root.classList.add('richimath-landing-ready');
+        select(0, false);
+    } catch (e) {
+        // Enhancement only: the open panels stay readable.
+    }
+})();
+{{/js}}
