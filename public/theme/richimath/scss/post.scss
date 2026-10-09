@@ -3360,8 +3360,9 @@ body.richimath-sidebar-compact {
         border: 0;
         box-shadow: none;
 
+        // 5.3 puts .d-flex (display: flex !important) on the header row.
         .course-section-header {
-            display: none;
+            display: none !important; /* stylelint-disable-line declaration-no-important */
         }
 
         // Until someone writes a section summary, the wrapper only holds
