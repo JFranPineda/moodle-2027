@@ -1540,6 +1540,29 @@ body.path-calendar .maincalendar {
         .drawer.drawer-left.show {
             left: var(--richimath-sidebar-width);
         }
+
+        // 5.3 anchors the block drawer beside the content on standard and
+        // limited-width pages (quiz, most activities, admin): it floats with
+        // empty space on its right, while #page still reserves its width at
+        // the edge. Pinned to the viewport edge again, as on every other page
+        // and as in 4.3. Core sets `left` from :has(#page.drawers...) rules,
+        // two ids deep: only !important reaches them.
+        .drawer.drawer-right {
+            left: auto !important; /* stylelint-disable-line declaration-no-important */
+            right: calc(-#{$drawer-right-width} - 10px);
+            clip-path: none;
+            @include transition(right 0.2s ease, visibility 0.2s ease);
+
+            &.show {
+                right: 0;
+            }
+
+            // Its close button back in the top corner: 5.3 reverses the
+            // header to park it on the drawer's inner edge.
+            .drawerheadertop {
+                flex-direction: row;
+            }
+        }
     }
 }
 
@@ -3549,6 +3572,14 @@ body.richimath-sidebar-compact {
             }
         }
     }
+}
+
+// An activity's dates ("Abrió: … Cerró: …") sit in two equal columns that
+// never wrap, and core stacks them only on a narrow viewport. With both
+// drawers open on a laptop the header is narrow while the viewport is not,
+// and the second date ran out of the box: fit the columns to the box.
+body.path-mod .activity-dates {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
 }
 
 /* ------------------------------------------------------------------
