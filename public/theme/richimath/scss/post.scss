@@ -1537,6 +1537,16 @@ body.path-calendar .maincalendar {
             top: 0;
         }
 
+        // 5.3's grader scrolls the whole page sideways and pins the names
+        // column at the viewport's left edge, under this fixed sidebar: names
+        // read cut off. Pin it just right of the sidebar. The course index
+        // needs no room: core's drawers.js slides it away once the page
+        // scrolls past it. Core's stickycolspan.js reads this `left` to place
+        // the spanning header cells.
+        &.path-grade-report-grader .gradeparent th.header {
+            left: var(--richimath-sidebar-width);
+        }
+
         .drawer.drawer-left.show {
             left: var(--richimath-sidebar-width);
         }
@@ -3059,6 +3069,22 @@ body#page-site-index {
         background-color: $richimath-purple;
         color: #fff;
         text-decoration: none;
+    }
+}
+
+// 5.3 floats the drawer togglers higher than 4.3 did below md, at
+// calc(99vh - navbar * 2.5): right in the 7rem lane, so "Consultas" covered
+// the block drawer's toggler and a student on a phone could not open it.
+// With that toggler on the page, both buttons sit just above it.
+@include media-breakpoint-down(md) {
+    #{$richimath-skin} #page.drawers:has(.drawer-right-toggle) {
+        .richimath-support-fab {
+            bottom: calc(1vh + #{$navbar-height} * 2.5 + 0.5rem);
+        }
+
+        .richimath-whatsapp-fab {
+            bottom: calc(1vh + #{$navbar-height} * 2.5 + 3.5rem);
+        }
     }
 }
 
