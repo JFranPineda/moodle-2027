@@ -25,7 +25,7 @@
 // This line protects the file from being accessed by a URL directly.
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026100906;
+$plugin->version = 2026100907;
 $plugin->requires = 2026100500;
 $plugin->component = 'theme_richimath';
 $plugin->release = '0.1.0';

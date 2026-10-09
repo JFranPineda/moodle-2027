@@ -389,17 +389,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
-     * Target of the floating "Consultas" button: the conversation with the
-     * site admin. Null whenever the button must not be rendered at all —
-     * logged out or guest, the login artwork page, or the messaging app
-     * itself (where the button would only shadow the UI it links to).
-     *
-     * The admin id is read from the site, never hardcoded: it differs
-     * between local and production.
-     *
-     * @return string|null
-     */
-    /**
      * The course teacher's WhatsApp, for the floating button.
      *
      * The whole decision — which teacher, whether they switched it on, whether
@@ -411,7 +400,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
     public function teacher_whatsapp(): ?array {
         global $PAGE;
 
-        if ($PAGE->pagelayout === 'login' || empty($PAGE->course->id)) {
+        if ($PAGE->pagelayout === 'login' || empty($PAGE->course->id) || $this->in_quiz_attempt()) {
             return null;
         }
 
@@ -426,6 +415,18 @@ class core_renderer extends \theme_boost\output\core_renderer {
         ];
     }
 
+    /**
+     * Target of the floating "Consultas" button: the conversation with the
+     * site admin. Null whenever the button must not be rendered at all —
+     * logged out or guest, the login artwork page, or the messaging app
+     * itself (where the button would only shadow the UI it links to), and
+     * a quiz attempt (see in_quiz_attempt()).
+     *
+     * The admin id is read from the site, never hardcoded: it differs
+     * between local and production.
+     *
+     * @return string|null
+     */
     public function admin_message_url(): ?string {
         global $PAGE;
 
@@ -433,7 +434,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             return null;
         }
 
-        if ($PAGE->pagelayout === 'login' || strpos($PAGE->pagetype, 'message-') === 0) {
+        if ($PAGE->pagelayout === 'login' || strpos($PAGE->pagetype, 'message-') === 0 || $this->in_quiz_attempt()) {
             return null;
         }
 
@@ -443,6 +444,20 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         return (new \moodle_url('/message/index.php', ['id' => $admin->id]))->out(false);
+    }
+
+    /**
+     * While a quiz attempt is open — its pages and the summary before
+     * submitting — the floating buttons stay out: on a phone they sat over
+     * the question, and an exam is no time to message anyone. They come
+     * back on the review.
+     *
+     * @return bool
+     */
+    private function in_quiz_attempt(): bool {
+        global $PAGE;
+
+        return in_array($PAGE->pagetype, ['mod-quiz-attempt', 'mod-quiz-summary'], true);
     }
 
     /**
