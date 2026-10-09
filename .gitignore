@@ -1,0 +1,14 @@
+# Credentials and per-environment settings: each environment writes its own.
+/config.php
+
+# Composer's dev autoloader (Moodle ships its runtime libraries in public/lib).
+/vendor/
+
+# Front-end tooling.
+node_modules/
+
+# Local secrets and editor state.
+.env
+.idea/
+.vscode/
+*.swp

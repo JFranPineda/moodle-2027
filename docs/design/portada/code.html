@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><title>Login</title><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400..700;1,400..700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-dim": "#d9dadc", "error": "#ba1a1a", "on-primary-fixed-variant": "#003dab", "surface-bright": "#f8f9fb", "secondary": "#006c4a", "surface": "#f8f9fb", "secondary-container": "#73fbbf", "surface-container": "#edeef0", "on-secondary-fixed-variant": "#005237", "on-error-container": "#93000a", "background": "#f8f9fb", "secondary-fixed": "#73fbbf", "surface-tint": "#1353d8", "surface-container-low": "#f3f4f6", "on-secondary-fixed": "#002114", "tertiary-container": "#b33400", "on-primary-container": "#d4dcff", "inverse-surface": "#2e3132", "surface-container-highest": "#e1e2e4", "tertiary": "#8a2600", "on-tertiary-fixed-variant": "#852400", "on-secondary-container": "#00734f", "primary-container": "#1a56db", "secondary-fixed-dim": "#53dea5", "surface-variant": "#e1e2e4", "primary-fixed-dim": "#b5c4ff", "tertiary-fixed": "#ffdbd0", "on-primary": "#ffffff", "inverse-on-surface": "#f0f1f3", "outline-variant": "#c3c5d7", "on-tertiary-container": "#ffd4c8", "surface-container-high": "#e7e8ea", "on-background": "#191c1e", "on-surface": "#191c1e", "inverse-primary": "#b5c4ff", "on-error": "#ffffff", "outline": "#737686", "error-container": "#ffdad6", "primary": "#003fb1", "on-primary-fixed": "#00174d", "primary-fixed": "#dbe1ff", "on-tertiary-fixed": "#3a0b00", "tertiary-fixed-dim": "#ffb59e", "on-surface-variant": "#434654", "on-secondary": "#ffffff", "surface-container-lowest": "#ffffff", "on-tertiary": "#ffffff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-desktop": "40px", "container-max-width": "1280px", "gutter": "24px", "margin-mobile": "16px", "unit": "8px" }, "fontFamily": { "headline-lg-mobile": ["Atkinson Hyperlegible Next"], "caption": ["Inter"], "body-md": ["Inter"], "headline-lg": ["Atkinson Hyperlegible Next"], "label-md": ["Inter"], "headline-md": ["Atkinson Hyperlegible Next"], "display-lg": ["Atkinson Hyperlegible Next"], "body-lg": ["Inter"] }, "fontSize": { "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }], "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }], "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }], "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }], "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen pt-safe pb-safe"><main class="flex-1 flex flex-col relative w-full bg-surface"><div class="flex flex-col w-full px-margin-mobile pb-10 space-y-5">
+<!-- 1. Institutional Campus Header / Banner Card -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm flex flex-col">
+<div class="relative w-full h-36 bg-surface-container">
+<img alt="Aula Virtual e interactiva Moodle LMS" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VqqPd3WyU3tT2wsDISc80wYfbj9JU7o125Sps83RXCXSS6-io8Q5v-wmpbB6FO15GaXL50YKenKdzJwk9X3G3LXqh3dMhl3_PoB4fyTwZDj8HF-wtSlh6u2rtF7KGA2dOjWGuTCED0ClHCUAbwKngiEBhbKgY70OxaaFfAs_j_n743JWli0fRnyafOuNrATW_be5UoiaAmRmJ1Sx9y-e20XsdDp2gV-iePcww868z8ajZp41UQthU23RA">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/40 to-transparent"></div>
+<div class="absolute top-3 left-3 bg-surface-container-lowest/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center space-x-1.5 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-caption text-caption text-on-surface font-medium">Campus Virtual Oficial • Moodle LMS 4.5+</span>
+</div>
+</div>
+<div class="p-4 pt-1 flex flex-col space-y-2">
+<!-- Breadcrumb Canonical -->
+<nav aria-label="Moodle Breadcrumbs" class="flex items-center space-x-1 text-on-surface-variant font-caption text-caption">
+<span class="hover:text-primary transition-colors flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-0.5">home</span>
+          Página Principal
+        </span>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface font-medium">Identificarse en el sitio</span>
+</nav>
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight">Acceso al Campus Virtual</h1>
+<p class="font-label-md text-label-md text-on-surface-variant mt-0.5">Sistema de Gestión de Aprendizaje e Información Académica</p>
+</div>
+</div>
+</div>
+<!-- 2. Canonical Moodle Notice (Cookies & SSL Security) -->
+<div class="bg-surface-container-low rounded-xl p-3.5 flex items-start space-x-3 shadow-sm">
+<div class="p-2 rounded-lg bg-primary-fixed text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">cookie</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-0.5">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Aviso del sistema de cookies</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-caption bg-secondary-container text-on-secondary-container font-medium">
+<span class="material-symbols-outlined text-[13px] mr-1">lock</span>
+          TLS 1.3
+        </span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant leading-relaxed">
+        Las cookies deben estar habilitadas en su navegador para iniciar sesión en esta plataforma (<code class="font-mono text-primary font-medium">moodle_session</code>).
+      </p>
+</div>
+</div>
+<!-- 3. Official Moodle Login Card (core auth / loginbox) -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-md flex flex-col space-y-4">
+<form class="flex flex-col space-y-4" id="moodle-login-form" onsubmit="event.preventDefault();">
+<!-- Username / Institutional Email -->
+<div class="flex flex-col space-y-1.5">
+<label class="font-label-md text-label-md font-semibold text-on-surface flex items-center justify-between" for="username">
+<span class="">Nombre de usuario o correo institucional</span>
+<span class="font-caption text-caption text-on-surface-variant font-normal">DNI / @campus.edu</span>
+</label>
+<div class="relative flex items-center">
+<div class="absolute left-3.5 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[22px]">account_circle</span>
+</div>
+<input autocomplete="username" class="w-full bg-surface-container-low text-on-surface placeholder:text-outline font-body-md text-body-md pl-11 pr-4 py-3 rounded-lg outline-none transition-all focus:bg-surface-container-lowest focus:shadow-sm" id="username" name="username" placeholder="ej. a2024892 o nombre.apellido@campus.edu" type="text">
+</div>
+</div>
+<!-- Password -->
+<div class="flex flex-col space-y-1.5">
+<label class="font-label-md text-label-md font-semibold text-on-surface" for="password">Contraseña institucional</label>
+<div class="relative flex items-center">
+<div class="absolute left-3.5 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[22px]">lock</span>
+</div>
+<input autocomplete="current-password" class="w-full bg-surface-container-low text-on-surface placeholder:text-outline font-body-md text-body-md pl-11 pr-11 py-3 rounded-lg outline-none transition-all focus:bg-surface-container-lowest focus:shadow-sm" id="password" name="password" placeholder="••••••••••••" type="password">
+<button aria-label="Alternar visibilidad de contraseña" class="absolute right-3 p-1 rounded-lg text-on-surface-variant hover:text-on-surface flex items-center justify-center transition-colors" id="togglePassword" type="button">
+<span class="material-symbols-outlined text-[22px]" id="eyeIcon">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember me & Forgot credentials -->
+<div class="flex items-center justify-between pt-1">
+<label class="flex items-center space-x-2 cursor-pointer select-none">
+<input class="w-4 h-4 rounded bg-surface-container-low text-primary accent-primary cursor-pointer" id="rememberusername" name="rememberusername" type="checkbox">
+<span class="font-label-md text-label-md text-on-surface-variant">¿Recordar usuario?</span>
+</label>
+<a class="font-label-md text-label-md text-primary font-medium hover:underline flex items-center" href="#forgot">
+          ¿Olvidó contraseña?
+        </a>
+</div>
+<!-- Submit Login Button -->
+<button class="w-full bg-primary text-on-primary py-3.5 px-4 rounded-xl font-label-md text-label-md font-semibold shadow-md active:scale-[0.98] transition-transform flex items-center justify-center space-x-2 group mt-2" type="submit">
+<span class="">Acceder al Aula Virtual</span>
+<span class="material-symbols-outlined text-[20px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</form>
+</div>
+<!-- 4. Alternative Authentication Providers (OAuth2 / SSO) -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col space-y-3.5">
+<div class="relative flex items-center justify-center">
+<div class="w-full bg-surface-container h-[1px]"></div>
+<span class="absolute bg-surface-container-lowest px-3 font-caption text-caption text-on-surface-variant uppercase tracking-wider font-semibold">
+        O identifíquese mediante
+      </span>
+</div>
+<div class="flex flex-col space-y-2.5 pt-1">
+<!-- Google Workspace Button -->
+<button class="w-full bg-surface-container-low hover:bg-surface-container text-on-surface py-2.5 px-3 rounded-lg flex items-center justify-between transition-colors shadow-sm" type="button">
+<div class="flex items-center space-x-3">
+<div class="w-7 h-7 rounded-md bg-white flex items-center justify-center shadow-xs">
+<svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"></path>
+</svg>
+</div>
+<span class="font-label-md text-label-md font-medium text-left">Google Workspace for Education</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">chevron_right</span>
+</button>
+<!-- Microsoft 365 / Entra ID Button -->
+<button class="w-full bg-surface-container-low hover:bg-surface-container text-on-surface py-2.5 px-3 rounded-lg flex items-center justify-between transition-colors shadow-sm" type="button">
+<div class="flex items-center space-x-3">
+<div class="w-7 h-7 rounded-md bg-white flex items-center justify-center shadow-xs">
+<svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 21 21">
+<path d="M1 1h9v9H1z" fill="#f25022"></path>
+<path d="M1 11h9v9H1z" fill="#00a4ef"></path>
+<path d="M11 1h9v9h-9z" fill="#7fba00"></path>
+<path d="M11 11h9v9h-9z" fill="#ffb900"></path>
+</svg>
+</div>
+<span class="font-label-md text-label-md font-medium text-left">Microsoft 365 / Entra ID</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- 5. Guest and Registration Options -->
+<div class="grid grid-cols-1 gap-2.5">
+<div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm flex items-center justify-between">
+<div class="flex items-center space-x-3 min-w-0">
+<div class="p-2 rounded-lg bg-surface-container-high text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">person_outline</span>
+</div>
+<div class="min-w-0">
+<h2 class="font-label-md text-label-md font-semibold text-on-surface truncate">Entrar como invitado</h2>
+<p class="font-caption text-caption text-on-surface-variant truncate">Cursos abiertos y contenido público</p>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container font-label-md text-label-md text-on-surface font-medium hover:bg-surface-dim transition-colors shrink-0" type="button">
+        Acceder
+      </button>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm flex items-center justify-between">
+<div class="flex items-center space-x-3 min-w-0">
+<div class="p-2 rounded-lg bg-tertiary-fixed text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">badge</span>
+</div>
+<div class="min-w-0">
+<h2 class="font-label-md text-label-md font-semibold text-on-surface truncate">¿Primera vez que ingresa?</h2>
+<p class="font-caption text-caption text-on-surface-variant truncate">Manual y solicitud de cuenta</p>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md font-medium hover:bg-tertiary-fixed-dim transition-colors shrink-0" type="button">
+        Registrar
+      </button>
+</div>
+</div>
+<!-- 6. Academic Support & Helpdesk Widget -->
+<div class="bg-surface-container-low rounded-xl p-4 shadow-sm flex flex-col space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-[18px] text-primary">support_agent</span>
+<span class="font-label-md text-label-md font-bold text-on-surface">Mesa de Ayuda TI y Soporte Campus</span>
+</div>
+<span class="inline-flex items-center space-x-1 text-[11px] font-caption text-secondary font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="">En Línea</span>
+</span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant leading-relaxed">
+      Horario de atención: Lunes a Viernes de 07:30 a 21:00 hrs. Sábados de 08:00 a 14:00 hrs.
+    </p>
+<!-- Support channels pills -->
+<div class="grid grid-cols-2 gap-2 pt-1">
+<a class="bg-surface-container-lowest hover:bg-surface-container-high text-on-surface p-2.5 rounded-lg flex items-center space-x-2 transition-colors" href="mailto:soporte@campus.edu">
+<span class="material-symbols-outlined text-[18px] text-primary">mail</span>
+<div class="min-w-0">
+<div class="font-caption text-[11px] text-on-surface-variant font-medium">Email Académico</div>
+<div class="font-label-md text-[13px] font-semibold truncate">soporte@campus.edu</div>
+</div>
+</a>
+<a class="bg-surface-container-lowest hover:bg-surface-container-high text-on-surface p-2.5 rounded-lg flex items-center space-x-2 transition-colors" href="#whatsapp">
+<span class="material-symbols-outlined text-[18px] text-secondary">forum</span>
+<div class="min-w-0">
+<div class="font-caption text-[11px] text-on-surface-variant font-medium">WhatsApp Helpdesk</div>
+<div class="font-label-md text-[13px] font-semibold truncate">+51 987 654 321</div>
+</div>
+</a>
+</div>
+<!-- Node status bar -->
+<div class="pt-2 flex items-center justify-between font-caption text-caption text-on-surface-variant border-none">
+<span class="flex items-center space-x-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="">Nodo clúster: <strong class="text-on-surface font-mono">lms-node-04a</strong></span>
+</span>
+<span class="font-mono text-on-surface-variant">18ms • v4.5.1</span>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const toggleBtn = document.getElementById('togglePassword');
+    const pwdInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    if (toggleBtn && pwdInput && eyeIcon) {
+      toggleBtn.addEventListener('click', function() {
+        const isPassword = pwdInput.getAttribute('type') === 'password';
+        pwdInput.setAttribute('type', isPassword ? 'text' : 'password');
+        eyeIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+      });
+    }
+  })();
+</script></main>
+
+</body></html>

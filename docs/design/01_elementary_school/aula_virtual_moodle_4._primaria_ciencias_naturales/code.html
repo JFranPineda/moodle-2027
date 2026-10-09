@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400..800;1,6..12,400..800&amp;family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"inverse-on-surface":"#ebf1ff","on-primary-container":"#f3f3ff","secondary-fixed-dim":"#7cd9a0","surface-variant":"#d8e3fa","primary-fixed":"#dbe1ff","on-surface-variant":"#424656","on-secondary-fixed-variant":"#00522f","on-tertiary-container":"#fff1ed","on-secondary-fixed":"#002110","on-primary-fixed-variant":"#003da9","on-surface":"#111c2c","outline-variant":"#c3c6d8","primary-container":"#0f62fe","on-secondary-container":"#007243","on-tertiary":"#ffffff","on-error":"#ffffff","on-primary-fixed":"#00174c","primary-fixed-dim":"#b4c5ff","secondary-fixed":"#97f6bb","inverse-surface":"#263142","surface-tint":"#0052dd","on-error-container":"#93000a","surface-container-highest":"#d8e3fa","on-secondary":"#ffffff","surface-container":"#e7eeff","secondary-container":"#95f3b8","outline":"#737687","secondary":"#006d40","tertiary-container":"#c34600","surface-bright":"#f9f9ff","primary":"#004ccd","error":"#ba1a1a","tertiary-fixed-dim":"#ffb599","on-tertiary-fixed-variant":"#7f2b00","surface-container-high":"#dee8ff","surface-container-low":"#f0f3ff","tertiary-fixed":"#ffdbce","tertiary":"#9a3600","error-container":"#ffdad6","background":"#f9f9ff","surface":"#f9f9ff","inverse-primary":"#b4c5ff","on-primary":"#ffffff","on-background":"#111c2c","surface-container-lowest":"#ffffff","on-tertiary-fixed":"#370e00","surface-dim":"#cfdaf1"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"spacing-xs":"0.5rem","spacing-lg":"1.5rem","content-max-width":"1220px","sidebar-right-width":"340px","spacing-3xl":"3rem","spacing-md":"1rem","spacing-sm":"0.75rem","sidebar-left-width":"280px","spacing-2xl":"2.5rem","spacing-xl":"2rem","gutter-canvas":"1.5rem","spacing-2xs":"0.25rem"},"fontFamily":{"headline-md":["Quicksand"],"label-sm":["Nunito Sans"],"body-md":["Nunito Sans"],"body-sm":["Nunito Sans"],"body-xl":["Nunito Sans"],"body-lg":["Nunito Sans"],"headline-lg":["Quicksand"],"label-md":["Nunito Sans"],"headline-sm":["Quicksand"],"headline-xl":["Quicksand"],"label-lg":["Nunito Sans"]},"fontSize":{"headline-md":["24px",{"lineHeight":"32px","fontWeight":"700"}],"label-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.5px","fontWeight":"800"}],"body-md":["15px",{"lineHeight":"22px","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"18px","fontWeight":"600"}],"body-xl":["19px",{"lineHeight":"30px","fontWeight":"400"}],"body-lg":["17px",{"lineHeight":"26px","fontWeight":"400"}],"headline-lg":["30px",{"lineHeight":"38px","fontWeight":"700"}],"label-md":["14px",{"lineHeight":"18px","fontWeight":"700"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}],"headline-xl":["38px",{"lineHeight":"48px","letterSpacing":"-0.5px","fontWeight":"700"}],"label-lg":["16px",{"lineHeight":"22px","letterSpacing":"0.3px","fontWeight":"800"}]}}}}</script></head><body class="bg-background font-body-md text-on-surface antialiased min-h-screen"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 w-full px-spacing-lg flex items-center justify-between gap-spacing-md"><div class="flex items-center gap-spacing-md"><button class="w-12 h-12 flex items-center justify-center rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container hover:text-on-surface transition-colors shadow-[0_4px_0_0_#CBD5E1]" type="button"><span class="material-symbols-outlined">menu</span></button><div class="flex items-center gap-spacing-sm"><img alt="EduMoodle Primaria Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W5DHOABZt92ZOhxPnhqVQ4RwqlY8_a7oaMF8NtMpCBFFioee_FnQNZnGKJ0B4Zi4DbFHNbz9JxAikwbf8hIrUghU6-_qX4q__p_5xtumoGozdqdJHmmSJD8wfX37KL13LIb9nKM0HM683GfPakN_dZGZ5FkfVOydLgedXY0-EeLwh8dUmw5PN_1QBBgicjfEOsA9hMTYendDhdkZLhXGiXy6-HD1M5lHZaXgWI2v2oVraOjRvOl0GeSys"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight leading-none">EduMoodle</span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase leading-none mt-1">Campus Primaria</span></div></div></div><nav class="hidden xl:flex items-center gap-spacing-xs p-spacing-2xs bg-surface-container-low rounded-xl" data-active-classes="bg-primary-container text-on-primary-container font-headline-sm rounded-xl shadow-[0_4px_0_0_#003da9]"><a class="px-spacing-md py-spacing-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="area-personal" href="#">Área personal</a><a class="px-spacing-md py-spacing-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="mis-cursos" href="#">Mis cursos</a><a class="px-spacing-md py-spacing-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="biblioteca-divertida" href="#">Biblioteca Divertida</a><a class="px-spacing-md py-spacing-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="insignias-y-puntos" href="#">Mis Insignias y Puntos</a></nav><div class="flex items-center gap-spacing-sm"><div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl"><button class="w-9 h-9 flex items-center justify-center rounded-lg bg-surface-container-lowest text-on-surface font-headline-sm text-headline-sm hover:bg-surface-container transition-colors shadow-[0_2px_0_0_#CBD5E1]" type="button">A</button><button class="w-9 h-9 flex items-center justify-center rounded-lg text-on-surface-variant font-headline-md text-headline-md hover:bg-surface-container hover:text-on-surface transition-colors" type="button">A+</button></div><button class="relative w-12 h-12 flex items-center justify-center rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container hover:text-on-surface transition-colors shadow-[0_4px_0_0_#CBD5E1]" type="button"><span class="material-symbols-outlined">notifications</span><span class="absolute top-2 right-2 w-3.5 h-3.5 bg-tertiary rounded-full border-2 border-surface-container-lowest flex items-center justify-center text-[9px] font-bold text-on-tertiary">3</span></button><button class="relative w-12 h-12 flex items-center justify-center rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container hover:text-on-surface transition-colors shadow-[0_4px_0_0_#CBD5E1]" type="button"><span class="material-symbols-outlined">chat</span><span class="absolute top-2 right-2 w-2.5 h-2.5 bg-secondary rounded-full border-2 border-surface-container-lowest"></span></button><div class="flex items-center gap-spacing-sm pl-spacing-xs"><div class="flex items-center gap-spacing-sm bg-surface-container-low p-spacing-2xs pr-spacing-sm rounded-full shadow-[0_4px_0_0_#CBD5E1]"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_cVUByNuadRKcSANtPw4wHYOsZI_yE94TCowiTMk22ySjrWqnd6QNbe4CqCTWo9qUf_atXQ-LTETdG-5GpaOAWnBJu2bKT7lCFlOJJ0NsBBoPV30CKCAm_phLUSMnhwdxksjNVwDXUvi-Wf0WzF_mRNfo8zQjA_3CBcCg07Wu9y3OKWnIHCGBEmfprITtGAmThLGSUso-ySI50DnN2_LJhKLErNY6p-f3QpWLU1rx4jXCbl_f7ap5"/><div class="hidden md:flex flex-col text-left"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Lucas Martínez</span><span class="font-label-sm text-label-sm text-secondary leading-tight">4.º Básico A • Explorador</span></div><span class="material-symbols-outlined text-on-surface-variant">expand_more</span></div></div></div></div></header><aside class="fixed left-0 top-20 bottom-0 w-[280px] bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex flex-col p-spacing-md overflow-y-auto"><div class="p-spacing-sm rounded-xl bg-surface-container-low mb-spacing-md shadow-[0_3px_0_0_#CBD5E1]"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block mb-1">Curso Activo</span><h3 class="font-headline-sm text-headline-sm text-on-surface">Ciencias Naturales</h3><div class="mt-2 w-full bg-surface-container rounded-full h-2 overflow-hidden"><div class="bg-secondary h-2 rounded-full w-3/5"></div></div><span class="font-label-sm text-label-sm text-on-surface-variant mt-1.5 block text-right">60% completado</span></div><nav class="flex-1 flex flex-col gap-spacing-2xs" data-active-classes="bg-primary-container text-on-primary-container font-headline-sm rounded-xl shadow-[0_4px_0_0_#003da9]"><a aria-current="page" class="flex items-center gap-spacing-sm px-spacing-sm py-spacing-sm transition-all bg-primary-container text-on-primary-container font-headline-sm rounded-xl shadow-[0_4px_0_0_#003da9]" data-path="modulo-exploradores-espacio" href="#"><span class="material-symbols-outlined">rocket_launch</span>Módulo 3: ¡El Espacio!</a><a class="flex items-center gap-spacing-sm px-spacing-sm py-spacing-sm rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="mis-tareas" href="#"><span class="material-symbols-outlined">assignment</span>Mis Tareas</a><a class="flex items-center gap-spacing-sm px-spacing-sm py-spacing-sm rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="cuestionarios-divertidos" href="#"><span class="material-symbols-outlined">quiz</span>Cuestionarios</a><a class="flex items-center gap-spacing-sm px-spacing-sm py-spacing-sm rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="foro-de-preguntas" href="#"><span class="material-symbols-outlined">forum</span>Foro de Preguntas</a><a class="flex items-center gap-spacing-sm px-spacing-sm py-spacing-sm rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="videoclases" href="#"><span class="material-symbols-outlined">videocam</span>Videoclases</a><a class="flex items-center gap-spacing-sm px-spacing-sm py-spacing-sm rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="libro-de-calificaciones" href="#"><span class="material-symbols-outlined">star</span>Mis Estrellas y Notas</a></nav><div class="mt-auto pt-spacing-md"><div class="p-spacing-sm bg-tertiary-fixed rounded-xl flex items-center gap-spacing-sm"><span class="material-symbols-outlined text-tertiary">lightbulb</span><div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-tertiary-fixed font-bold">¿Necesitas ayuda?</span><span class="font-body-sm text-body-sm text-on-tertiary-fixed-variant">Pregunta al Profe</span></div></div></div></aside><div class="pl-[280px]"><div class="pt-20 px-spacing-lg py-spacing-md bg-surface-container-low"><div class="flex items-center flex-wrap gap-2 text-on-surface-variant font-label-md text-label-md"><a class="flex items-center gap-1 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-base">home</span>Inicio</a><span class="text-outline">/</span><a class="hover:text-primary transition-colors" href="#">Mis cursos</a><span class="text-outline">/</span><a class="hover:text-primary transition-colors" href="#">Ciencias Naturales y el Universo</a><span class="text-outline">/</span><span class="text-primary font-headline-sm text-headline-sm">Módulo 3: ¡Exploradores del Espacio!</span></div></div><main class="w-full px-spacing-lg py-spacing-lg bg-background min-h-[calc(100vh-144px)]"><div class="flex flex-col w-full">
+<div class="w-full flex flex-col gap-spacing-lg">
+<!-- CABECERA DEL CURSO (core_course / Course Header) -->
+<header class="w-full bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden flex flex-col">
+<!-- Banner Ilustrado del Curso con Arte Temático Espacial -->
+<div class="relative w-full h-64 md:h-72 overflow-hidden flex items-end p-spacing-xl" data-alt="Playful 3D cartoon style outer space exploration scene designed for primary school children. Features cheerful smiling planets, Saturn with colorful rings, a friendly little astronaut floating near a vibrant blue rocket ship, soft glowing stars and nebula in deep ultramarine, bright sky blue, and warm amber tones. Clean, warm, high-contrast, welcoming children's book visual aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuANnqniuj-pprWsEZ69BrjhsIx-AELY4xQ0rF9cNHJ2kdKH1pGpU8_gYrcYrGnDo4sx5DL_Gvo2eTV3nQeY3YAenEINbpnO1hA87P7spI8aQgY0OW6mNVWuW5mRiyP64uQ4MqqivkEH29By99CAwL6c8-53OgCjao8Z1jEL4g_1ykdXbF6qY_uFF-jxyJK-kdfQOmbMdXP8mcObD1jkbEn9SVii7gYmGOXuAz0pkpREvFc2SXCsXIoE')">
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/90 via-inverse-surface/40 to-transparent"></div>
+<div class="relative z-10 w-full flex flex-col md:flex-row md:items-end justify-between gap-spacing-md">
+<div class="flex flex-col gap-spacing-2xs max-w-2xl text-inverse-on-surface">
+<div class="flex items-center gap-2 flex-wrap mb-1">
+<span class="px-3 py-1 bg-primary text-on-primary font-label-sm text-label-sm rounded-full uppercase tracking-wider shadow-sm">4.º Básico A</span>
+<span class="px-3 py-1 bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm rounded-full">Trimestre 2 • Año Escolar 2024</span>
+<span class="px-3 py-1 bg-secondary text-on-secondary font-label-sm text-label-sm rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">verified</span> Activo
+              </span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-white tracking-tight leading-snug drop-shadow-sm">
+              Ciencias Naturales y Exploración: El Sistema Solar y la Tierra
+            </h1>
+<div class="flex items-center gap-2 text-surface-container-high font-body-md text-body-md mt-1">
+<span class="material-symbols-outlined text-xl text-secondary-fixed">school</span>
+<span>Docente a cargo: <strong class="text-white">Profa. Mariana Gómez</strong></span>
+<span class="text-outline-variant">•</span>
+<span class="text-secondary-fixed font-bold">32 Mini-Astronautas Inscritos</span>
+</div>
+</div>
+<!-- Moodle block_completionstatus: Widget de Progreso Lúdico -->
+<div class="bg-surface-container-lowest/95 backdrop-blur-md p-spacing-md rounded-2xl shadow-md flex flex-col gap-2 min-w-[260px]">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">stars</span>
+                ¡Tu Progreso!
+              </span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-extrabold bg-surface-container-low px-2 py-0.5 rounded-lg">68%</span>
+</div>
+<!-- Barra de Avance con Estilo Infantil -->
+<div class="w-full bg-surface-container h-4 rounded-full overflow-hidden p-0.5 shadow-inner">
+<div class="bg-gradient-to-r from-secondary-fixed-dim to-secondary h-full rounded-full w-[68%] transition-all duration-700 ease-out flex items-center justify-end pr-1">
+<div class="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm pt-1">
+<span>Misiones: <strong>11 de 16</strong></span>
+<span class="flex items-center gap-1 text-tertiary font-bold">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+                8 Estrellas de Oro
+              </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Moodle Secondary Tab Navigation Bar (core_course/tabs) -->
+<nav class="flex items-center px-spacing-lg py-spacing-xs bg-surface-container-low gap-spacing-xs overflow-x-auto">
+<a class="px-spacing-md py-spacing-sm rounded-xl font-headline-sm text-headline-sm bg-primary-container text-on-primary-container flex items-center gap-2 shadow-sm transition-transform active:scale-95" href="#course-content">
+<span class="material-symbols-outlined text-xl">auto_stories</span>
+          Curso y Misiones
+        </a>
+<a class="px-spacing-md py-spacing-sm rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface flex items-center gap-2 transition-colors" href="#participants">
+<span class="material-symbols-outlined text-xl">groups</span>
+          Compañeros (32)
+        </a>
+<a class="px-spacing-md py-spacing-sm rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface flex items-center gap-2 transition-colors" href="#grades">
+<span class="material-symbols-outlined text-xl">workspace_premium</span>
+          Mis Medallas y Notas
+        </a>
+<a class="px-spacing-md py-spacing-sm rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface flex items-center gap-2 transition-colors" href="#competencies">
+<span class="material-symbols-outlined text-xl">psychology</span>
+          Competencias Científicas
+        </a>
+</nav>
+</header>
+<!-- CUERPO PRINCIPAL EN 2 COLUMNAS: FORMAT TOPICS + MOODLE SIDEBAR DRAWER -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-spacing-lg items-start">
+<!-- COLUMNA PRINCIPAL (Moodle Course Content: Topics format) -->
+<div class="xl:col-span-8 flex flex-col gap-spacing-xl">
+<!-- SECCIÓN 0: Bienvenida y Recursos Generales (General Section) -->
+<section class="bg-surface-container-lowest p-spacing-lg rounded-2xl shadow-sm flex flex-col gap-spacing-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-spacing-sm">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">signpost</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Base de Lanzamiento: ¡Bienvenida al Curso!</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Información clave y herramientas de comunicación para ti y tu familia</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-3 py-1 rounded-full font-bold">General</span>
+</div>
+<!-- Moodle Activity List: General Section Items -->
+<div class="flex flex-col gap-spacing-sm">
+<!-- mod_forum: Foro de dudas con la maestra -->
+<div class="bg-surface-container-low hover:bg-surface-container transition-all p-spacing-md rounded-xl flex items-center justify-between gap-spacing-md group cursor-pointer shadow-sm">
+<div class="flex items-center gap-spacing-md min-w-0">
+<div class="w-12 h-12 rounded-xl bg-surface-container-highest text-primary flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-2xl">forum</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-primary uppercase font-extrabold tracking-wide">Foro de Apoyo Moodle</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate group-hover:text-primary transition-colors">¿Tienes dudas? Pregunta aquí a la Profa. Mariana</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Escribe tus dudas sobre las actividades o saluda a tus compañeros de clase.</p>
+</div>
+</div>
+<div class="flex items-center gap-spacing-sm flex-shrink-0">
+<span class="px-2.5 py-1 bg-surface-container text-on-surface-variant rounded-lg font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">chat_bubble</span> 24 mensajes
+                </span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</div>
+<!-- mod_bigbluebuttonbn: Sala virtual interactiva -->
+<div class="bg-surface-container-low hover:bg-surface-container transition-all p-spacing-md rounded-xl flex items-center justify-between gap-spacing-md group cursor-pointer shadow-sm">
+<div class="flex items-center gap-spacing-md min-w-0">
+<div class="w-12 h-12 rounded-xl bg-error-container text-error flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-2xl">videocam</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-error uppercase font-extrabold tracking-wide">Videoclase BigBlueButton</span>
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate group-hover:text-error transition-colors">Sala en Vivo: Clases Virtuales de Ciencias</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Encuentro semanal todos los martes y viernes a las 10:00 AM.</p>
+</div>
+</div>
+<div class="flex items-center gap-spacing-sm flex-shrink-0">
+<button class="px-spacing-md py-2 bg-error text-on-error font-headline-sm text-headline-sm rounded-xl hover:opacity-95 transition-opacity flex items-center gap-1.5 shadow-sm active:scale-95" type="button">
+<span class="material-symbols-outlined text-lg">door_open</span>
+                  Entrar a la Sala
+                </button>
+</div>
+</div>
+<!-- mod_resource: Guía en PDF con icono claro -->
+<div class="bg-surface-container-low hover:bg-surface-container transition-all p-spacing-md rounded-xl flex items-center justify-between gap-spacing-md group cursor-pointer shadow-sm">
+<div class="flex items-center gap-spacing-md min-w-0">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high text-tertiary flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-2xl">menu_book</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-tertiary uppercase font-extrabold tracking-wide">Libro de Aventuras (PDF Descargable)</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate group-hover:text-tertiary transition-colors">Guía de Aventuras de Ciencias: Unidad Universo</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Contiene infografías coloridas, recortables y experimentos caseros (4.2 MB).</p>
+</div>
+</div>
+<div class="flex items-center gap-spacing-sm flex-shrink-0">
+<a class="p-2.5 bg-surface-container-lowest text-primary rounded-xl hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm flex items-center justify-center" href="#descargar">
+<span class="material-symbols-outlined">download</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- SECCIÓN 3 ACTIVA: FORMAT TOPICS / MISSION EXPEDITION -->
+<section class="bg-surface-container-lowest p-spacing-lg rounded-2xl shadow-sm flex flex-col gap-spacing-lg">
+<!-- Encabezado de la Sección con Ilustración Temática de Misión -->
+<div class="flex flex-col gap-spacing-sm pb-spacing-md border-b-0">
+<div class="flex items-center justify-between flex-wrap gap-2">
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 bg-tertiary text-on-tertiary font-label-sm text-label-sm rounded-full font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">rocket</span>
+                  Tema 3 • En curso
+                </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Semana del 14 al 20 de Octubre</span>
+</div>
+<div class="flex items-center gap-1.5 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+                3 de 4 actividades completadas
+              </div>
+</div>
+<div class="flex flex-col md:flex-row gap-spacing-md items-start justify-between">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-black tracking-tight">
+                  🚀 Misión 3: El Sistema Solar y los Planetas Vecinos
+                </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-1 leading-relaxed">
+                  ¡Abróchate el cinturón espacial! En este viaje descubriremos por qué Mercurio es tan caliente, exploraremos los majestuosos anillos de Saturno y entenderemos cómo la Tierra cuida de todos nosotros.
+                </p>
+</div>
+</div>
+<!-- Caja de Metas de Aprendizaje para Niños -->
+<div class="bg-surface-container-low p-spacing-md rounded-xl flex items-center gap-spacing-md">
+<div class="w-10 h-10 rounded-full bg-secondary text-on-secondary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-xl">flag</span>
+</div>
+<div class="flex flex-col text-on-surface">
+<span class="font-headline-sm text-headline-sm">¿Qué aprenderemos en esta misión?</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Identificar los 8 planetas del sistema solar, su orden desde el Sol y sus tamaños comparados.</p>
+</div>
+</div>
+</div>
+<!-- LISTA DE ACTIVIDADES MOODLE 4.x DE LA SECCIÓN (core_course/activity-item) -->
+<div class="flex flex-col gap-spacing-md">
+<!-- ACTIVIDAD 1: mod_h5p (Lección Interactiva 3D) -->
+<div class="bg-surface-container-low p-spacing-md rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-spacing-md hover:shadow-md transition-all">
+<div class="flex items-start gap-spacing-md min-w-0 flex-1">
+<!-- Squircle Icon -->
+<div class="w-14 h-14 rounded-2xl bg-primary text-on-primary flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-3xl">view_in_ar</span>
+</div>
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-extrabold uppercase">H5P Interactivo</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span> 15 min aprox.
+                    </span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface leading-tight hover:text-primary transition-colors cursor-pointer">
+                    Viaje en 3D por la Luna y el Sol
+                  </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                    Gira la esfera lunar con tus dedos y descubre los cráteres más famosos del satélite natural.
+                  </p>
+</div>
+</div>
+<!-- Acciones & Moodle Activity Completion Checkbox -->
+<div class="flex items-center gap-spacing-md self-end md:self-center flex-shrink-0">
+<button class="px-spacing-md py-2.5 bg-primary text-on-primary font-headline-sm text-headline-sm rounded-xl hover:bg-primary-container transition-colors shadow-sm flex items-center gap-1.5 active:scale-95" type="button">
+<span class="material-symbols-outlined text-lg">play_arrow</span>
+                  ¡Comenzar Aventura!
+                </button>
+<!-- Moodle Completion Checkbox: COMPLETADO -->
+<div class="flex flex-col items-center">
+<div class="w-9 h-9 rounded-xl bg-secondary text-on-secondary flex items-center justify-center shadow-sm cursor-pointer" title="Completado: Visto el 16 de Octubre">
+<span class="material-symbols-outlined text-xl font-black">check</span>
+</div>
+<span class="font-label-sm text-[10px] text-secondary font-bold mt-0.5">Listo</span>
+</div>
+</div>
+</div>
+<!-- ACTIVIDAD 2: mod_assign (Tarea de dibujo espacial) -->
+<div class="bg-surface-container-low p-spacing-md rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-spacing-md hover:shadow-md transition-all">
+<div class="flex items-start gap-spacing-md min-w-0 flex-1">
+<!-- Squircle Icon Color Coral -->
+<div class="w-14 h-14 rounded-2xl bg-tertiary text-on-tertiary flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-3xl">palette</span>
+</div>
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-extrabold uppercase">Tarea Creativa</span>
+<!-- Estado de entrega Moodle (mod_assign submission status) -->
+<span class="px-2 py-0.5 rounded-md bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">task_alt</span> Entregado para calificar
+                    </span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface leading-tight hover:text-tertiary transition-colors cursor-pointer">
+                    Dibuja y describe tu planeta favorito
+                  </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                    Usa lápices de colores o pinturas. Sube una foto clara de tu dibujo con 3 oraciones descriptivas.
+                  </p>
+</div>
+</div>
+<!-- Acciones & Moodle Activity Completion Checkbox -->
+<div class="flex items-center gap-spacing-md self-end md:self-center flex-shrink-0">
+<button class="px-spacing-md py-2.5 bg-surface-container text-on-surface font-headline-sm text-headline-sm rounded-xl hover:bg-surface-container-high transition-colors shadow-sm flex items-center gap-1.5 active:scale-95" type="button">
+<span class="material-symbols-outlined text-lg">visibility</span>
+                  Ver mi Envío
+                </button>
+<!-- Moodle Completion Checkbox: COMPLETADO -->
+<div class="flex flex-col items-center">
+<div class="w-9 h-9 rounded-xl bg-secondary text-on-secondary flex items-center justify-center shadow-sm" title="Finalizado con éxito">
+<span class="material-symbols-outlined text-xl font-black">check</span>
+</div>
+<span class="font-label-sm text-[10px] text-secondary font-bold mt-0.5">Listo</span>
+</div>
+</div>
+</div>
+<!-- ACTIVIDAD 3: mod_quiz (Cuestionario / Mini-Reto Gamificado) -->
+<div class="bg-surface-container-low p-spacing-md rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-spacing-md hover:shadow-md transition-all">
+<div class="flex items-start gap-spacing-md min-w-0 flex-1">
+<!-- Squircle Icon Quiz -->
+<div class="w-14 h-14 rounded-2xl bg-primary-container text-on-primary-container flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-3xl">psychology_alt</span>
+</div>
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-extrabold uppercase">Cuestionario</span>
+<span class="text-tertiary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">timer</span> 5 Preguntas • Sin prisa
+                    </span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface leading-tight hover:text-primary transition-colors cursor-pointer">
+                    Mini-Reto Espacial: ¿Cuánto sabes sobre Saturno?
+                  </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                    Demuestra tus conocimientos para ganar la insignia especial "Guardián de los Anillos".
+                  </p>
+</div>
+</div>
+<!-- Acciones & Moodle Activity Completion Checkbox: COMPLETADO -->
+<div class="flex items-center gap-spacing-md self-end md:self-center flex-shrink-0">
+<button class="px-spacing-md py-2.5 bg-primary text-on-primary font-headline-sm text-headline-sm rounded-xl hover:bg-primary-container transition-colors shadow-sm flex items-center gap-1.5 active:scale-95" type="button">
+<span class="material-symbols-outlined text-lg">replay</span>
+                  Ver Resultados (10/10)
+                </button>
+<!-- Moodle Completion Checkbox: COMPLETADO -->
+<div class="flex flex-col items-center">
+<div class="w-9 h-9 rounded-xl bg-secondary text-on-secondary flex items-center justify-center shadow-sm" title="Superado con calificación perfecta">
+<span class="material-symbols-outlined text-xl font-black">check</span>
+</div>
+<span class="font-label-sm text-[10px] text-secondary font-bold mt-0.5">Listo</span>
+</div>
+</div>
+</div>
+<!-- ACTIVIDAD 4: mod_forum (Debate temático infantil - PENDIENTE) -->
+<div class="bg-surface-container-low p-spacing-md rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-spacing-md hover:shadow-md transition-all">
+<div class="flex items-start gap-spacing-md min-w-0 flex-1">
+<!-- Squircle Icon Forum Violet -->
+<div class="w-14 h-14 rounded-2xl bg-surface-container-highest text-on-surface flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-3xl">record_voice_over</span>
+</div>
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-extrabold uppercase">Debate en Equipo</span>
+<span class="text-tertiary font-label-sm text-label-sm font-extrabold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">pending</span> Pendiente de tu aporte
+                    </span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface leading-tight hover:text-primary transition-colors cursor-pointer">
+                    ¿Qué 3 cosas empacarías en tu cohete a Marte?
+                  </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                    Comparte tu idea y comenta amablemente lo que empacaron al menos dos amigos del salón.
+                  </p>
+</div>
+</div>
+<!-- Acciones & Moodle Activity Completion Checkbox: PENDIENTE -->
+<div class="flex items-center gap-spacing-md self-end md:self-center flex-shrink-0">
+<button class="px-spacing-md py-2.5 bg-tertiary text-on-tertiary font-headline-sm text-headline-sm rounded-xl hover:opacity-95 transition-opacity shadow-sm flex items-center gap-1.5 active:scale-95" type="button">
+<span class="material-symbols-outlined text-lg">rate_review</span>
+                  Escribir mi Idea (18)
+                </button>
+<!-- Moodle Completion Checkbox: PENDIENTE (Borde discontinuo / Dotted Pending State) -->
+<div class="flex flex-col items-center">
+<div class="w-9 h-9 rounded-xl bg-surface-container-lowest border-2 border-dashed border-outline text-outline flex items-center justify-center shadow-sm cursor-pointer hover:border-primary hover:text-primary transition-colors" title="Pendiente de completar: Publica un comentario">
+<span class="material-symbols-outlined text-base">crop_square</span>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant font-bold mt-0.5">Por hacer</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PREVIO / SIGUIENTE: Navegación de Temas Moodle (Section Navigation Pager) -->
+<div class="flex items-center justify-between py-spacing-xs">
+<button class="px-spacing-md py-spacing-sm rounded-xl bg-surface-container-low hover:bg-surface-container font-label-md text-label-md text-on-surface flex items-center gap-2 transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-base">arrow_back</span>
+            Misión 2: Capas de la Tierra y Atmósfera
+          </button>
+<button class="px-spacing-md py-spacing-sm rounded-xl bg-primary-fixed hover:bg-primary-fixed-dim font-headline-sm text-headline-sm text-on-primary-fixed flex items-center gap-2 transition-colors shadow-sm" type="button">
+            Misión 4: Las Estrellas y Galaxias
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- COLUMNA LATERAL DE BLOQUES MOODLE (Side Block Drawer: block-region) -->
+<aside class="xl:col-span-4 flex flex-col gap-spacing-lg">
+<!-- BLOQUE 1: block_badges (Mis Insignias y Logros Gamificados) -->
+<div class="bg-surface-container-lowest p-spacing-lg rounded-2xl shadow-sm flex flex-col gap-spacing-md">
+<div class="flex items-center justify-between pb-spacing-xs border-b-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-2xl text-tertiary" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Mis Medallas de Explorador</h3>
+</div>
+<a class="font-label-sm text-label-sm text-primary hover:underline font-bold" href="#todas-insignias">Ver todas (8)</a>
+</div>
+<div class="grid grid-cols-3 gap-spacing-sm">
+<!-- Insignia 1: Pequeño Astrónomo -->
+<div class="bg-surface-container-low p-spacing-sm rounded-xl flex flex-col items-center text-center gap-1 group hover:bg-surface-container transition-colors">
+<div class="w-12 h-12 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">qr_code_2</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface font-extrabold leading-tight mt-1">Pequeño Astrónomo</span>
+<span class="font-body-sm text-[11px] text-secondary font-bold">¡Desbloqueada!</span>
+</div>
+<!-- Insignia 2: Lector Veloz -->
+<div class="bg-surface-container-low p-spacing-sm rounded-xl flex flex-col items-center text-center gap-1 group hover:bg-surface-container transition-colors">
+<div class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">bolt</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface font-extrabold leading-tight mt-1">Lector Veloz</span>
+<span class="font-body-sm text-[11px] text-primary font-bold">Nivel Oro</span>
+</div>
+<!-- Insignia 3: Bloqueada (Próxima meta) -->
+<div class="bg-surface-container p-spacing-sm rounded-xl flex flex-col items-center text-center gap-1 opacity-70 group hover:opacity-100 transition-opacity">
+<div class="w-12 h-12 rounded-full bg-surface-container-high text-outline flex items-center justify-center shadow-inner">
+<span class="material-symbols-outlined text-2xl">lock</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-extrabold leading-tight mt-1">Mago de Marte</span>
+<span class="font-body-sm text-[11px] text-outline font-medium">Completa Tema 3</span>
+</div>
+</div>
+</div>
+<!-- BLOQUE 2: block_calendar_month (Calendario Escolar Moodle Infantil) -->
+<div class="bg-surface-container-lowest p-spacing-lg rounded-2xl shadow-sm flex flex-col gap-spacing-md">
+<div class="flex items-center justify-between pb-spacing-xs border-b-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-2xl text-primary">calendar_month</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Octubre 2024</h3>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-base">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-base">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Matriz de Días del Mes -->
+<div class="w-full flex flex-col gap-1">
+<!-- Nombres de Días -->
+<div class="grid grid-cols-7 text-center font-label-sm text-label-sm text-on-surface-variant font-bold mb-1">
+<span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span class="text-tertiary">S</span><span class="text-tertiary">D</span>
+</div>
+<!-- Grilla de Fechas -->
+<div class="grid grid-cols-7 gap-1 text-center font-body-sm text-body-sm">
+<span class="p-2 text-outline-variant">30</span>
+<span class="p-2 text-on-surface-variant font-medium">1</span>
+<span class="p-2 text-on-surface-variant font-medium">2</span>
+<span class="p-2 text-on-surface-variant font-medium">3</span>
+<span class="p-2 text-on-surface-variant font-medium">4</span>
+<span class="p-2 text-outline font-medium">5</span>
+<span class="p-2 text-outline font-medium">6</span>
+<span class="p-2 text-on-surface-variant font-medium">7</span>
+<span class="p-2 text-on-surface-variant font-medium">8</span>
+<span class="p-2 text-on-surface-variant font-medium">9</span>
+<span class="p-2 text-on-surface-variant font-medium">10</span>
+<span class="p-2 text-on-surface-variant font-medium">11</span>
+<span class="p-2 text-outline font-medium">12</span>
+<span class="p-2 text-outline font-medium">13</span>
+<span class="p-2 text-on-surface-variant font-medium">14</span>
+<span class="p-2 text-on-surface-variant font-medium">15</span>
+<!-- Hoy (Día 16) -->
+<span class="p-2 bg-primary text-on-primary font-bold rounded-xl shadow-sm flex items-center justify-center">16</span>
+<!-- Día con Tarea (Día 17) -->
+<span class="p-2 bg-tertiary-fixed text-on-tertiary-fixed font-black rounded-xl cursor-pointer hover:scale-105 transition-transform" title="Entrega de Maqueta">17</span>
+<!-- Día con Clase en Vivo (Día 18) -->
+<span class="p-2 bg-secondary-fixed text-on-secondary-fixed font-black rounded-xl cursor-pointer hover:scale-105 transition-transform" title="Clase en Vivo Telescopio">18</span>
+<span class="p-2 text-outline font-medium">19</span>
+<span class="p-2 text-outline font-medium">20</span>
+</div>
+</div>
+<!-- Leyenda del Calendario -->
+<div class="flex items-center justify-between text-[11px] font-label-sm pt-2 bg-surface-container-low p-2 rounded-xl text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-primary"></span> Hoy</span>
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span> Entrega</span>
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-secondary"></span> En Vivo</span>
+</div>
+</div>
+<!-- BLOQUE 3: block_upcoming_events (Próximos Eventos y Entregas Moodle) -->
+<div class="bg-surface-container-lowest p-spacing-lg rounded-2xl shadow-sm flex flex-col gap-spacing-md">
+<div class="flex items-center justify-between pb-spacing-xs border-b-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-2xl text-tertiary">notifications_active</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Próximas Entregas</h3>
+</div>
+<span class="px-2 py-0.5 rounded-md bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold">2 Pendientes</span>
+</div>
+<div class="flex flex-col gap-spacing-sm">
+<!-- Evento 1 -->
+<div class="p-spacing-sm bg-surface-container-low rounded-xl flex items-start gap-spacing-sm hover:bg-surface-container transition-colors">
+<div class="w-10 h-10 rounded-xl bg-tertiary-container text-on-tertiary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-xl">assignment</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Entrega: Maqueta de Saturno</span>
+<span class="font-body-sm text-body-sm text-tertiary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">alarm</span> Mañana, 16:00 hrs
+                </span>
+<span class="font-label-sm text-[11px] text-on-surface-variant mt-0.5">Sube la foto en Ciencias Naturales</span>
+</div>
+</div>
+<!-- Evento 2 -->
+<div class="p-spacing-sm bg-surface-container-low rounded-xl flex items-start gap-spacing-sm hover:bg-surface-container transition-colors">
+<div class="w-10 h-10 rounded-xl bg-secondary text-on-secondary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-xl">live_tv</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Clase con Telescopio Virtual</span>
+<span class="font-body-sm text-body-sm text-secondary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">event</span> Viernes 18, 10:00 hrs
+                </span>
+<span class="font-label-sm text-[11px] text-on-surface-variant mt-0.5">Enlace en Sala BigBlueButton</span>
+</div>
+</div>
+</div>
+</div>
+<!-- BLOQUE 4: block_online_users (Mis Compañeros Conectados) -->
+<div class="bg-surface-container-lowest p-spacing-lg rounded-2xl shadow-sm flex flex-col gap-spacing-md">
+<div class="flex items-center justify-between pb-spacing-xs border-b-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-2xl text-secondary">supervised_user_circle</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Compañeros Conectados</h3>
+</div>
+<span class="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse" title="En línea ahora"></span>
+</div>
+<div class="flex items-center gap-2 flex-wrap">
+<!-- Avatar 1 -->
+<div class="relative group cursor-pointer" title="Sofía Rojas - Estudiando Ciencias">
+<img class="w-11 h-11 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform" data-alt="Close-up avatar of an 8-year-old smiling girl with glasses and pigtails wearing a cozy bright yellow sweater, friendly educational digital art style, soft clean background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk1tjxrPOJYwTq5FbOcDfGchlr3vYBwXjywK5xdaFkmPfKRvN4xT602w_vuUyFw89N0LfBQc6T0kAgvyp-_LTwMsEU34NHxjaDYa4keNJvAuAnJMM4FQLygAIWPqdaNLrtZLYQyzbe_XkqIZrxI6cyxtANzpz0gtLU7uWbkJDm61iSwFAC-V2lVR3USpuYO_bApCOLfrYV4BX8MoNs2bsiwdFyVvfWokdKv-UtYJbsJfVfWVIqRyTQ"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-secondary border-2 border-white"></span>
+</div>
+<!-- Avatar 2 -->
+<div class="relative group cursor-pointer" title="Mateo Chen - Resolviendo el cuestionario">
+<img class="w-11 h-11 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform" data-alt="Portrait avatar of a 9-year-old boy smiling enthusiastically with a dinosaur t-shirt, cute digital illustration style for primary school educational software, bright and clear." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuQV-ypsQKHwmScT4ErCBIn54Bs4k9GJHe1QKZIphVVB6_opZUNv5rmBov9OMzcaoatDmX7LhteORmP8D4_paCbeXgdcIJz5Av-_D6P6utdMYIZVL4TLyDNhliaTjGH48vBKwI3XvgGHTHbTiZGiFrkRx62qoCmKpBJiEP4oGlrRE_XJhs7UdeRedjcXhNhP4bqyO5MHOsrf23pTItE76KF6jQLFP6rBd0s5Rp2i139nG_kMKcpWV4"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-secondary border-2 border-white"></span>
+</div>
+<!-- Avatar 3 -->
+<div class="relative group cursor-pointer" title="Valentina Paz - En el Foro de Marte">
+<img class="w-11 h-11 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform" data-alt="Avatar illustration of a cheerful 9-year-old girl with curly hair and a purple star headband, friendly character art for children digital classroom platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9QdzlJlO79xyB3fHavaEuQGRlvyjBucddnHGKgaZSRDMURRIRoCBDZZa5ToJsNR4tZKmdB4ygwxNWSRliaV5sD1q9AertlEvsMLBhRf5pDdh6DQmknygG8CLqzcV58EPQHaUSFX5BnLEkhq6R8_xJZOWr-_J-3Pip2waqXilEi9okINnwtqw-mrCbBwZ4VJiaeBm5bx5rE271ZhfoP5kSi6YQQlXrMv80OFdZCYiqVZ6nuST8lwc0"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-secondary border-2 border-white"></span>
+</div>
+<!-- Avatar 4 -->
+<div class="relative group cursor-pointer" title="Joaquín Silva - Conectado hace 3 minutos">
+<img class="w-11 h-11 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform" data-alt="Friendly avatar of a 10-year-old boy smiling in a green hoodie, digital portrait illustration for elementary school Moodle LMS dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpatNRJH8R7nfllc4GNkbt8PFhI3fHs5-hRlPhJfBKknasTJePowcqD-_2t5vqylJBA0oi5Y5mt1mUfsyTCsqpUvqR1g6UvxWOGhLkwnL6rfNV3eH9RHgFKSQkoRto4kb75aJN1u6uzAn_TnIxApsxLQWQGeeIn92nWRfKC7ALGkifqk7KGvoBKdCAnZ358Lu0v_blEPZQ3-Yeug9--Tshb3F9eORQCV9RA3EWf7wZ7rympnhEa-zO"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-secondary border-2 border-white"></span>
+</div>
+<!-- Más compañeros pill -->
+<div class="w-11 h-11 rounded-full bg-surface-container-high text-primary font-headline-sm text-headline-sm flex items-center justify-center shadow-sm cursor-pointer hover:bg-primary hover:text-on-primary transition-colors" title="Ver 6 compañeros más">
+              +6
+            </div>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-xl flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">¿Quieres armar un grupo?</span>
+<button class="px-2.5 py-1 bg-surface-container-lowest text-primary font-label-sm text-label-sm font-bold rounded-lg shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors" type="button">
+              Saludar 👋
+            </button>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</div></main></div></body></html>

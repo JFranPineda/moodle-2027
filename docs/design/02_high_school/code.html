@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      "colors": {
+        "on-tertiary-fixed": "#07006c",
+        "on-surface": "#131b2e",
+        "on-error-container": "#93000a",
+        "surface-tint": "#2151da",
+        "surface-bright": "#faf8ff",
+        "primary": "#0037b0",
+        "error": "#ba1a1a",
+        "on-tertiary-fixed-variant": "#2f2ebe",
+        "error-container": "#ffdad6",
+        "tertiary": "#2c2abc",
+        "on-background": "#131b2e",
+        "inverse-surface": "#283044",
+        "secondary-fixed-dim": "#4cd7f6",
+        "inverse-primary": "#b7c4ff",
+        "surface-container-lowest": "#ffffff",
+        "primary-fixed": "#dce1ff",
+        "surface-container": "#eaedff",
+        "outline": "#747686",
+        "surface-container-low": "#f2f3ff",
+        "tertiary-fixed": "#e1e0ff",
+        "background": "#faf8ff",
+        "on-primary-fixed-variant": "#0039b5",
+        "inverse-on-surface": "#eef0ff",
+        "secondary": "#00687a",
+        "surface-dim": "#d2d9f4",
+        "tertiary-container": "#4648d4",
+        "surface": "#faf8ff",
+        "on-primary-fixed": "#001551",
+        "surface-variant": "#dae2fd",
+        "on-tertiary": "#ffffff",
+        "outline-variant": "#c4c5d7",
+        "primary-fixed-dim": "#b7c4ff",
+        "secondary-fixed": "#acedff",
+        "primary-container": "#1d4ed8",
+        "on-primary": "#ffffff",
+        "on-surface-variant": "#434655",
+        "on-secondary-fixed-variant": "#004e5c",
+        "surface-container-highest": "#dae2fd",
+        "secondary-container": "#57dffe",
+        "surface-container-high": "#e2e7ff",
+        "on-secondary": "#ffffff",
+        "on-secondary-container": "#006172",
+        "on-secondary-fixed": "#001f26",
+        "tertiary-fixed-dim": "#c0c1ff",
+        "on-tertiary-container": "#d1d1ff",
+        "on-error": "#ffffff",
+        "on-primary-container": "#cad3ff"
+      },
+      "borderRadius": {
+        "DEFAULT": "0.125rem",
+        "lg": "0.25rem",
+        "xl": "0.5rem",
+        "full": "0.75rem"
+      },
+      "spacing": {
+        "space-sm": "0.5rem",
+        "space-xl": "2rem",
+        "gutter-mobile": "1rem",
+        "gutter-desktop": "1.5rem",
+        "space-xxs": "0.125rem",
+        "space-lg": "1.5rem",
+        "space-2xl": "3rem",
+        "space-xs": "0.25rem",
+        "space-base": "1rem",
+        "space-md": "0.75rem",
+        "max-content-width": "1380px"
+      },
+      "fontFamily": {
+        "display-lg": [
+          "Plus Jakarta Sans"
+        ],
+        "label-sm": [
+          "Inter"
+        ],
+        "headline-sm": [
+          "Plus Jakarta Sans"
+        ],
+        "label-md": [
+          "Inter"
+        ],
+        "display-lg-mobile": [
+          "Plus Jakarta Sans"
+        ],
+        "headline-md": [
+          "Plus Jakarta Sans"
+        ],
+        "headline-lg": [
+          "Plus Jakarta Sans"
+        ],
+        "code-sm": [
+          "JetBrains Mono"
+        ],
+        "body-sm": [
+          "Inter"
+        ],
+        "body-lg": [
+          "Inter"
+        ],
+        "body-md": [
+          "Inter"
+        ]
+      },
+      "fontSize": {
+        "display-lg": [
+          "36px",
+          {
+            "lineHeight": "44px",
+            "letterSpacing": "-0.025em",
+            "fontWeight": "700"
+          }
+        ],
+        "label-sm": [
+          "11px",
+          {
+            "lineHeight": "16px",
+            "letterSpacing": "0.04em",
+            "fontWeight": "600"
+          }
+        ],
+        "headline-sm": [
+          "16px",
+          {
+            "lineHeight": "24px",
+            "letterSpacing": "-0.01em",
+            "fontWeight": "600"
+          }
+        ],
+        "label-md": [
+          "13px",
+          {
+            "lineHeight": "18px",
+            "letterSpacing": "0.01em",
+            "fontWeight": "500"
+          }
+        ],
+        "display-lg-mobile": [
+          "28px",
+          {
+            "lineHeight": "36px",
+            "letterSpacing": "-0.02em",
+            "fontWeight": "700"
+          }
+        ],
+        "headline-md": [
+          "20px",
+          {
+            "lineHeight": "28px",
+            "letterSpacing": "-0.015em",
+            "fontWeight": "600"
+          }
+        ],
+        "headline-lg": [
+          "24px",
+          {
+            "lineHeight": "32px",
+            "letterSpacing": "-0.02em",
+            "fontWeight": "600"
+          }
+        ],
+        "code-sm": [
+          "12px",
+          {
+            "lineHeight": "18px",
+            "letterSpacing": "0em",
+            "fontWeight": "400"
+          }
+        ],
+        "body-sm": [
+          "13px",
+          {
+            "lineHeight": "18px",
+            "letterSpacing": "0.005em",
+            "fontWeight": "400"
+          }
+        ],
+        "body-lg": [
+          "16px",
+          {
+            "lineHeight": "26px",
+            "letterSpacing": "-0.005em",
+            "fontWeight": "400"
+          }
+        ],
+        "body-md": [
+          "14px",
+          {
+            "lineHeight": "22px",
+            "letterSpacing": "0em",
+            "fontWeight": "400"
+          }
+        ]
+      }
+    }
+  }
+}</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 h-16 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] px-gutter-desktop flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm"><img alt="Logo EduMoodle Secundaria" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UE3Ltsi0VRsKwD1RHeQvTLsi6_MuWUdEuMjMDssGz3UAyUahcAwmGv44vXV4eQZbvQLLu3ydwCABLnB-8gqHUknSOiFlJdIgWVZkyKSIXa8GuDaunMkv7MYMtPkq-K4TUdYLSBxUOIsopkbB1ljiiaPhIjvzJZBYWcgRRC3mdbvC2CHpPdDSEBLUDJyXQUT6ccKCLJAXGrJi31HNzZSQIfCAZuFkUnj3jCdzQfZp9-ZSvlH4ZFiEpXsrY"/><span class="font-headline-sm text-headline-sm text-primary">EduMoodle Secundaria</span></div><nav class="hidden xl:flex items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-label-md"><a class="px-space-sm py-space-xs rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="area-personal" href="#">Área personal</a><a aria-current="page" class="px-space-sm py-space-xs rounded-xl transition-all bg-primary-container text-on-primary-container font-label-md" data-path="mis-cursos" href="#">Mis Cursos</a><a class="px-space-sm py-space-xs rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="calificaciones" href="#">Calificaciones</a><a class="px-space-sm py-space-xs rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="recursos-digitales" href="#">Recursos Digitales</a><a class="px-space-sm py-space-xs rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="biblioteca-virtual" href="#">Biblioteca Virtual</a></nav></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center relative w-64 lg:w-72"><span class="material-symbols-outlined absolute left-3 text-outline">search</span><input class="w-full pl-9 pr-3 py-1.5 bg-surface-container-low text-on-surface placeholder-outline font-body-sm text-body-sm rounded-xl outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-container transition-all" placeholder="Buscar actividades o recursos..." type="text"/></div><div class="flex items-center gap-space-xs"><button aria-label="Buscar en el curso" class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined">travel_explore</span></button><button aria-label="Notificaciones" class="relative w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined">notifications</span><span class="absolute top-1.5 right-1.5 w-4 h-4 bg-error text-on-error font-label-sm text-[10px] rounded-full flex items-center justify-center font-bold">3</span></button><button aria-label="Mensajes" class="relative w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined">chat</span><span class="absolute top-1.5 right-1.5 w-2 h-2 bg-secondary-container rounded-full"></span></button><button aria-label="Alternar tema claro y oscuro" class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined">dark_mode</span></button></div><div class="flex items-center gap-space-sm pl-space-xs ml-space-xs"><div class="text-right hidden sm:block"><div class="font-label-md text-label-md text-on-surface font-semibold leading-tight">Sofia Chen</div><div class="font-label-sm text-label-sm text-on-surface-variant leading-tight">3.º ESO · Bachillerato Prep</div></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1Vg9hSofp-nj3kZxMPXGg-qgvFTODy6Q2h8yyn8-TCribl1LIsc-6MilmG2fsh0s1iWy3jIlkRNoUGb6DFzwDd2puiRl_Bcgkt4MM-PaXyWalVysh-nMWiDKGNUdbXYKK1fcqwakDgJ4psDwLmEbfFyuZIy2tNgFYd2Ny76Fc8KJCrN1p-02-OL4sH6wao1Qs2gc3f9PvUEnNc_ZROb756y8t3l5V69ahK28O1LJa80d5j5Hzyxb4dNN9I"/><span class="material-symbols-outlined text-outline text-lg hidden sm:block">expand_more</span></div></div></header><aside class="fixed left-0 top-16 bottom-0 w-72 bg-surface-container-low z-40 overflow-y-auto p-space-base flex flex-col justify-between"><div class="space-y-space-md"><div class="flex items-center justify-between pb-space-sm"><div class="flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm"><span class="material-symbols-outlined">menu_book</span><span>Índice del Curso</span></div><button aria-label="Colapsar índice" class="w-7 h-7 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-lg">chevron_left</span></button></div><div class="bg-surface-container-lowest p-space-sm rounded-xl space-y-space-xs"><div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span>Progreso General</span><span class="font-semibold text-primary">68%</span></div><div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden"><div class="bg-primary h-full w-[68%] rounded-full"></div></div></div><div class="space-y-space-xs"><div class="p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] space-y-space-xs"><div class="flex items-center justify-between font-label-md text-label-md text-on-surface font-semibold"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary text-lg">expand_more</span><span>Tema 1: Cinemática</span></div><span class="font-label-sm text-label-sm text-secondary font-bold">4/4</span></div><div class="pl-5 space-y-1 pt-1"><div class="flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant"><span class="truncate">1.1 Introducción MRU</span><span class="material-symbols-outlined text-primary text-base">check_circle</span></div><div class="flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant"><span class="truncate">1.2 Gráficas del movimiento</span><span class="material-symbols-outlined text-primary text-base">check_circle</span></div><div class="flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant"><span class="truncate">1.3 Tarea: MRUA Lab</span><span class="material-symbols-outlined text-primary text-base">check_circle</span></div></div></div><div class="p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] space-y-space-xs"><div class="flex items-center justify-between font-label-md text-label-md text-on-surface font-semibold"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary text-lg">expand_more</span><span>Tema 2: Dinámica</span></div><span class="font-label-sm text-label-sm text-primary font-bold">2/4</span></div><div class="pl-5 space-y-1 pt-1"><div class="flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant"><span class="truncate">2.1 Principios de Newton</span><span class="material-symbols-outlined text-primary text-base">check_circle</span></div><div class="flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant"><span class="truncate">2.2 Fuerzas de rozamiento</span><span class="material-symbols-outlined text-primary text-base">check_circle</span></div><div class="flex items-center justify-between font-body-sm text-body-sm text-on-surface"><span class="truncate font-medium">2.3 Cuestionario Fuerzas</span><span class="material-symbols-outlined text-outline text-base">radio_button_unchecked</span></div></div></div><div class="p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] space-y-space-xs"><div class="flex items-center justify-between font-label-md text-label-md text-on-surface-variant font-medium"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-outline text-lg">chevron_right</span><span>Tema 3: Trabajo y Energía</span></div><span class="font-label-sm text-label-sm text-outline">0/5</span></div></div><div class="p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] space-y-space-xs"><div class="flex items-center justify-between font-label-md text-label-md text-on-surface-variant font-medium"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-outline text-lg">chevron_right</span><span>Tema 4: Ondas y Óptica</span></div><span class="font-label-sm text-label-sm text-outline">0/3</span></div></div></div></div><div class="pt-space-base mt-space-base"><a class="flex items-center gap-space-xs p-space-sm rounded-xl font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" href="#"><span class="material-symbols-outlined text-lg">help_center</span><span>Mesa de Ayuda Técnica</span></a></div></aside><div class="pl-72"><main class="relative pt-16 w-full min-h-screen bg-background px-gutter-desktop py-space-xl"><div class="flex flex-col w-full">
+<!-- BREADCRUMBS (core_course canonical breadcrumb) -->
+<nav aria-label="Moodle Breadcrumb Trail" class="mb-space-md">
+<ol class="flex items-center flex-wrap gap-space-xs font-label-md text-label-md text-on-surface-variant">
+<li>
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-base">home</span>
+<span>Inicio</span>
+</a>
+</li>
+<li class="flex items-center text-outline">/</li>
+<li><a class="hover:text-primary transition-colors" href="#">Mis cursos</a></li>
+<li class="flex items-center text-outline">/</li>
+<li><a class="hover:text-primary transition-colors" href="#">Ciencias Experimentales</a></li>
+<li class="flex items-center text-outline">/</li>
+<li><a class="hover:text-primary transition-colors font-medium text-on-surface" href="#">Física y Química 3.º ESO</a></li>
+<li class="flex items-center text-outline">/</li>
+<li aria-current="page" class="text-primary font-semibold">Unidad 3: Dinámica y Fuerzas</li>
+</ol>
+</nav>
+<!-- COURSE HERO BANNER & HEADER -->
+<section class="relative bg-surface-container-lowest rounded-xl shadow-md overflow-hidden mb-space-xl">
+<div class="absolute -right-24 -top-24 w-96 h-96 bg-primary-container opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute right-1/3 bottom-0 w-64 h-64 bg-secondary-container opacity-20 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative p-space-lg lg:p-space-xl flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg">
+<div class="flex-1 space-y-space-sm min-w-0">
+<div class="flex items-center flex-wrap gap-space-xs">
+<span class="bg-primary text-on-primary font-code-sm text-code-sm px-2.5 py-0.5 rounded-lg font-semibold tracking-wide uppercase">FQ-302</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2.5 py-0.5 rounded-lg">Grupo B · Aula 204</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2.5 py-0.5 rounded-lg">Trimestre 1 · 2024-2025</span>
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm px-2.5 py-0.5 rounded-lg font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Currículo LOMLOE
+          </span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">
+          Física y Química <span class="text-primary font-normal">3.º ESO</span>
+</h1>
+<div class="flex flex-wrap items-center gap-y-2 gap-x-6 pt-1 font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Professional portrait photo of Dr Alejandro Valverde, friendly science high school professor wearing glasses and dark blue blazer in modern physics laboratory setting with warm directional light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzk9vpl2is3WCI8CbqyK7hkLJ4WjN_0GJpdG5ITQwP8KfCn-NvSLg28TDn1bR12FO736kN-qwkKP0nUOoV0veOkjmbZUUWL7A-Vh-evFbOn028pQRYBGr0qoBl9HExgr_yJK2VkPFRg6rYBTOhhFVvE0uqdaukLzPcRYmeCpmNv0xEXJNuebx_pTgsmOjotM6nkQDXOB9Q2ygiEhwz4dtQ7fbn844toV6tLosJ93n2ExPzcaSoSzO7"/>
+<span class="font-medium text-on-surface">Prof. Dr. Alejandro Valverde</span>
+<span class="text-outline">· Depto. Ciencias</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base text-primary">schedule</span>
+<span>Tutorías: Mar y Jue 11:30 - 12:20</span>
+</div>
+<a class="flex items-center gap-1 text-primary hover:underline font-medium" href="#">
+<span class="material-symbols-outlined text-base">download</span>
+<span>Programación Didáctica (PDF)</span>
+</a>
+</div>
+</div>
+<!-- COURSE PROGRESS CARD (core_completion) -->
+<div class="w-full lg:w-80 bg-surface-container-low rounded-xl p-space-base flex flex-col justify-between space-y-space-sm shadow-sm shrink-0">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider font-semibold">Progreso global</span>
+<div class="font-headline-lg text-headline-lg text-primary font-bold">72%</div>
+</div>
+<div class="w-12 h-12 relative flex items-center justify-center">
+<svg class="w-12 h-12 -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container-high" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="72, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<span class="material-symbols-outlined text-primary text-lg absolute">insights</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[72%] rounded-full transition-all duration-500"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>18 de 25 actividades superadas</span>
+<span class="font-semibold text-secondary">A ritmo</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SECONDARY COURSE TAB BAR (canonical Moodle 4+ secondary nav) -->
+<div class="bg-surface-container px-space-base lg:px-space-xl flex items-center overflow-x-auto gap-space-xs scrollbar-none">
+<button class="px-space-base py-3 font-label-md text-label-md font-semibold text-primary bg-surface-container-lowest rounded-t-lg shadow-sm flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-base">auto_stories</span>
+<span>Curso</span>
+</button>
+<button class="px-space-base py-3 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-t-lg transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-base">group</span>
+<span>Participantes (32)</span>
+</button>
+<button class="px-space-base py-3 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-t-lg transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-base">grade</span>
+<span>Calificaciones</span>
+</button>
+<button class="px-space-base py-3 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-t-lg transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-base">verified</span>
+<span>Competencias LOMLOE</span>
+</button>
+<button class="px-space-base py-3 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-t-lg transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-base">analytics</span>
+<span>Informes</span>
+</button>
+<button class="px-space-base py-3 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-t-lg transition-colors flex items-center gap-1.5 ml-auto" type="button">
+<span class="material-symbols-outlined text-base">settings</span>
+<span>Configuración</span>
+</button>
+</div>
+</section>
+<!-- DUAL TIER MOODLE WORKSPACE: 12-COLUMN ASYMMETRIC GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl">
+<!-- MAIN LEARNING STREAM (col-span-8 or 9) -->
+<div class="lg:col-span-8 space-y-space-xl min-w-0">
+<!-- SECTION 0: GENERAL & ANNOUNCEMENTS (format_topics Section 0) -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg space-y-space-base" id="section-0">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-6 bg-primary rounded-full"></span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Canal de Comunicación y Recursos del Curso</h2>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2.5 py-1 rounded-full">Sección fija</span>
+</div>
+<div class="space-y-space-sm">
+<!-- mod_forum -->
+<article class="p-space-base bg-surface-container-low hover:bg-surface-container rounded-xl transition-all shadow-sm flex items-start gap-space-base">
+<div class="w-10 h-10 rounded-xl bg-tertiary text-on-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl">forum</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors truncate" href="#">
+                  Foro General de Novedades, Dudas y Tutoría Grupal
+                </a>
+<span class="material-symbols-outlined text-primary text-base" title="Tema fijado">push_pin</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 line-clamp-1">
+                Espacio oficial para consultas temáticas y avisos de evaluación. 14 hilos abiertos · Última réplica del Prof. Valverde hace 20 min.
+              </p>
+</div>
+<div class="shrink-0 flex items-center">
+<span class="material-symbols-outlined text-primary text-xl" title="Finalización completada">check_circle</span>
+</div>
+</article>
+<!-- mod_bigbluebuttonbn (LIVE CLASSROOM) -->
+<article class="p-space-base bg-secondary-fixed text-on-secondary-fixed flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-base rounded-xl shadow-sm">
+<div class="flex items-center gap-space-base min-w-0">
+<div class="w-10 h-10 rounded-xl bg-secondary text-on-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl">videocam</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm font-semibold truncate">Sala BigBlueButton: Clase de Resolución de Problemas</span>
+<span class="bg-error text-on-error font-label-sm text-label-sm px-2 py-0.5 rounded-full flex items-center gap-1 font-bold animate-pulse">
+<span class="w-1.5 h-1.5 rounded-full bg-on-error"></span> EN DIRECTO
+                  </span>
+</div>
+<p class="font-body-sm text-body-sm opacity-90 mt-0.5">
+                  Sesión de refuerzo sobre rozamiento dinámico y planos inclinados. 19 alumnos conectados.
+                </p>
+</div>
+</div>
+<a class="shrink-0 bg-secondary hover:bg-on-secondary-container text-on-secondary px-space-base py-2 rounded-xl font-label-md text-label-md font-semibold transition-colors flex items-center gap-1.5 shadow-sm" href="#">
+<span>Unirse a la sesión</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</article>
+<!-- mod_resource (PDF Guía Docente) -->
+<article class="p-space-base bg-surface-container-low hover:bg-surface-container rounded-xl transition-all shadow-sm flex items-center justify-between gap-space-base">
+<div class="flex items-center gap-space-base min-w-0">
+<div class="w-10 h-10 rounded-xl bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl">picture_as_pdf</span>
+</div>
+<div class="min-w-0">
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors truncate block" href="#">
+                  Guía Docente, Criterios de Evaluación y Rúbricas ESO 2024-25
+                </a>
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span>Documento PDF</span>
+<span>·</span>
+<span>2.4 MB</span>
+<span>·</span>
+<span>Actualizado 10 Octubre</span>
+</div>
+</div>
+</div>
+<a class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-lg" href="#" title="Descargar archivo">
+<span class="material-symbols-outlined">download</span>
+</a>
+</article>
+<!-- mod_url (PhET Simulators) -->
+<article class="p-space-base bg-surface-container-low hover:bg-surface-container rounded-xl transition-all shadow-sm flex items-center justify-between gap-space-base">
+<div class="flex items-center gap-space-base min-w-0">
+<div class="w-10 h-10 rounded-xl bg-primary-fixed text-on-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl">science</span>
+</div>
+<div class="min-w-0">
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors truncate block" href="#">
+                  Simulaciones Interactivas PhET Colorado: Fuerzas y Movimiento
+                </a>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Laboratorio virtual externo con acreditación didáctica para trabajo empírico en casa.
+                </p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-lg">arrow_outward</span>
+</article>
+</div>
+</section>
+<!-- SECTION 3: LEYES DE NEWTON Y DINÁMICA (ACTIVE TOPIC) -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg lg:p-space-xl space-y-space-lg" id="section-3">
+<!-- TOPIC HEADER -->
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-space-md pb-space-sm">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-lg bg-primary text-on-primary font-code-sm text-code-sm font-semibold uppercase">Unidad Didáctica 3</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">14 Oct - 28 Oct (Semana 5 y 6)</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">
+              Dinámica Clásica y Leyes Fundamentales de Newton
+            </h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+              Análisis vectorial de fuerzas, principio de inercia, ley de acción-reacción y aplicaciones prácticas del rozamiento cinético en la vida cotidiana.
+            </p>
+</div>
+<div class="bg-surface-container-low px-4 py-2 rounded-xl text-right shrink-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Progreso Unidad</span>
+<span class="font-headline-md text-headline-md font-bold text-primary">3 / 5 Finalizadas</span>
+</div>
+</div>
+<!-- ACTIVITIES STREAM (format_topics Activity List) -->
+<div class="space-y-space-md">
+<!-- 3.1 mod_page: LECTURA INTERACTIVA -->
+<div class="p-space-base bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-base min-w-0">
+<div class="w-11 h-11 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">menu_book</span>
+</div>
+<div class="min-w-0 space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-tertiary">Lectura Guiada · mod_page</span>
+<span class="text-outline text-xs">·</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs">timer</span> 15 min de lectura
+                  </span>
+</div>
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors block font-semibold truncate" href="#">
+                  De las ideas de Aristóteles a los Principia Mathematica de Isaac Newton
+                </a>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                  Contexto histórico, experimentos mentales de Galileo Galilei y definición operativa de masa inercial.
+                </p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-space-md shrink-0 pt-2 md:pt-0">
+<span class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-2.5 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-sm">done_all</span> Leído
+              </span>
+<button class="w-8 h-8 rounded-full bg-surface-container text-primary flex items-center justify-center hover:bg-primary hover:text-on-primary transition-colors" title="Marcar como finalizada" type="button">
+<span class="material-symbols-outlined text-lg">check</span>
+</button>
+</div>
+</div>
+<!-- 3.2 mod_h5p: SIMULADOR INTERACTIVO H5P -->
+<div class="p-space-base bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-base min-w-0">
+<div class="w-11 h-11 rounded-xl bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">extension</span>
+</div>
+<div class="min-w-0 space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-secondary">Interactivo H5P · mod_h5p</span>
+<span class="bg-surface-container-highest text-on-surface-variant font-code-sm text-code-sm px-2 py-0.2 rounded font-medium">Nota: 9.50 / 10.00</span>
+</div>
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors block font-semibold truncate" href="#">
+                  Laboratorio Virtual H5P: Descomposición de Fuerzas en Plano Inclinado
+                </a>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                  Ajusta el ángulo theta, calcula la fuerza normal y el coeficiente mu antes de lanzar el bloque.
+                </p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-space-md shrink-0">
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm px-3 py-1 rounded-full font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-base">check_circle</span> Superado
+              </span>
+<a class="bg-surface-container hover:bg-surface-container-high text-on-surface px-3 py-1.5 rounded-lg font-label-md text-label-md font-medium transition-colors" href="#">
+                Repetir
+              </a>
+</div>
+</div>
+<!-- 3.3 mod_assign: TAREA CON RUBRICA Y ESTADO DE ENTREGA -->
+<div class="relative bg-surface-container-low rounded-xl p-space-base shadow-sm space-y-space-sm overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1 bg-secondary"></div>
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-space-base">
+<div class="flex items-start gap-space-base min-w-0">
+<div class="w-11 h-11 rounded-xl bg-primary text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">assignment</span>
+</div>
+<div class="min-w-0 space-y-1">
+<div class="flex items-center flex-wrap gap-2">
+<span class="font-label-sm text-label-sm uppercase font-bold text-primary">Tarea de Laboratorio · mod_assign</span>
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm px-2.5 py-0.5 rounded-full font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">task_alt</span> Entregado para calificar
+                    </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-on-surface">
+                    Práctica 3: Determinación Experimental del Coeficiente de Fricción Estática
+                  </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    Redacta el informe científico conforme al formato IMRyD. Debes incluir tabla de mediciones, gráfica de regresión lineal y análisis de incertidumbre porcentual.
+                  </p>
+</div>
+</div>
+<!-- DEADLINE CHIP -->
+<div class="bg-surface-container-lowest p-3 rounded-xl shadow-sm text-right shrink-0 space-y-0.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Fecha límite de entrega</span>
+<span class="font-headline-sm text-headline-sm font-bold text-error block">Jueves, 24 Oct · 23:59</span>
+<span class="font-label-sm text-label-sm text-secondary font-medium">Quedan 2 días y 5 horas</span>
+</div>
+</div>
+<!-- SUBMISSION METADATA ACCORDION / DETAILS -->
+<div class="bg-surface-container-lowest rounded-xl p-space-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-error-container text-on-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-base">description</span>
+</div>
+<div>
+<div class="font-label-md text-label-md font-semibold text-on-surface">Informe_Lab3_SofiaChen_GrupoB.pdf</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Subido: Ayer a las 18:42 · 1.8 MB · Hash SHA-256 verificado</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high font-label-md text-label-md font-medium text-on-surface transition-colors" type="button">
+                  Editar entrega
+                </button>
+<button class="px-3 py-1.5 rounded-lg bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-md text-label-md font-medium transition-colors" type="button">
+                  Ver rúbrica (4 criterios)
+                </button>
+</div>
+</div>
+</div>
+<!-- 3.4 mod_quiz: CUESTIONARIO CON INTENTOS Y CALIFICACIÓN -->
+<div class="p-space-base bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-base min-w-0">
+<div class="w-11 h-11 rounded-xl bg-tertiary-container text-on-tertiary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">quiz</span>
+</div>
+<div class="min-w-0 space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-tertiary-container">Cuestionario Evaluativo · mod_quiz</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded">2 Intentos permitidos</span>
+</div>
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors block font-semibold truncate" href="#">
+                  Test de Autocomprobación: Leyes de la Dinámica y Aplicaciones de Fuerzas
+                </a>
+<div class="flex items-center gap-3 font-body-sm text-body-sm text-on-surface-variant">
+<span>Intento 1: <strong>8.80 / 10.00</strong></span>
+<span>·</span>
+<span>Método de calificación: Calificación más alta</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-space-md shrink-0">
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm font-bold text-primary block">8.8 / 10</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Aprobado</span>
+</div>
+<a class="bg-surface-container hover:bg-surface-container-high text-on-surface px-4 py-2 rounded-xl font-label-md text-label-md font-semibold transition-colors" href="#">
+                Revisar intento
+              </a>
+</div>
+</div>
+<!-- 3.5 mod_forum: DEBATE GUIADO -->
+<div class="p-space-base bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-base min-w-0">
+<div class="w-11 h-11 rounded-xl bg-surface-variant text-on-surface-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">question_answer</span>
+</div>
+<div class="min-w-0 space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-outline">Debate Didáctico · mod_forum</span>
+<span class="bg-error-container text-on-error-container font-label-sm text-label-sm px-2 py-0.5 rounded font-medium">Pendiente de participación</span>
+</div>
+<a class="font-headline-sm text-headline-sm text-on-surface hover:text-primary transition-colors block font-semibold truncate" href="#">
+                  Debate: ¿Cómo actúan las fuerzas en una estación orbital en caída libre?
+                </a>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Condición de finalización Moodle: Realizar 1 intervención argumentada original y 2 réplicas constructivas a compañeros.
+                </p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-space-md shrink-0">
+<span class="material-symbols-outlined text-outline text-xl" title="Actividad incompleta">radio_button_unchecked</span>
+<a class="bg-primary hover:bg-on-primary-fixed-variant text-on-primary px-4 py-2 rounded-xl font-label-md text-label-md font-semibold transition-colors" href="#">
+                Participar en el hilo
+              </a>
+</div>
+</div>
+</div>
+</section>
+<!-- COLLAPSED NEXT SECTION (Unidad 4 Preview) -->
+<section class="bg-surface-container-low rounded-xl p-space-base opacity-75 hover:opacity-100 transition-opacity">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-base">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high text-outline flex items-center justify-center">
+<span class="material-symbols-outlined">lock</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase font-bold text-outline">Unidad Didáctica 4 · Próximamente</span>
+<span class="bg-surface-container-highest text-outline font-label-sm text-label-sm px-2 py-0.5 rounded">Apertura: 29 de Octubre</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-on-surface">
+                Trabajo, Energía Mecánica, Potencia y Conservación
+              </h3>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface p-2 rounded-lg" type="button">
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</section>
+</div>
+<!-- RIGHT SIDEBAR BLOCKS (Moodle block-region / side-pre) -->
+<aside aria-label="Bloques del curso" class="lg:col-span-4 space-y-space-lg">
+<!-- block_completionstatus: ESTADO DE FINALIZACIÓN -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-base space-y-space-base">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">donut_large</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Finalización del Curso</h3>
+</div>
+<a class="font-label-sm text-label-sm text-primary hover:underline" href="#">Ver informe</a>
+</div>
+<div class="p-space-sm bg-surface-container-low rounded-xl flex items-center gap-space-base">
+<!-- Mini SVG Radial Indicator -->
+<div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+<svg class="w-16 h-16 -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container-high" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="72, 100" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<span class="font-headline-sm text-headline-sm font-bold text-primary absolute">72%</span>
+</div>
+<div class="min-w-0 space-y-0.5">
+<span class="font-label-md text-label-md font-semibold text-on-surface block">Requisitos globales</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block">8 de 11 criterios obligatorios superados con éxito</span>
+</div>
+</div>
+<div class="space-y-2 font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Prácticas experimentales</span>
+<span class="font-semibold text-secondary">3/3 completas</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Cuestionarios de control</span>
+<span class="font-semibold text-primary">3/4 superados</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Participación en debates</span>
+<span class="font-semibold text-outline">2/4 pendientes</span>
+</div>
+</div>
+</div>
+<!-- block_timeline: LÍNEA DE TIEMPO / ENTREGAS -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-base space-y-space-base">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">hourglass_bottom</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Línea de Tiempo</h3>
+</div>
+<div class="flex items-center gap-1 bg-surface-container px-2 py-0.5 rounded-lg">
+<button class="font-label-sm text-label-sm font-bold text-primary" type="button">7 días</button>
+<span class="text-outline text-xs">|</span>
+<button class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface" type="button">30 días</button>
+</div>
+</div>
+<div class="space-y-space-sm">
+<!-- TIMELINE ITEM 1 -->
+<div class="flex items-start gap-space-sm p-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors">
+<div class="w-8 h-8 rounded-lg bg-error-container text-on-error-container flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-base">warning</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-error uppercase">Cierra pronto</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">24 Oct, 23:59</span>
+</div>
+<h4 class="font-label-md text-label-md font-semibold text-on-surface truncate">Práctica 3: Fricción Estática</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Física y Química 3.º ESO</p>
+</div>
+</div>
+<!-- TIMELINE ITEM 2 -->
+<div class="flex items-start gap-space-sm p-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors">
+<div class="w-8 h-8 rounded-lg bg-primary-fixed text-on-primary-fixed flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-base">quiz</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-primary uppercase">Examen parcial</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">28 Oct, 09:00</span>
+</div>
+<h4 class="font-label-md text-label-md font-semibold text-on-surface truncate">Prueba Trimestral de Cinemática y Dinámica</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Aula 204 · En persona</p>
+</div>
+</div>
+</div>
+</div>
+<!-- block_calendar_month: CALENDARIO DE EVENTOS -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-base space-y-space-base">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">calendar_month</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Octubre 2024</h3>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-7 h-7 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-7 h-7 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- CALENDAR MINI-GRID -->
+<div class="grid grid-cols-7 gap-1 text-center font-label-sm text-label-sm">
+<div class="text-outline font-semibold py-1">L</div>
+<div class="text-outline font-semibold py-1">M</div>
+<div class="text-outline font-semibold py-1">X</div>
+<div class="text-outline font-semibold py-1">J</div>
+<div class="text-outline font-semibold py-1">V</div>
+<div class="text-outline font-semibold py-1">S</div>
+<div class="text-outline font-semibold py-1">D</div>
+<!-- Days row 1 -->
+<div class="text-outline py-1.5 opacity-40">30</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">1</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">2</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">3</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">4</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container text-outline">5</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container text-outline">6</div>
+<!-- Days row 2 -->
+<div class="py-1.5 rounded-lg hover:bg-surface-container">7</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">8</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">9</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">10</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">11</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container text-outline">12</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container text-outline">13</div>
+<!-- Days row 3 -->
+<div class="py-1.5 rounded-lg hover:bg-surface-container">14</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">15</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">16</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">17</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">18</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container text-outline">19</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container text-outline">20</div>
+<!-- Days row 4 (Active week) -->
+<div class="py-1.5 rounded-lg hover:bg-surface-container">21</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container relative font-bold text-primary bg-primary-fixed">
+            22
+            <span class="w-1 h-1 bg-primary rounded-full absolute bottom-0.5 left-1/2 -translate-x-1/2"></span>
+</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">23</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container relative font-bold text-error">
+            24
+            <span class="w-1 h-1 bg-error rounded-full absolute bottom-0.5 left-1/2 -translate-x-1/2"></span>
+</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">25</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container text-outline">26</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container text-outline">27</div>
+<!-- Days row 5 -->
+<div class="py-1.5 rounded-lg hover:bg-surface-container relative font-bold text-primary">
+            28
+            <span class="w-1 h-1 bg-primary rounded-full absolute bottom-0.5 left-1/2 -translate-x-1/2"></span>
+</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">29</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">30</div>
+<div class="py-1.5 rounded-lg hover:bg-surface-container">31</div>
+<div class="text-outline py-1.5 opacity-40">1</div>
+<div class="text-outline py-1.5 opacity-40">2</div>
+<div class="text-outline py-1.5 opacity-40">3</div>
+</div>
+<div class="pt-2 flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>Entrega tarea</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>Examen/Evento</span>
+</div>
+</div>
+</div>
+<!-- block_recent_activity: ACTIVIDAD RECIENTE -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-base space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">history</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Actividad Reciente</h3>
+</div>
+<span class="font-code-sm text-code-sm text-outline">Hoy</span>
+</div>
+<div class="space-y-3 font-body-sm text-body-sm">
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-base text-secondary mt-0.5">rate_review</span>
+<div>
+<p class="text-on-surface font-medium">Calificación registrada en Quiz 2</p>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Prof. Valverde · Hace 1 hora</span>
+</div>
+</div>
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-base text-primary mt-0.5">chat_bubble_outline</span>
+<div>
+<p class="text-on-surface font-medium">Nueva respuesta en hilo de rozamiento</p>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Mateo Gómez · Hace 3 horas</span>
+</div>
+</div>
+</div>
+</div>
+<!-- block_online_users: USUARIOS EN LÍNEA -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-base space-y-space-base">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">wifi</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">En Línea (15 min)</h3>
+</div>
+<span class="bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm px-2 py-0.5 rounded-full font-bold">9 activos</span>
+</div>
+<div class="space-y-2">
+<!-- Professor highlight -->
+<div class="flex items-center justify-between p-1.5 rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2 min-w-0">
+<div class="relative">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Close-up portrait of science educator Dr Valverde smiling with green status badge" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgNcepn35dt_4LZZzbL5TlNnzMqZAG4q4Trqz78kkcXx4KRa7P7LO8yNJ9AsnCB3XU3NFq58xlrNFXXwRC1Ph2ND4qtWjZwprTJe9lBgQ01JjW0ehHTIAGiodpHbVGSLkPSrOLBZX39t-jZCSqrSVBhWw7LxIO_NQkgDP1JG3AiYHqrAyKr1iG-jaI80MA81uKOHuEMn21q8nXP4_2eSVdMZ3_xm1HOdnj-c5fegfbozyCZTaMQbCp"/>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<div class="min-w-0">
+<span class="font-label-md text-label-md font-semibold text-on-surface block truncate">Dr. Valverde (Docente)</span>
+</div>
+</div>
+<button class="p-1 text-on-surface-variant hover:text-primary" title="Enviar mensaje" type="button">
+<span class="material-symbols-outlined text-base">chat</span>
+</button>
+</div>
+<!-- Peer users list -->
+<div class="flex items-center gap-2 pt-1 flex-wrap">
+<div class="relative" title="Mateo Gómez">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="High school student portrait of Mateo Gomez in modern classroom library background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSUCHQD1b7mwdb7xoLWi30gDVDRRLO-qHcgwUAIuE-uP5sc_Ye3VuDHOp3uMhN1cVbin5fLYw1Rp40Nh45mj_F6Y1FZDal6nAHwsiZDmjeXwXSIlzEy_ueR2A2QjhTQn4YWbCuLFVRKonfJYz5mr8OPoekenw4JSwhMnDSY3uZLqSD5KeWZEqwZO6lyZj8yvSUBy-cLQgDN8Ol7Q95kKjqd_FL2IAsHwFtkXxPUMmtVG5SCQm__i9c"/>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<div class="relative" title="Lucía Navarro">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="High school student Lucía Navarro smiling with notebook in sunlit study hall" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKls1LgbYZi7NxqG1RB84OABwSHFNQy5_JVyHGZlE7rJ0xsjeJbkF0GS-2mR-KpVu7PLktF_OxueA5mC0oHqvf51ShlaTH6aDqHc4Uz7p7pmTIMePKFidpsquyFUT-qJl175HrM1a_YLgubRF7XgXbyuYVKR_02C6BlNGKwygu3Ubu51rEOEI3BFOc50pTnAJ_HQiBSQBR3dtrOwvtrDs3QE-WRMqxuiRprceu-ONkrJCTiyptFHb2"/>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<div class="relative" title="Daniel Ruiz">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Teenager Daniel Ruiz wearing gray hoodie at school computer lab" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEZZjiUrwM9fhuG6IuyWY9x_stCJARzzd0cNckFlkoTmQioWv_fmALMJvszh5VKGNuzMJ6XrOVyHBE3JIjZzhYvTmKUJ3xelgKjWlJ3fSWOwquDuOv2Vmhfbr1AHIrMXDcXRNYBQ8z7IbtgVKz8l9EbmXPen8kCUFpU13NY6swlk-ZhZwiFkY1FUrDMao-hqL2vStQZiYK27CNzzKgOYVfo9SMuC9hm0kLC4QkeQq-NH0dYnyhOZYc"/>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<div class="relative" title="Sara Alonso">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Teenager Sara Alonso studying physics problem with tablet and stylus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1gQEyzIo-lmK31b_r98Wjzg8nYqSPGPFLzsaFD-NDc19vaod2KbxaY3pxaWRc3z4Bx9A2bO314-SrjBmFf049FBfkGiODn1RgRmn2IXk0qsriGid7Q78Fi89Oxy8Kn6F-XZ-BA7u-GdC2inUSJjan1eTw9TFCfld8SJdlvQlw7mOEOWCx5mEpK0eLLu2iBLH6HQMA4CfsHku71yvA51DgAAkL-P44BvW4DnDBSDab_Ep_Po0mU-y3"/>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<div class="relative" title="Javier Gil">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Young student Javier Gil at high school desk working on science experiment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDD2KUXAgTNxZGawrvTb3ypPGIRNKvVin6VwAbdws6re0FkHm2fI0UktbgxZwlVW0rKL0YxaVy8zQOpTlGqKB1qkTBfjViv4qzcBPMqVgodLnRvj2tcqGu1EU5zR-N_pYKHjRnyeC52NOFooSXx0TPqjnOibfeBlkDJQnOR5XRa3denridG7NFvDZ3PRHtKxVZvHlb2qSVLcHckWz1M8A2Qa2mSjLSdO1juCe0RlslaY6L7RySOqIfR"/>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary"></span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant pl-1">+3 más</span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div></main></div></body></html>
