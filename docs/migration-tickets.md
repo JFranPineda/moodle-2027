@@ -807,7 +807,7 @@ migración, porque una actualización puede reiniciarlos.
 | `local_richimath/prettyurls` | como esté en prod (encendido solo si el `.htaccess` está activo) |
 | `theme_richimath/sidebarstyle` | `wide` o `compact`, como esté |
 | BBB: `bigbluebuttonbn_server_url` / secreto | el VPS 6 |
-| BBB: módulo activado y `bigbluebuttonbn_guestaccess_enabled` = 1 | **Producción lo tiene en 0** (copia del 2026-10-09): el enlace de invitado (FUN-19) no funciona hoy en 4.3. Encenderlo no depende de la migración |
+| BBB: módulo activado y `bigbluebuttonbn_guestaccess_enabled` = 1 | Estaba en 0 en producción (el enlace de invitado, FUN-19, no funcionaba en 4.3). **Encendido el 2026-10-09**, en global y en un curso |
 | `hiddenuserfields`, `defaultpreference_maildisplay` = 0, permisos del rol estudiante | los de MIG-17 |
 | Campos `rmwhatsapp`, `rmwhatsappon` (perfil) y `rmwhatsapp` (curso) | presentes |
 | Personalización de idioma (es) | `userlist` = «Lista de usuarios» (ver MIG-26). En producción no hay ninguna (`moodledata/lang` sin `es_local`): se aplica en el corte desde `assets/customlang/es/` |
@@ -816,7 +816,7 @@ migración, porque una actualización puede reiniciarlos.
 | `frontpageloggedin` | **2** (lista de categorías: las tarjetas por nivel). Una instalación nueva de 5.3 trae 6 (lista de cursos) |
 | `forcelogin` | **0** — si no, el sitio institucional y `/students` mandan al login. Una instalación nueva de 5.3 lo trae en 1; el upgrade conserva el valor de producción |
 | `enablemyhome`, `enablemycourses` (nuevos en 5.x) | **1** — «Página principal» y «Mis cursos» en la barra lateral. Core los enciende al actualizar un sitio existente y los deja apagados en una instalación nueva (comprobado en la Fase 1) |
-| Collation | `dbcollation` = `utf8mb4_unicode_ci` en `config.php` y **todas** las tablas igual. Producción tenía `general_ci` en el config y en las 5 tablas de `local_richimath`; se unifica en el corte (plan §6.2) |
+| Collation | `dbcollation` = `utf8mb4_unicode_ci` en `config.php` y **todas** las tablas igual. **Unificada en producción el 2026-10-09** (las 5 tablas de `local_richimath` estaban en `general_ci`, igual que el config) |
 
 Se comprueban todos de una vez con `scripts/check-db-settings.php` (como
 `www-data`, desde la raíz de Moodle): `OK`/`FAIL` contra el valor esperado, e

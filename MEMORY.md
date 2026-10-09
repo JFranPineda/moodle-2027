@@ -165,8 +165,9 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
   siempre de cero. Admin `qa.admin` con contraseña aleatoria en
   `~/richimath-prod-copy/work/qa-admin.txt`; alumnos con «Entrar como».
 - **Sección E**: `scripts/check-db-settings.php` (OK/FAIL/INFO). En la copia:
-  todo OK salvo `bigbluebuttonbn_guestaccess_enabled = 0`, que **ya viene así de
-  producción**: el enlace de invitado (FUN-19) hoy no funciona en 4.3.
+  todo OK salvo `bigbluebuttonbn_guestaccess_enabled = 0`, que venía así de
+  producción (FUN-19 no funcionaba en 4.3). **Encendido en producción el
+  2026-10-09** (global + un curso); las copias anteriores lo traen apagado.
 - **MIG-40 ✅**: 0 chat, 0 survey. Producción: folder 152, forum 27, quiz 20,
   BBB 4, url 1, h5pactivity 1. Producción **no está registrada** en moodle.org y
   **no tiene customlang** (sin `es_local`).
@@ -182,13 +183,12 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    la ventana. NO purgar después o se compila dos veces.
 3. **`customlang/cli/import.php` con `--source` relativo** → «Falta archivo o
    directorio». Siempre ruta absoluta.
-4. **Collation**: el `config.php` de producción dice `utf8mb4_general_ci`
-   (líneas 18 y 30, repetida), pero solo las 5 tablas `local_richimath_*`
-   nacieron así; las 483 de core son `unicode_ci`. Sin tocarlo, las tablas de
-   4.4–5.3 nacerían `general_ci` → «Illegal mix of collations». Paso del corte
-   ANTES del primer upgrade: `dbcollation` → `utf8mb4_unicode_ci` +
-   `admin/cli/mysql_collation.php --collation=utf8mb4_unicode_ci` (5 tablas,
-   segundos). Ya está en el ensayo y en `check-db-settings.php`.
+4. **Collation — unificada en producción el 2026-10-09 19:31**: el `config.php`
+   (líneas 18 y 30, repetida) y las 5 tablas `local_richimath_*` estaban en
+   `utf8mb4_general_ci`; las 483 de core, en `unicode_ci`. Hecho con `sed` +
+   `admin/cli/mysql_collation.php` (0 errores, 488/488, esquema OK). Respaldo:
+   `/root/moodle-backups/pre-collation-2026-10-09-1931.sql.gz` (borrar en unos
+   días). Las copias anteriores a esa hora aún necesitan el paso del ensayo.
 10. **Producción, BD**: usuario `moodleuser` con `caching_sha2_password`
     (MySQL 8.4 sin `mysql_native_password` no le afecta); `root` por
     `auth_socket`. VPS en **Ubuntu 24.04**, que trae MySQL 8.0: el 8.4 viene

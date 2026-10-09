@@ -38,10 +38,10 @@ hop() {
     export DB_IMAGE=$1 PHP_IMAGE=$2 CODE=$3 DOCROOT=$4 CONFIG=$5
 }
 
-# utf8mb4_unicode_ci on purpose. Production's config.php says general_ci, but
-# only local_richimath's five tables were created that way: core's 483 are
-# unicode_ci. The cutover switches config.php first, so the tables 4.4-5.3 add
-# match core's, and converts those five before the first upgrade.
+# utf8mb4_unicode_ci, core's collation. Production's config.php and
+# local_richimath's five tables were general_ci until 2026-10-09, when they
+# were unified on the server: copies taken before that still carry the five,
+# so the rehearsal converts them (on newer copies the step converts nothing).
 write_config() {
     cat > "$1" <<'PHP'
 <?php  // Rehearsal only (scripts/rehearsal): a copy of production on localhost.

@@ -160,24 +160,22 @@ salto a 4.5, esperado porque ese plugin es el viejo. En 5.3 ya es un *hook*.
 
 ## 5. Hallazgos que pasan a las fases 3 y 4
 
-1. **Collation mixta → se unifica en el corte.**
-   - Las 5 tablas de `local_richimath` están en `utf8mb4_general_ci` y las
-     otras 483 en `utf8mb4_unicode_ci`. El `config.php` de producción dice
-     `general_ci`, en dos líneas: la 18 y la 30.
-   - Con ese config, las tablas que crean 4.4–5.3 saldrían en `general_ci`
-     junto a core en `unicode_ci`.
-   - Paso del corte, antes del primer upgrade (plan §6.2): `config.php` a
-     `utf8mb4_unicode_ci` y `mysql_collation.php`. Ensayado: 5 tablas, sin
-     errores, esquema OK.
+1. **Collation mixta → unificada en producción el 2026-10-09.** Las 5
+   tablas de `local_richimath` y el `config.php` estaban en
+   `utf8mb4_general_ci`, y las 483 de core en `utf8mb4_unicode_ci`. Se
+   unificó en el VPS (~1 min de mantenimiento): 488/488 en `unicode_ci` y
+   esquema OK (plan §6.2). El paso «Unificar collation» del ensayo sigue
+   haciendo falta en las copias anteriores a esa hora; en las posteriores no
+   convierte nada.
 2. **MySQL 8.4 sin `mysql_native_password` → no aplica.** `moodleuser` usa
    `caching_sha2_password` y `root`, `auth_socket`.
 3. **Salida a internet** desde el VPS durante el corte, para los paquetes de
    idioma (sección 3).
 4. **El CSS de los temas** (unos 3 min en el portátil) va dentro de la ventana,
    como tarea adhoc que deja el upgrade.
-5. **Enlace de invitado BBB (FUN-19) apagado en producción**:
-   `bigbluebuttonbn_guestaccess_enabled = 0` ya en 4.3. No depende de la
-   migración.
+5. **Enlace de invitado BBB (FUN-19)**: `bigbluebuttonbn_guestaccess_enabled`
+   estaba en 0 ya en 4.3. Encendido en producción el 2026-10-09; las copias
+   anteriores lo traen apagado.
 6. **MIG-40 cerrado**: ni `chat` ni `survey` en producción.
 
 ## 6. Al cerrar la Fase 2
