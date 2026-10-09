@@ -122,6 +122,9 @@ producción.
 2. Bajar ambos al portátil. **Son datos reales de alumnos**: no se suben a
    GitHub ni a ningún servicio, y se borran al terminar el ensayo.
 
+Procedimiento exacto, script del ensayo (`scripts/rehearsal/`) y registro de
+tiempos: [migration/phase-2-production-copy.md](migration/phase-2-production-copy.md).
+
 ### 5.2 Los dos saltos, en local
 ```
 4.3.12 (copia de prod)

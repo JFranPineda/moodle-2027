@@ -807,15 +807,19 @@ migración, porque una actualización puede reiniciarlos.
 | `local_richimath/prettyurls` | como esté en prod (encendido solo si el `.htaccess` está activo) |
 | `theme_richimath/sidebarstyle` | `wide` o `compact`, como esté |
 | BBB: `bigbluebuttonbn_server_url` / secreto | el VPS 6 |
-| BBB: módulo activado y `bigbluebuttonbn_guestaccess_enabled` = 1 | |
+| BBB: módulo activado y `bigbluebuttonbn_guestaccess_enabled` = 1 | **Producción lo tiene en 0** (copia del 2026-10-09): el enlace de invitado (FUN-19) no funciona hoy en 4.3. Encenderlo no depende de la migración |
 | `hiddenuserfields`, `defaultpreference_maildisplay` = 0, permisos del rol estudiante | los de MIG-17 |
 | Campos `rmwhatsapp`, `rmwhatsappon` (perfil) y `rmwhatsapp` (curso) | presentes |
-| Personalización de idioma (es) | `userlist` = «Lista de usuarios» (ver MIG-26) |
+| Personalización de idioma (es) | `userlist` = «Lista de usuarios» (ver MIG-26). En producción no hay ninguna (`moodledata/lang` sin `es_local`): se aplica en el corte desde `assets/customlang/es/` |
 | Correo saliente (SMTP Gmail) y cron de `www-data` | funcionando |
-| Registro en moodle.org | se mantiene |
+| Registro en moodle.org | Producción **no está registrada** (`registration_hubs` vacía, 2026-10-09): no hay nada que mantener |
 | `frontpageloggedin` | **2** (lista de categorías: las tarjetas por nivel). Una instalación nueva de 5.3 trae 6 (lista de cursos) |
 | `forcelogin` | **0** — si no, el sitio institucional y `/students` mandan al login. Una instalación nueva de 5.3 lo trae en 1; el upgrade conserva el valor de producción |
 | `enablemyhome`, `enablemycourses` (nuevos en 5.x) | **1** — «Página principal» y «Mis cursos» en la barra lateral. Core los enciende al actualizar un sitio existente y los deja apagados en una instalación nueva (comprobado en la Fase 1) |
+
+Se comprueban todos de una vez con `scripts/check-db-settings.php` (como
+`www-data`, desde la raíz de Moodle): `OK`/`FAIL` contra el valor esperado, e
+`INFO` para lo que depende del servidor.
 
 #### MIG-40 · Comprobar módulos retirados en producción 🟢
 - **Qué**: en el espejo local no hay ninguna actividad de `chat` ni `survey`
@@ -828,6 +832,12 @@ migración, porque una actualización puede reiniciarlos.
   ```
 - **Hecho cuando**: 0 y 0, o (si hay) decidido si se instala el plugin externo
   o se exporta su contenido antes.
+- **✅ Cerrado el 2026-10-09** con la copia de producción:
+  - **0 y 0.** Las 5 filas de `mdl_survey` son las plantillas de core
+    (`course = 0`), no actividades.
+  - El upgrade a 5.0 desinstala los dos módulos sin aviso.
+  - Producción tiene `folder` 152, `forum` 27, `quiz` 20, `bigbluebuttonbn` 4,
+    `url` 1 y `h5pactivity` 1.
 
 ---
 

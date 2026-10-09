@@ -1,6 +1,6 @@
 # MEMORY.md — estado vivo de la migración a 5.3 (actualizar al terminar cada tarea)
 
-Última actualización: 2026-10-09 (Fase 1 TERMINADA, 23/23 MIG; MIG-26/27 decididos por Richi; privacidad verificada en 5.3; siguiente: Fase 2).
+Última actualización: 2026-10-09 (Fase 2 EN CURSO: copia de producción bajada, upgrade 4.3 → 4.5 → 5.3 en verde con `scripts/rehearsal/`; falta la aceptación completa y el segundo ensayo).
 
 ## Árboles en disco
 
@@ -20,7 +20,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 |---|---|
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
 | 1 Portar código | ✅ 2026-10-09 — 23/23 MIG. MIG-27 = iconos de Moodle; MIG-26 = lista de usuarios de 5.3 + `core_admin/userlist` = «Lista de usuarios» (customlang) |
-| 2 Ensayo con copia de producción | — |
+| 2 Ensayo con copia de producción | 🟡 copia del 2026-10-09 en `~/richimath-prod-copy`; upgrade técnico ✅, humo ✅, MIG-40 ✅; falta aceptación FUN-01…25 + 2.º ensayo ([docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md)) |
 | 3 Preparar servidor | — |
 | 4 Corte | — |
 | 5 Después | — |
@@ -153,3 +153,47 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
   «Actividades» (`/course/overview.php`): el alumno solo ve lo suyo.
 - `user_can_view_profile()` está obsoleta en 5.3 (usar
   `\core\user::can_view_profile()`); nuestro código no la usa.
+
+## Fase 2 — copia de producción y ensayo (2026-10-09)
+
+- **Copia** en `~/richimath-prod-copy` (fuera de repos, `chmod 700`; datos
+  reales: borrar al cerrar la fase). Origen: MySQL **8.0.46**, código
+  `3c044eae`, BD 43 MB (3,2 MB gz), `moodledata` 220 MB (102 MB gz).
+  Procedimiento: [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md).
+- **Ensayo**: `scripts/rehearsal/rehearse-upgrade.sh ~/richimath-prod-copy` →
+  proyecto Docker `rmrehearsal` en **:8084** (no toca :8083 ni :8080). Parte
+  siempre de cero. Admin `qa.admin` con contraseña aleatoria en
+  `~/richimath-prod-copy/work/qa-admin.txt`; alumnos con «Entrar como».
+- **Sección E**: `scripts/check-db-settings.php` (OK/FAIL/INFO). En la copia:
+  todo OK salvo `bigbluebuttonbn_guestaccess_enabled = 0`, que **ya viene así de
+  producción**: el enlace de invitado (FUN-19) hoy no funciona en 4.3.
+- **MIG-40 ✅**: 0 chat, 0 survey. Producción: folder 152, forum 27, quiz 20,
+  BBB 4, url 1, h5pactivity 1. Producción **no está registrada** en moodle.org y
+  **no tiene customlang** (sin `es_local`).
+- **Humo en 5.3 con datos reales** ✅: portada 1440/390, dashboard admin,
+  alumna de primaria (dashboard 1440/390, curso 390, revisión de un intento del
+  3-oct con nota y fórmulas).
+
+### Trampas pagadas en la Fase 2
+
+1. **`upgrade.php` instala solo el paquete `es` de su versión** (la copia trae
+   el de 4.3). El VPS necesita salida a `download.moodle.org` en el corte.
+2. **El upgrade encola `build_installed_themes_task`**: ~3 min de CSS dentro de
+   la ventana. NO purgar después o se compila dos veces.
+3. **`customlang/cli/import.php` con `--source` relativo** → «Falta archivo o
+   directorio». Siempre ruta absoluta.
+4. **5 tablas `local_richimath_*` en `utf8mb4_general_ci`**, el resto
+   `unicode_ci`. Pendiente: `dbcollation` del `config.php` de producción;
+   unificar con `admin/cli/mysql_collation.php` (decidir en la Fase 3).
+5. **Copia = identidad de producción**: solo podría salir correo (SMTP Gmail);
+   `noemailever` en el config del ensayo. `airnotifier` activo pero sin clave,
+   sin OAuth2 de sistema. Sin cron en el ensayo (el aviso de `checks.php` es
+   esperado).
+6. **Editar un script mientras corre**: bash siguió con la versión vieja (el
+   editor reemplaza el fichero). Relanzar para probar los cambios.
+7. **`pgrep -f patrón` dentro de un `bash -c` que contiene el patrón** se
+   encuentra a sí mismo: el bucle de espera no acaba nunca.
+8. **`version.php` hace `die()` fuera de Moodle**: la versión, con
+   `admin/cli/cfg.php --name=release`.
+9. Con «Entrar como», el aviso «Usted se ha identificado como…» se recorta en
+   la cabecera de la barra lateral (solo lo ve el admin).
