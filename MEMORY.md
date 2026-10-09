@@ -1,6 +1,6 @@
 # MEMORY.md — estado vivo de la migración a 5.3 (actualizar al terminar cada tarea)
 
-Última actualización: 2026-10-09 noche (Fase 2: copia 2 + ensayos 2 y 3 con aceptación automática `scripts/rehearsal/acceptance.sh`; pendiente: tema del sitio en prod = rmuniversidad).
+Última actualización: 2026-10-09 cierre de sesión (ver SUMMARY.md). Fase 2: ensayo 3 = primer verde limpio; falta copia 3 + ensayo 4. Tema del sitio en prod ya devuelto a Richimath.
 
 ## Árboles en disco
 
@@ -288,11 +288,10 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
   unas 50 comprobaciones PASS/FAIL, con capturas en `work/acceptance/`. Las
   carpetas y foros se abren por tandas de 25: con una sola llamada,
   agent-browser corta por tiempo.
-- **Tema del SITIO en producción = `rmuniversidad`** desde la tarde del
-  2026-10-09, sin rastro en `config_log`: un cambio a mano (el selector de temas
-  no deja log). Nuestro código solo escribe `mdl_user.theme`. Lo ven los
-  visitantes sin sesión. `check-db-settings.php` lo marca FAIL hasta que se
-  decida.
+- **Tema del SITIO**: el usuario lo puso en `rmuniversidad` probando y lo
+  devolvió a Richimath el mismo día (sin rastro en `config_log`: el selector de
+  temas no deja log). Con sesión no se nota: manda el tema del plan (Admin →
+  aspecto Universidad). Los planes solo ofrecen los 4 temas de nivel.
 - **Paquete español de 5.3 incompleto** (versión recién salida): 37 cadenas
   visibles en `assets/customlang/es/` (quiz, moodle, forum, block_timeline,
   h5pactivity, courseformat). Antes del corte, repetir el recuento

@@ -277,13 +277,11 @@ arrancar (`lib/setup.php`), y el script de 4.3 todavía no lo compensa (el de
    estaba en 0 ya en 4.3. Encendido en producción el 2026-10-09; las copias
    anteriores lo traen apagado.
 6. **MIG-40 cerrado**: ni `chat` ni `survey` en producción.
-7. **Tema del sitio en producción = `rmuniversidad`** desde la tarde del
-   2026-10-09 (en la copia 1 era `richimath`). No está en `config_log`, y
-   nuestro código solo escribe el tema de cada usuario, nunca el del sitio:
-   alguien lo cambió a mano (el selector de temas no deja rastro). Lo ven los
-   visitantes sin sesión, en la portada pública y el login, porque todos los
-   usuarios reales tienen su tema de nivel. Si no fue a propósito, se vuelve
-   atrás en Apariencia → Temas → Richimath → «Usar tema».
+7. **Tema del sitio en producción = `rmuniversidad`** (copia 2): lo cambió el
+   usuario probando la interfaz y lo **devolvió a Richimath** el mismo día. No
+   quedó en `config_log`, porque el selector de temas no deja rastro. Con sesión
+   iniciada no se nota: cada usuario tiene el tema de su plan, y el plan Admin
+   usa el aspecto Universidad. Solo lo ven los visitantes sin sesión.
 8. **El paquete español de 5.3 aún no traduce todo**: la versión acaba de salir.
    37 cadenas que ven alumnos o profesores van traducidas en
    `assets/customlang/es/` y se importan en el corte. Antes del corte conviene

@@ -1,302 +1,386 @@
-# SUMMARY.md — traspaso de la sesión del 2026-09-14 al 2026-10-09
+# SUMMARY.md — traspaso de la sesión del 2026-10-09 (Fase 2 y cambios en producción)
 
-Qué se hizo en esta sesión larga con Claude, por qué y dónde quedó cada cosa.
-Para el estado vivo (lo que hay que leer primero) está [MEMORY.md](MEMORY.md);
-este documento es la **historia**: las decisiones y las trampas que explican el
-código. La historia de 4.3 anterior a esta sesión está en
-[docs/legacy-4.3/SUMMARY-4.3.md](docs/legacy-4.3/SUMMARY-4.3.md).
+Qué se hizo en esta sesión, por qué y dónde quedó cada cosa, para retomarla sin
+volver a descubrirla.
 
----
+- **Estado vivo:** [MEMORY.md](MEMORY.md). Léelo primero.
+- **Este documento:** la historia.
+- **Sesión anterior** (preparación y portado a 5.3, Fases 0 y 1):
+  [docs/sessions/2026-09-14-port-to-5.3.md](docs/sessions/2026-09-14-port-to-5.3.md).
+- **Historia de 4.3:** [docs/legacy-4.3/](docs/legacy-4.3/).
 
-## 1. Contexto en dos líneas
-
-- **Richi Math** (academia de matemáticas, Perú) usa Moodle en
-  `richiacademy.com`, un VPS 4 de Contabo. Hasta esta sesión:
-  **Moodle 4.3.12** en `github/moodle`, sin parches de seguridad desde abril de
-  2025.
-- Esta sesión hizo dos cosas: **funciones nuevas sobre 4.3** (parte A) y
-  **toda la preparación y el portado a Moodle 5.3 LTS** en este repo,
-  `github/moodle-2027` (parte B).
-
-Reglas que no cambian: nunca tocar core de Moodle; nunca contraseñas ni datos de
-alumnos en el repo; commits en inglés (Conventional Commits) sin atribución;
-**nunca `git push`** (lo hace el usuario); verificar en el navegador a 1440 y
-390 px, como admin y como alumno; no usar Artifacts.
+Al cerrar la próxima sesión: mover este fichero a `docs/sessions/` con su fecha
+y escribir uno nuevo.
 
 ---
 
-## 2. Parte A — Trabajo sobre la 4.3 (`github/moodle`)
+## 1. Contexto y reglas
 
-### 2.1 Servidor BigBlueButton (VPS 6)
-- Se instaló **BBB 3.0** en un VPS 6 nuevo, región América (medido: 106 ms
-  desde Lima contra 193 ms del VPS 4). Guía: `docs/bbb-server-setup.md`.
-- La guía original era de BBB 2.x: el `bbb-record-core.timer` no existe en 3.0.
-  Se reescribió el paso de grabaciones contra `bbb-rap-starter` +
-  `bbb-rap-resque-worker`, con una **ventana nocturna 23:00–06:00 (Lima)** en
-  `scripts/bbb/config/rap-night-window/`.
-- Manual del profesor: `docs/product/bbb-user-manual.md` (incluye la trampa del
-  modo de grupos, el error 1137 al compartir pantalla desde tableta y la
-  diferencia pizarra/pantalla compartida).
+- **Richi Math** (academia de matemáticas, Perú) usa **Moodle 4.3.12** en
+  `richiacademy.com`, un VPS 4 de Contabo:
+  - Ubuntu 24.04, PHP 8.2, MySQL 8.0.46;
+  - código de producción en el commit `3c044eae` de `github/moodle`.
+- Este repo es su sustituto en **Moodle 5.3 LTS**. La ruta de subida es
+  **4.3.12 → 4.5 → 5.3**: 5.3 solo sube desde 4.4 o superior, y exige PHP 8.3 y
+  MySQL 8.4.
+- **Reglas:**
+  - nunca tocar core;
+  - nunca contraseñas ni datos de alumnos en el repo;
+  - commits en inglés (Conventional Commits) y sin atribución;
+  - **nunca `git push`**: lo hace el usuario;
+  - verificar en el navegador a 1440 y 390, como admin y como alumno;
+  - no usar Artifacts.
 
-### 2.2 Juegos
-- Plan de juegos por nivel y recetas H5P para primaria
-  (`docs/product/math-games-primary.md`, `immersive-games-plan.md`).
-- **Escape room 360 «Estación Kepler»** para secundaria
-  (`assets/h5p/estacion-kepler.h5p`), generado por
-  `scripts/build-h5p-escape-room.py`. Trampa: en una escena 360 la posición de
-  los puntos es *yaw,pitch* en **radianes**, no porcentajes.
-- **5 preguntas con números distintos por alumno** (`calculatedmulti`,
-  `assets/h5p/kepler-preguntas.xml`, `scripts/build-kepler-questions.py`, con
-  un validador que rechaza distractores que coinciden).
+**Entornos locales:**
 
-### 2.3 Lista de usuarios del admin
-Título «Lista de usuarios», filtro por correo y legibilidad. Se resolvió casi
-sin código (ajuste `userfiltersdefault` + personalización de idioma
-`core_admin/userlist`) más una sección de SCSS. En 5.3 esta página cambió (ver
-B, MIG-26).
-
-### 2.4 Enlace de invitado a una clase BBB y registro de leads
-- Un visitante sin cuenta abre el enlace, deja nombres, apellidos, universidad
-  y correo, y entra a la sala sin contraseña. Se guarda como lead (tabla
-  `local_richimath_lead`, CSV solo de quienes aceptaron, Ley 29733).
-- Dos fallos encontrados por el camino: el módulo BBB estaba **apagado** en
-  local (por eso nada funcionaba, ni como admin), y el traspaso enviaba un
-  identificador de formulario inventado: `moodleform` exige
-  `_qf__mod_bigbluebuttonbn_form_guest_login`.
-- Manuales: `docs/product/open-session-leads.md` y
-  `docs/product/v4/guest-class-invitation.md`.
-
-### 2.5 Botón de WhatsApp del profesor
-Botón flotante en cada curso con el WhatsApp del profesor. Campos **nativos**:
-número y casilla en el perfil del profesor, y un select de 3 valores en el curso
-(heredar / mostrar siempre / no mostrar). Doc:
-`docs/product/whatsapp-teacher-button.md`.
-
-**Incidente:** `local_richimath_extend_settings_navigation()` estaba tipada con
-`navigation_node` en el 2.º argumento, pero Moodle pasa el **contexto** →
-TypeError en todas las páginas, **producción caída** (el usuario lo vio en
-`/dashboard`). Arreglado en `325035b2`.
-
-### 2.6 Portada pública: sistema solar de niveles
-- El formulario de login de la portada se reemplazó por la academia en el
-  centro y **5 planetas** (Primaria, Secundaria, Pre universitario,
-  Universitario, IB), más el menú **«Niveles»** en la barra con los cursos
-  reales, solo de lectura.
-- Los niveles se resuelven en `theme_richimath\levels`: por número ID de
-  categoría y, si no hay, por nombre. IB aún no tiene categoría y sale como
-  «Próximamente».
-- Doc: `docs/product/levels-solar-system.md`.
-
-### 2.7 Pedidos rápidos del docente
-- **Iconos de actividad en color y sin baldosa** (`2ab510bb`; en 5.3 se usan los
-  de Moodle, ver MIG-27).
-- **Menú ⋮ de las actividades que parpadeaba**: el `transform` del hover creaba
-  un contexto de apilamiento. Arreglado en `acc5ff59`.
-- **Sin líneas entre las opciones del examen** (`3c6c785e`).
-- **Privacidad entre alumnos** (`6201ab5e`): el alumno no ve participantes,
-  perfiles, correos, cursos ni notas de sus compañeros. Paso de actualización
-  `privacy_lockdown`. Doc: `docs/product/student-privacy.md`.
-
-### 2.8 Estado de `github/moodle`
-Rama `main`, **1 commit por delante de `origin`** (`5e4217d5`, una nota de
-memoria). Todo lo anterior ya lo subió el usuario.
-
----
-
-## 3. Parte B — Migración a Moodle 5.3 LTS (este repo)
-
-### 3.1 Lo que se descubrió al abrir 5.3
-- `public/version.php`: **5.3 (Build 20261005)**, publicada el 5 oct 2026.
-- **5.3 no sube directo desde 4.3**: `environment.xml` declara
-  `requires="4.4"`. La ruta es **4.3.12 → 4.5 LTS → 5.3**.
-- 5.3 exige **PHP 8.3** (producción tiene 8.2) y **MySQL 8.4 / MariaDB 11.4**
-  (producción tiene MySQL 8). La 4.5 aguanta el servidor actual, así que el orden
-  es: 4.5 → subir PHP y BD → 5.3.
-- Desde 5.1 el código web vive en **`public/`**; `config.php` y `admin/cli/`
-  siguen en la raíz. Las librerías vienen dentro de `public/lib/` (no hace falta
-  Composer).
-- `mod_chat` y `mod_survey` salieron de core. En el espejo no hay ninguna de
-  esas actividades; hay que confirmarlo en producción (MIG-40).
-- 5.3 no genera preguntas con IA. Trae proveedores (OpenAI con *endpoint*
-  configurable, válido para Kimi), pero esa función habría que construirla.
-
-### 3.2 Documentos de la migración
-- [docs/migration-tickets.md](docs/migration-tickets.md):
-  - **25 tickets funcionales (FUN)**: lo que ve cada usuario, con los commits de
-    4.3 que lo construyeron;
-  - **23 técnicos (MIG)**: cómo se porta;
-  - una **tabla de trazabilidad**: cada commit no documental de 4.3 tiene su
-    ticket;
-  - la **sección E**: ajustes que viven en la BD y hay que verificar tras el
-    corte.
-- [docs/migration-plan.md](docs/migration-plan.md): **6 fases**:
-  - 0 Preparar;
-  - 1 Portar;
-  - 2 Ensayo con copia de producción;
-  - 3 Servidor;
-  - 4 Corte de una noche con snapshot y regla de 30 minutos para volver atrás;
-  - 5 Después.
-
-  Incluye riesgos, como que **MySQL 8.4 desactiva `mysql_native_password`**.
-- Descargas listas en el disco del usuario:
-  - `github/moodle-2026` = 4.5.14+;
-  - `github/moodle-lang` = paquetes `es` de 4.5 y de 5.3;
-  - imágenes Docker de PHP 8.2/8.3 y MySQL 8.0/8.4.
-
-### 3.3 Fase 0 — Preparar (✅)
-- **Repo**: `.gitignore` (deja fuera `config.php`), `CLAUDE.md`, `MEMORY.md`,
-  `docs/` de 4.3 y la historia en `docs/legacy-4.3/`.
-- **Docker** (`docker-compose.yml`): MySQL 8.4 + PHP 8.3 + servicio `cron`, en
-  `http://localhost:8083`, a la vez que el espejo 4.3 en el puerto 8080.
-  `scripts/dev-up.sh` lo levanta todo.
-- **Router de Moodle**: en 5.3, dejarlo sin configurar es un **error crítico**.
-  - Hace falta un `RewriteRule` a `/r.php` (`FallbackResource` **no basta**:
-    PHP responde 404 a un `.php` inexistente antes de que actúe) y
-    `$CFG->routerconfigured = true`.
-  - En Docker, Apache escucha también en 8083 dentro del contenedor, porque el
-    test del router lo hace el propio servidor contra el `wwwroot`.
-- **Cookie de sesión propia** (`$CFG->sessioncookie = '53'`) para no chocar con
-  la sesión del 4.3, que está en el mismo `localhost`.
-- **Línea base**: capturas de un 5.3 limpio en `docs/migration/baseline-5.3/`.
-- **Cuentas locales**: `qa.admin` y `estudiante.demo` (y `estudiante.dos`). La
-  contraseña está solo en la memoria del agente.
-
-### 3.4 Fase 1 — Portar (✅, 23/23 MIG)
-
-| Paso | Qué | Hallazgo clave |
+| URL | Qué es | Cómo se levanta |
 |---|---|---|
-| 1.1 MIG-10 | `local_richimath` | `after_config` pasó al **hook** `\core\hook\after_config`; `install.php` crea ahora los campos de WhatsApp y aplica la privacidad |
-| 1.2 MIG-20 | Tema base, Bootstrap 5 | El propósito `interface` pasó a llamarse `interactivecontent`; las utilidades `.bg-*` llevan `!important`; los iconos y la §J de 4.3 fuera |
-| 1.3 MIG-21 | 5 plantillas de core | Rehechas con **`git merge-file`** (base 4.3 / nuestra / core 5.3). Login nuevo de 5.x a pantalla partida → override de `core/login_layout` a una columna (sin la clase que lo limita a 576 px) |
-| 1.4 MIG-22 | Renderers | El `render_login()` de 5.3 ya no añade `errorformatted`/`logourl`/`sitename` |
-| 1.5 MIG-24 | 4 temas de nivel | La etiqueta del modo de edición es un componente React (`.mds-switch-label`) |
-| 1.6 MIG-14 | URLs limpias | La regla del router va **al final de `public/.htaccess`**: las reglas del `.htaccess` sustituyen a las del `<Directory>` |
-| 1.7 MIG-23 | Sitio público | Sin código. `forcelogin` viene en 1 en una instalación nueva |
-| 1.8 MIG-11…17 | Funciones | Todas verificadas sin cambios de código |
-| 1.9 MIG-25 | SCSS sección por sección | Ver la lista de abajo |
-| 1.10 MIG-26/27 | Decisiones de Richi | Iconos de Moodle; lista de usuarios de 5.3 + título por personalización de idioma |
-| 1.11 MIG-30/31/32 | Scripts, recursos, manuales | `scripts/` ya existía en core: se añadió sin sobrescribir |
+| `:8080` | Espejo 4.3 (`github/moodle`) | `docker compose up -d` en ese repo |
+| `:8083` | 5.3 de desarrollo, con datos de prueba | `bash scripts/dev-up.sh` |
+| `:8084` | **Ensayo** con la copia de producción (proyecto Docker `rmrehearsal`) | `scripts/rehearsal/rehearse-upgrade.sh ~/richimath-prod-copy` |
 
-**Lo que 5.3 había roto en pantalla, y su arreglo:**
-1. **Preguntas del examen en blanco**: `.que` es flex **en fila** en 5.3 →
-   ahora columna.
-2. **Logos diminutos**: `.icon` tiene un tope de 24 px → `max-width/height: none`
-   en nuestras reglas de logo.
-3. **Navegación secundaria**:
-   - es un componente React (`.mds-nav-pill`);
-   - si la lista es más alta que la barra, mueve todas las pestañas a «Más» →
-     la barra crece lo que añade nuestro control segmentado.
-4. **Cajones «anclados»** (tarjeta gris) en las páginas de curso → se anulan.
-5. **Iconos de actividad** desplazados por el padding de la baldosa de 4.3 →
-   quitado.
-6. **Interruptor de edición** desbordado en la barra compacta → apilado.
-7. **§H** (lista de usuarios de 4.3): código muerto en 5.3 → borrado.
+`:8083` y `:8084` montan el mismo árbol, pero cada uno tiene su caché. Un cambio
+de SCSS se compila en los dos:
 
-**Comportamientos de core que se dejan tal cual:**
-- el calificador desborda la página en horizontal (columnas de 200 px, igual en
-  Boost);
-- el nombre del curso y «Colapsar todo» dentro del índice del curso.
+```bash
+php admin/cli/purge_caches.php --theme
+php admin/cli/build_theme_css.php --themes=richimath,rmprimaria,rmsecundaria,rmpreu,rmuniversidad
+```
 
-**Ajustes de 5.3 que difieren en una instalación nueva.** El upgrade conserva
-los valores de producción; en local se igualaron a mano:
+Son unos 2,5 min por entorno; los dos pueden ir en paralelo.
 
-| Ajuste | Instalación nueva de 5.3 | Producción / local |
+---
+
+## 2. Dónde estamos
+
+| Fase | Estado |
+|---|---|
+| 0 Preparar | ✅ |
+| 1 Portar el código | ✅ (23/23 MIG) |
+| **2 Ensayo con copia de producción** | 🟡 Tres ensayos hechos; el **3 es el primer verde limpio** (52/52 con BBB real, sin arreglos en medio). Falta **uno más igual** |
+| 3 Preparar el servidor | Pendiente; puede ir en paralelo con la 2 |
+| 4 Corte (una noche) | Fecha a fijar con Richi: no antes del **19–26 de octubre** y fuera de semana de exámenes |
+| 5 Después | Dos semanas de vigilancia |
+
+**Siguiente paso inmediato:**
+1. Sacar la **copia 3** de producción, ya con el tema del sitio devuelto a
+   Richimath (§3).
+2. Lanzar:
+   ```bash
+   scripts/rehearsal/rehearse-upgrade.sh ~/richimath-prod-copy
+   scripts/rehearsal/acceptance.sh ~/richimath-prod-copy --bbb
+   ```
+3. Si sale limpio, la Fase 2 queda cerrada.
+
+---
+
+## 3. Cambios hechos en PRODUCCIÓN (4.3) durante esta sesión
+
+| Qué | Cómo | Resultado |
 |---|---|---|
-| `forcelogin` | 1 | 0 |
-| `enablemyhome`, `enablemycourses` | 0 | 1 |
-| `frontpageloggedin` | 6 | 2 |
+| **Collation unificada** | En `config.php`, `dbcollation` pasó de `utf8mb4_general_ci` a `utf8mb4_unicode_ci` (está repetido en las líneas 18 y 30). Después, `admin/cli/mysql_collation.php --collation=utf8mb4_unicode_ci`, con ~1 min de mantenimiento | `Converted: 5, errors: 0`; 488/488 tablas en `unicode_ci`; esquema OK |
+| Respaldo previo a la collation | `/root/moodle-backups/pre-collation-2026-10-09-1931.sql.gz` y `config.php.pre-collation-…` | **Borrar en unos días** (lleva datos de alumnos) |
+| **Acceso de invitados BBB** | Ajuste global (Extensiones → BigBlueButton → Características experimentales) y en una actividad (`course/modedit.php?update=261`) | El enlace de invitado (FUN-19) ya funciona en 4.3 |
+| **Banner de portada** (FUN-25) | `sudo -u www-data php scripts/set-frontpage-banner.php /var/www/html/assets/frontpage-banner.jpg` | Instalado. La ruta va absoluta porque el script de 4.3 no resuelve relativas (§9) |
+| **Tema del sitio** | El usuario lo cambió a `rmuniversidad` probando la interfaz y lo **devolvió a Richimath** el mismo día | Ver la explicación debajo |
+| **Copias para el ensayo** | Copia 1 (`2026-10-09-1643`, hora del servidor) y copia 2 (`2026-10-09-2354`) | Las dos borradas del VPS. La 1 también del portátil; la 2 está en `~/richimath-prod-copy` |
 
-### 3.5 Verificaciones con resultado
-- **Login**: correcto, fallido (se queda en `/login` con el error) y el botón de
-  ver contraseña, a 1440 y 390.
-- **URLs limpias**: en las dos direcciones, con `prettyurls` encendido y
-  apagado.
-- **Paginación duplicada arriba en «Mis cursos»**: cambia de página.
-- **Sistema solar**: planetas, fichas, Escape y menú «Niveles».
-- **Categorías**: tarjetas por nivel con los subniveles dentro.
-- **Examen completo**: ficha, intento, navegación, resumen y revisión.
-- **Invitaciones**: la cuenta se crea y queda matriculada.
-- **Enlace de invitado BBB**: core acepta el traspaso.
-- **Privacidad (FUN-21)**: las 10 pruebas de
-  `docs/product/student-privacy.md`, incluida la pestaña nueva
-  «Actividades».
-- **Profesor**: conserva todos sus permisos.
-
-### 3.6 Trampas de la sesión (resumen; detalle en MEMORY.md)
-- **CSS en caché tras purgar**: Moodle sirve el CSS anterior con la URL nueva
-  mientras compila. Siempre `build_theme_css.php` antes de abrir el navegador
-  (`dev-up.sh` ya lo hace).
-- **El tour de bienvenida de Moodle se come los clics**: se cierra con
-  `button[data-role=end]`.
-- **Categorías**: se despliegan desde el `h3`, no desde el enlace.
-- **`kill_all_sessions()` está obsoleta** → `destroy_all()`.
-- **`user_can_view_profile()` está obsoleta en 5.3**; nuestro código no la usa.
-- **El generador de preguntas de core necesita PHPUnit**: para preguntas de
-  prueba, importar GIFT y recalcular `sumgrades`.
+**Por qué cambiar el tema del sitio «no hacía nada» con sesión iniciada:**
+- Cada usuario tiene su tema según su **plan** (`/members`). Así se asigna en el
+  inicio de sesión.
+- El plan **Admin** usa el aspecto *university*, es decir, `rmuniversidad`.
+- Los planes solo pueden elegir entre los 4 temas de nivel: no existe un aspecto
+  «Richimath» base.
+- Todos los usuarios reales tienen tema de nivel. El tema del sitio
+  (`theme/index.php`) solo lo ven los **visitantes sin sesión**: la portada
+  pública y el login.
 
 ---
 
-## 4. Lo que queda
+## 4. Herramientas de la Fase 2 (todo en el repo)
 
-1. **Fase 2 — ensayo con datos reales.**
-   - Sacar del VPS el volcado de BD + `moodledata`; el usuario decide cuándo.
-   - En local: 4.3 → **4.5** (`github/moodle-2026`, con los plugins de 4.3) →
-     PHP 8.3 + MySQL 8.4 → **5.3** (este repo).
-   - Cronometrar cada paso y repetir hasta tener dos ensayos en verde.
-2. **Pendientes de probar con la copia de producción:**
-   - la entrada a la sala BBB del VPS 6;
-   - el nombre exacto del botón «Agregar → del banco de preguntas» en 5.3;
-   - las actividades `chat`/`survey` (MIG-40);
-   - los ajustes de la sección E.
-3. **Fases 3–5**: servidor (PHP 8.3, MySQL 8.4 desde el repo oficial, el
-   `DocumentRoot` a `public/`, el router), corte de una noche y vigilancia. La
-   fecha la fija el usuario con Richi, no antes de 2–3 semanas tras el 5 oct.
-4. **Backlog posterior** (no es migración):
-   - IB: categoría y plan; el tema `rmib` necesita tablero de diseño;
-   - generación de preguntas con IA sobre `generate_text`;
-   - carpetas y portada de curso del lote A.
+| Pieza | Para qué |
+|---|---|
+| [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md) | Cómo sacar la copia (comandos del VPS y del portátil), reglas de datos, cómo ensayar, registro de ensayos, hallazgos |
+| `scripts/rehearsal/rehearse-upgrade.sh <copia>` | El ensayo completo, desde cero cada vez. Ver los pasos debajo |
+| `scripts/rehearsal/docker-compose.yml` | El entorno del ensayo. Las imágenes y el código cambian en cada salto; el `config.php` del ensayo se monta encima |
+| `scripts/rehearsal/acceptance.sh <copia> [--bbb]` | La aceptación automática. Ver debajo |
+| `scripts/check-db-settings.php` | La sección E de los tickets, valor a valor (OK/FAIL/INFO): tema, portada, `forcelogin`, idioma, BBB, privacidad, WhatsApp, collation… **Sirve también la noche del corte, en el servidor** |
+| `assets/customlang/es/` | `admin.php` («Lista de usuarios», MIG-26) más 6 ficheros con **37 cadenas** que el paquete español de 5.3 aún no trae. Se importan con `public/admin/tool/customlang/cli/import.php --lang=es --source=<ruta ABSOLUTA> --checkin` |
+
+**`rehearse-upgrade.sh`, paso a paso:**
+1. Árbol 4.5 (`github/moodle-2026`) más los 6 plugins de 4.3 en el commit de
+   `version.txt`.
+2. PHP 8.2 + MySQL 8.0.
+3. Importa la base y `moodledata`.
+4. Unifica la collation (en copias nuevas ya no convierte nada).
+5. Upgrade a 4.5.
+6. Cambio a PHP 8.3 + MySQL 8.4, sobre el mismo volumen.
+7. Upgrade a 5.3.
+8. Tareas adhoc: el CSS de todos los temas y `mod_qbank`.
+9. Importa las personalizaciones de idioma.
+10. Crea el admin local `qa.admin` (contraseña en `<copia>/work/qa-admin.txt`).
+11. Ejecuta `checks.php`, `check_database_schema.php` y `check-db-settings.php`.
+
+Tarda entre 10 y 12 min en el portátil. El config del ensayo lleva
+`noemailever`: la copia comparte identidad con producción, pero no envía
+correos.
+
+**`acceptance.sh`:**
+- Hace unas **52 comprobaciones PASS/FAIL**:
+  - rutas limpias en las dos direcciones;
+  - login (error en `/login`, *reducir movimiento*, 390);
+  - portada y banner;
+  - páginas de admin;
+  - todas las carpetas y foros, y cada fichero en `moodledata`;
+  - invitaciones y enlace compartido;
+  - privacidad con un alumno real, vía «Entrar como»;
+  - el alumno de prueba `qa.alumno` con inicio de sesión real: tema por plan,
+    chips y botones flotantes;
+  - el examen completo, más que la revisión salga en español.
+- Con `--bbb`: abre una **sala NUEVA y sin grabación** en el servidor real (VPS
+  6), entra como profesor y como invitado, y la cierra.
+- Deja capturas en `<copia>/work/acceptance/` (fuera del repo: salen alumnos).
+- **Lo que sigue siendo a ojo:** las capturas y los colores.
 
 ---
 
-## 5. Commits de esta sesión
+## 5. Ensayos y aceptación
 
-**`github/moodle-2027`** (todos sin subir; el repo remoto aún no tiene rama `main`):
+| | Ensayo 1 | Ensayo 2 | Ensayo 3 |
+|---|---|---|---|
+| Copia | 1 | 2 | 2 |
+| Upgrade (de la collation al último paso) | 8,6 min | 10,2 min | 11,7 min |
+| Técnico | Esquema OK | Esquema OK | Esquema OK |
+| Sección E | Invitados BBB apagados (así venía) | Tema del sitio `rmuniversidad` (así venía) | Igual que el 2 |
+| Aceptación | A mano, 22/25 ✅, **4 arreglos** | Automática 51/51 (un fallo del script, corregido); a ojo, textos en inglés → **37 cadenas traducidas** | **52/52 ✅ sin arreglos** |
+
+Los tiempos varían con la carga del portátil. La ventana real del corte se mide
+en el servidor (Fase 3).
+
+**Lo que confirmó la copia real:**
+- Ninguna actividad de `chat` ni `survey`: MIG-40 ✅ (las 5 filas de `survey`
+  son plantillas de core).
+- Las 152 carpetas y los 27 foros abren; los 281 ficheros están con su tamaño.
+- La transferencia a `mod_qbank` va bien: unos 1 s y 7 categorías.
+- Cada `upgrade.php` instala el paquete `es` de su versión. Necesita salida a
+  internet.
+- **FUN-16 (Kepler) no está en producción:** el único H5P es «Test Actividad» y
+  no hay preguntas `calculated`. Sus recursos siguen en el repo.
+- **FUN-23 (despliegue) es de la Fase 3.**
+
+---
+
+## 6. Arreglos de código de esta sesión
+
+Todos en 5.3 y verificados en el navegador.
+
+| Qué se veía | Causa | Arreglo | Commit |
+|---|---|---|---|
+| Cajón derecho (bloques) flotando con un hueco a la derecha | 5.3 «ancla» los cajones junto al contenido en `pagelayout-standard` y `limitedwidth`, con reglas `:has(#page…)` que suman 2 IDs | Pegado al borde con `left: auto !important`; botón de cerrar arriba a la derecha | `4e6f92eed` |
+| «Abrió… Cerró…» saliéndose de la cinta negra | Rejilla `1fr 1fr` sin salto; core solo apila en pantallas estrechas | `auto-fit` al ancho real | `4e6f92eed` |
+| Caja de solución del examen: texto marrón sobre lavanda, doble borde | Alerta amarilla de core más fondo del tema | Fondo **azul hielo `#f4f8ff`** con marca de agua RM. Colores por importancia: veredicto rojo/verde/naranja, título como etiqueta, pasos azules, fórmulas violetas, respuesta verde. **Colores fijos, no de la paleta del nivel** (Pre-U tiene el primario rojo). Fórmulas anchas con scroll en el móvil | `2bb60f8ad`, `2fc8b35a6` |
+| Apariencia → Temas → Richimath daba «Error de sección» | 5.3 crea la página de ajustes de cada tema **oculta** | `$settings->hidden = false` | `f3912be58` |
+| Calificador: nombres tapados por la barra lateral al desplazar | 5.3 desplaza la página entera y fija la columna en x = 0 | `th.header { left: var(--richimath-sidebar-width) }`; `drawers.js` aparta el índice del curso | `9016f5ab3` |
+| Móvil: «Consultas» tapaba el botón del cajón de bloques (la navegación del examen) | 5.3 sube los botones de cajón a `calc(99vh - navbar × 2.5)` | Con ese botón en la página, los FAB suben encima | `9016f5ab3` |
+| Aviso de obsoleto al crear cuentas de invitados | `user_create_user()` está obsoleta en 5.3 (MDL-82650) | `\core\user::create_user()`. Ningún otro uso obsoleto en nuestro código | `6724f6fe6` |
+| (Decisión) «Consultas» y WhatsApp durante el examen | — | No se pintan en el intento ni en su resumen; vuelven en la revisión | `61be9605d` |
+| Franja vacía sobre el banner | 5.3 pone `.d-flex` (`!important`) en la cabecera de sección | `display: none !important` | `b3487f3a2` |
+| El script del banner no encontraba la imagen | El CLI de Moodle se mueve a la carpeta del script | Guarda `getcwd()` antes del `config.php` | `d5dc9374d` |
+| «Attempt submitted.» y otros textos en inglés | El paquete español de 5.3 está incompleto | 37 cadenas en `assets/customlang/es/` | `fd59f3ce1` |
+
+---
+
+## 7. Decisiones tomadas (Richi / usuario)
+
+- **Collation:** unificada ya en producción, en vez de esperar al corte.
+- **Favicon:** el del sitio (icono RM de Apariencia → Logos) en todos los
+  niveles; sin favicon por nivel.
+- **Banner de portada:** instalado.
+- **Botones flotantes:** fuera del intento de examen y de su resumen.
+- **Fondo de la caja de solución:** azul hielo. El crema se rechazó por
+  «amarillo», y entre blanco, gris perla y azul hielo se eligió el último.
+- **Tema del sitio:** Richimath. El cambio a Universidad fue una prueba y ya
+  está revertido.
+
+---
+
+## 8. Datos de producción que conviene tener presentes
+
+- **Servidor:**
+  - Ubuntu 24.04, que trae MySQL 8.0: el 8.4 vendrá del repositorio APT oficial
+    de MySQL;
+  - usuario de BD `moodleuser`, con `caching_sha2_password`: el 8.4 sin
+    `mysql_native_password` no le afecta;
+  - `root` de MySQL por `auth_socket`.
+- **Tamaños:**
+  - BD de 43 MB (3,6 MB comprimida);
+  - `moodledata` de 220 MB (`filedir` 158 MB; 102 MB comprimido);
+  - volcado en 21–27 s, `tar` en 14 s, descarga en ~25 s.
+- **Contenido:**
+  - folder 152, forum 27, quiz 20, BBB 4, url 1, h5pactivity 1;
+  - sin tareas; 24 usuarios; plan por defecto Primaria;
+  - categorías ESCOLAR, PRE UNIVERSITARIO, UNIVERSIDAD y BACHILLERATO
+    INTERNACIONAL (IB ya tiene 2 cursos);
+  - ninguna categoría oculta.
+- **Configuración:**
+  - no registrado en moodle.org;
+  - SMTP de Gmail configurado;
+  - `airnotifier` activo pero sin clave;
+  - ningún profesor tiene configurado el WhatsApp;
+  - antes de esta sesión no había personalizaciones de idioma.
+- **Usuarios:**
+  - **el usuario 5 de producción es una alumna real**, no `estudiante.demo` como
+    en el espejo 4.3: los ids del espejo no sirven;
+  - el admin `richi85` es el usuario 2.
+
+---
+
+## 9. Trampas pagadas en esta sesión
+
+**Moodle 5.3:**
+1. **Cajones anclados** en `pagelayout-standard` y `limitedwidth`: el `left`
+   viene de `:has(#page…)` (2 IDs) y solo lo vence `!important`.
+2. **La página de ajustes de cada tema nace oculta:** hay que poner
+   `$settings->hidden = false`.
+3. **`drawers.js` (`displaceDrawers`)** aparta los cajones al desplazar en
+   horizontal.
+4. **Botones de cajón en el móvil** a `calc(99vh - navbar × 2.5)`.
+5. **Bootstrap 5:** `.d-flex` y `.bg-*` llevan `!important`. 5.3 puso `.d-flex`
+   en la cabecera de sección.
+6. **La barra secundaria es React:** el primer pintado reparte las pestañas en
+   dos líneas antes de mandarlas a «Más». Esperar antes de capturar.
+7. **`user_create_user()` obsoleta** → `\core\user::create_user()` (misma firma,
+   misma política de contraseñas).
+8. **El paquete de idioma de 5.3 está incompleto:** contar los huecos antes del
+   corte (comando en el documento de la Fase 2, §5).
+9. **`upgrade.php` instala solo el paquete de idioma** de su versión: el VPS
+   necesita salida a internet.
+10. **El upgrade encola el CSS de todos los temas** (~3 min). No purgar después,
+    o se compila dos veces.
+
+**Servidor, CLI y datos:**
+11. **El CLI de Moodle hace `chdir` a la carpeta del script** (`lib/setup.php`,
+    en 4.3 y en 5.3): las rutas relativas fallan. Usar rutas absolutas.
+12. **El selector de temas no escribe en `config_log`:** un cambio de tema del
+    sitio no deja rastro.
+13. **«Entrar como» no dispara `user_loggedin`:** el tema por plan se prueba con
+    un inicio de sesión real (`qa.alumno`).
+14. **Las actividades BBB de la copia comparten sala con producción:** para
+    probar, crear una actividad nueva y cerrar la reunión al acabar.
+15. **`version.php` hace `die()` fuera de Moodle:** la versión, con `cfg.php
+    --name=release`.
+16. **`du` no cuenta dos veces un directorio:** usar `moodledata/*`.
+
+**Pruebas con agent-browser:**
+17. **`html { scroll-behavior: smooth }`** (y el desplazamiento dentro de
+    `#page`): un clic por coordenadas fuera de pantalla llega antes de que
+    termine el desplazamiento. Usar `find role … click`, Enter, o empezar a 1440.
+18. **El enlace «Terminar intento…»** lo intercepta el JS: ir a su `href`. El
+    modal «Enviar todo y terminar» no abre bajo automatización:
+    `#frm-finishattempt.submit()`.
+19. **La búsqueda de mensajes** se prueba con el servicio web
+    `core_message_message_search_users`.
+20. **Un elemento `position: fixed` tiene `offsetParent` nulo:** medir con
+    `getBoundingClientRect`.
+21. **Un `eval` largo corta por tiempo:** hacer tandas de 25 páginas.
+22. **MathJax tarda segundos:** esperar antes de capturar.
+23. **En Boost, la página se desplaza dentro de `#page`**, no en `window`.
+
+**Proceso:**
+24. **Editar un script mientras corre:** bash sigue con la versión vieja.
+25. **`pgrep -f patrón` dentro de un comando que contiene el patrón** se
+    encuentra a sí mismo.
+
+---
+
+## 10. Lo que queda
+
+1. **Cerrar la Fase 2:**
+   - el usuario saca la copia 3;
+   - se ejecutan `rehearse-upgrade.sh` y `acceptance.sh --bbb`;
+   - si sale limpio, son dos verdes seguidos. Luego se borra
+     `~/richimath-prod-copy`.
+2. **Fase 3, preparar el servidor:** el usuario ejecuta en el VPS lo que se le
+   prepare, siempre con un **snapshot** antes.
+   - **PHP 8.3** junto al 8.2 (PPA ondrej), con las mismas extensiones
+     (`php8.2 -m`) y `max_input_vars ≥ 5000`. Sin cambiar todavía el módulo de
+     Apache.
+   - **MySQL 8.4** desde el repositorio APT oficial (8.0 → 8.4 sobre los mismos
+     datos). Ensayar con snapshot.
+   - **Vhost de 5.3:** `DocumentRoot` en `public/`, `AllowOverride FileInfo
+     Indexes`, `mod_rewrite`, y la regla del router a `/r.php` al **final** de
+     `public/.htaccess`.
+   - **`config.php` de 5.3:**
+     - `routerconfigured = true`;
+     - `dbcollation = utf8mb4_unicode_ci`;
+     - `wwwroot = https://richiacademy.com`;
+     - `config.php` y `admin/cli/` en la raíz, fuera de `public/`.
+   - **Comprobar:**
+     - la salida a internet a `download.moodle.org`;
+     - el script de despliegue contra 5.3 (FUN-23);
+     - los **tiempos reales** del upgrade en el servidor, que fijan la ventana
+       del corte.
+   - **Tras el corte:** cron de `www-data` y SMTP; `check-db-settings.php` en
+     verde.
+   - Borrar `/root/moodle-backups/pre-collation-*` cuando no hagan falta.
+3. **Fase 4:**
+   - fecha con Richi;
+   - una noche, según la plantilla del plan
+     ([docs/migration-plan.md](docs/migration-plan.md) §7);
+   - **regla de los 30 minutos** para volver atrás con el snapshot.
+4. **Backlog** (no es migración):
+   - tema IB (`rmib`, necesita diseño);
+   - generación de preguntas con IA (`generate_text`);
+   - lote A (carpetas y portada de curso);
+   - si el admin quiere ver el aspecto Richimath base, hace falta un 5.º aspecto
+     de plan.
+
+---
+
+## 11. Commits de esta sesión (`github/moodle-2027`)
 
 ```
-089f616c8 docs(migration): apply Richi's two decisions and record privacy on 5.3
-6962881ca docs(migration): close Phase 1 and put the two open choices to Richi
-d47b49de6 chore: bring the build scripts, source assets and manuals to the 5.3 tree
-a0ce7ae11 refactor(theme_richimath): drop the admin user list rules 5.3 has no form for
-6bfd3eaae fix(theme_richimath): show quiz questions again on the 5.3 layout
-462c3eba1 fix(theme_richimath): restore the course page on 5.3 markup
-b4c9f5bd1 docs(memory): record step 1.8 verified on 5.3 without code changes
-147d625ed docs(migration): forcelogin must stay off for the public site
-01f9547b3 feat(routes): serve the clean URLs from public/ next to the Moodle router
-1281b253f feat(themes): bring the four level themes to 5.3
-71c69f59f docs(memory): record Phase 1 progress and the traps of steps 1.1-1.4
-316a81266 feat(theme_richimath): rebuild the copied core templates on 5.3
-16dc07c27 feat(theme_richimath): bring the theme base to 5.3 and Bootstrap 5
-cacaad08a feat(local_richimath): bring the plugin to 5.3
-d74fb9dd9 docs: close Phase 0 with a clean 5.3 baseline and the router findings
-2581028fb chore: run Moodle 5.3 locally on PHP 8.3, MySQL 8.4 and a working router
-f3c7171ed chore: set up the 5.3 repository with its rules and the 4.3 history
-9ce394a7c docs: schedule every user-facing ticket in the migration plan
-b58ab36c7 docs: add the user-facing tickets and trace every 4.3 commit to one
-44ee8bd35 docs: inventory the 4.3 customisations and plan the move to 5.3
+758895ba4 feat(rehearsal): rehearse the 4.3 → 4.5 → 5.3 upgrade on a production copy
+66f8daa43 docs(migration): record the first rehearsal on a production copy
+3b3d97c75 feat(rehearsal): unify the database collation before the first upgrade
+4e6f92eed fix(theme_richimath): pin the block drawer to the window edge again on 5.3
+2bb60f8ad feat(theme_richimath): give the exam solution box its own colours and watermark
+e0512c158 docs(theme): record the solution box, the block drawer and their traps
+2fc8b35a6 style(theme_richimath): put the exam solution on pale ice blue instead of cream
+f268c9b27 docs(migration): record the collation unified and BBB guest access on in production
+f3912be58 fix(theme_richimath): list the theme settings page again on 5.3
+9016f5ab3 fix(theme_richimath): keep grader names and the drawer toggler clear on 5.3
+6724f6fe6 fix(local_richimath): create invited accounts with core\user::create_user
+823c2790f docs(migration): record the acceptance pass on the production copy
+61be9605d feat(theme_richimath): keep the floating buttons out of a quiz attempt
+b3487f3a2 fix(theme_richimath): drop the empty band above the home banner on 5.3
+d5dc9374d fix(scripts): find the banner image from where the command runs
+145a675c4 docs(migration): record Richi's three decisions after the acceptance pass
+ac8834dd6 feat(rehearsal): check a rehearsal's acceptance with one command
+fd59f3ce1 feat(customlang): translate the 5.3 strings the Spanish pack still lacks
+ebb7eae85 docs(migration): record rehearsals 2 and 3 on the second production copy
 ```
 
-**`github/moodle`** (4.3; todos subidos menos el último):
+El usuario subió hasta `145a675c4`; los siguientes estaban sin subir al cerrar
+la sesión (comprobar con `git status`).
 
+---
+
+## 12. Cómo retomar
+
+```bash
+cd ~/Documentos/github/moodle-2027
+less MEMORY.md                                     # estado vivo y trampas
+bash scripts/dev-up.sh                             # 5.3 de desarrollo en :8083
+# Con una copia nueva en ~/richimath-prod-copy (procedimiento: docs/migration/phase-2-production-copy.md §2):
+scripts/rehearsal/rehearse-upgrade.sh ~/richimath-prod-copy          # ensayo en :8084
+scripts/rehearsal/acceptance.sh ~/richimath-prod-copy --bbb          # aceptación
 ```
-5e4217d5 docs(memory): 5.3 requires 4.4 to upgrade from, plus PHP 8.3 and MySQL 8.4
-db7a308a docs(sessions): teacher manual for inviting a guest to one BBB class
-6201ab5e feat(privacy): students see their own data and nothing of their classmates
-3c6c785e style(quiz): drop the rules between answer options
-acc5ff59 fix(theme): stop the activity edit menu from flickering behind the next row
-e91c7f93 feat(site): replace the login console with a solar system of levels
-2ab510bb feat(theme): draw activity icons in vivid colour without the tile
-27a21d53 fix(sessions): post core's own form identifier when handing a guest over
-325035b2 feat(courses): add the teacher's WhatsApp button, on by profile and by course
-e568dac0 feat(sessions): register guests before a BBB session and keep the lead
-8abd0b7b style(admin): make the user list readable without touching core
-```
+
+**Cuentas:**
+- **En el ensayo:** `qa.admin`, con su contraseña en
+  `~/richimath-prod-copy/work/qa-admin.txt` (se regenera en cada ensayo), y
+  `qa.alumno`, en `work/qa-alumno.txt`.
+- **En `:8083`:** las cuentas QA de siempre; la contraseña está solo en la
+  memoria del agente.
