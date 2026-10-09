@@ -77,6 +77,33 @@ personales. Se controlan en cada actividad:
 Y el profesor (`richi85`) conserva en el curso: ver participantes, ver perfiles,
 ver campos ocultos, ver identidad (correo) y ver todas las calificaciones.
 
+## Verificado en Moodle 5.3 (2026-10-09, `github/moodle-2027`, local)
+
+Mismas pruebas como `estudiante.demo` en el curso `BASE53`, con la compañera
+`estudiante.dos` y el profesor `qa.admin`. En 5.3 el bloqueo llega por dos
+caminos: en una instalación nueva lo aplica `db/install.php`; en la migración
+viaja con la base de datos (paso de actualización 2026100400 de 4.3).
+
+| # | Prueba | Resultado en 5.3 |
+|---|---|---|
+| 1 | Participantes del curso | **sin permiso**, y sin pestaña «Participantes» |
+| 2 | Perfil de curso de la compañera | «No puede ver el perfil de este usuario» |
+| 3 | Perfil de sitio de la compañera | «Los detalles de este usuario no están disponibles para usted» |
+| 4 | Mensajes de foro de la compañera | «No hay aportaciones realizadas por este usuario que usted pueda ver» |
+| 5 | Notas de la compañera | «No se pueden ver las calificaciones» |
+| 6 | Buscar a la compañera en mensajes | **no aparece** |
+| 6b | Buscar al profesor en mensajes | aparece |
+| 7 | Perfil del profesor | solo su WhatsApp; sin correo ni cursos |
+| 8 | Su propio perfil | su correo, marcado «Oculto a todo el mundo excepto…» |
+| 9 | Sus propias notas | visibles |
+| 10 | **Nuevo en 5.3: pestaña «Actividades»** (`/course/overview.php`) | solo **sus** datos: su calificación, el estado de **su** entrega y totales de mensajes del foro; ningún nombre de compañero |
+
+Rol estudiante en 5.3: `viewparticipants`, `viewdetails`, `readuserposts`,
+`readuserblogs` y `online_users:viewlist` **quitadas**; campos ocultos y
+`defaultpreference_maildisplay = 0` aplicados. El profesor conserva en el
+curso: ver participantes, ver perfiles, ver campos ocultos, ver identidad
+(correo) y ver todas las calificaciones.
+
 ## Para deshacerlo
 
 - Permisos: *Administración del sitio → Usuarios → Permisos → Definir roles →

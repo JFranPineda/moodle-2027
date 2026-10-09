@@ -1,4 +1,4 @@
-# Dos decisiones para Richi antes de cerrar la Fase 1
+# Dos decisiones para Richi antes de cerrar la Fase 1 — DECIDIDAS
 
 Todo lo demás de la Fase 1 ya funciona en 5.3. Estas dos cosas no se pueden
 «portar» sin más: Moodle 5.3 trae su propia versión de lo que hicimos en 4.3, y
@@ -30,6 +30,10 @@ un color por tipo de actividad, y además funcionan en modo oscuro.
 
 **Recomendación: (a).** Cumple lo que pidió Richi y no deja trabajo pendiente.
 
+> ✅ **Decidido (2026-10-09): (a), los de Moodle 5.3.** Se retiró
+> `scripts/build-activity-icons.py`; el color de cada tipo sale de la paleta
+> de cada nivel (`docs/product/activity-icons.md`).
+
 Nota: en la captura de 5.3 se ve que **el selector de actividades entero es
 nuevo** (categorías a la izquierda, lista, botón «Añadir»). No es algo nuestro
 y no se toca.
@@ -59,9 +63,16 @@ la página más legible. Lo hicimos sobre el formulario de filtros de 4.3.
 
 **Recomendación: (a)** más el cambio de título.
 
+> ✅ **Decidido (2026-10-09): (a) + título.** Personalización de idioma
+> `core_admin/userlist` = «Lista de usuarios», aplicada en local con
+> `admin/tool/customlang/cli/import.php --checkin` y comprobada en el título y
+> las migas. Es la misma cadena que en 4.3, así que la personalización que ya
+> tenga producción (`moodledata/lang/es_local`) viaja sola.
+>
+> ![5.3 final](mig26-userlist-5.3-final.png)
+
 ---
 
-## Qué pasa mientras Richi decide
+## Estado
 
-Nada se bloquea: la Fase 2 (ensayo con la copia de producción) puede empezar.
-Mientras tanto, 5.3 usa los iconos y la lista de usuarios de Moodle.
+Las dos decisiones están aplicadas: la Fase 1 queda cerrada.

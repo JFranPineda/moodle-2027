@@ -1,6 +1,6 @@
 # MEMORY.md — estado vivo de la migración a 5.3 (actualizar al terminar cada tarea)
 
-Última actualización: 2026-10-09 (Fase 1 TERMINADA salvo 1.10: MIG-26/27 esperan la decisión de Richi — docs/migration/decisions/; siguiente: Fase 2).
+Última actualización: 2026-10-09 (Fase 1 TERMINADA, 23/23 MIG; MIG-26/27 decididos por Richi; privacidad verificada en 5.3; siguiente: Fase 2).
 
 ## Árboles en disco
 
@@ -19,7 +19,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 | Fase | Estado |
 |---|---|
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
-| 1 Portar código | ✅ salvo 1.10 (MIG-26/27 = decisión de Richi, sin bloquear la Fase 2). 21 de 23 MIG cerrados |
+| 1 Portar código | ✅ 2026-10-09 — 23/23 MIG. MIG-27 = iconos de Moodle; MIG-26 = lista de usuarios de 5.3 + `core_admin/userlist` = «Lista de usuarios» (customlang) |
 | 2 Ensayo con copia de producción | — |
 | 3 Preparar servidor | — |
 | 4 Corte | — |
@@ -138,3 +138,18 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 - `build-activity-icons.py` NO correr hasta MIG-27.
 - `dev-up.sh` construye el CSS de los 5 temas al final.
 - Manual de Kepler: importar en «Bancos de preguntas» (mod_qbank).
+
+## Decisiones de Richi aplicadas (2026-10-09)
+
+- **MIG-27**: iconos de Moodle 5.3. `scripts/build-activity-icons.py` retirado.
+  El color de cada tipo de actividad sale de `$activity-icon-*-bg` de la
+  paleta de cada nivel.
+- **MIG-26**: lista de usuarios de 5.3 tal cual + título por personalización de
+  idioma `core_admin/userlist` = «Lista de usuarios»
+  (`public/admin/tool/customlang/cli/import.php --lang=es --source=<dir con admin.php> --checkin`).
+  Vive en BD/`moodledata/lang/es_local`: verificar tras el corte.
+- **Privacidad (FUN-21) verificada en 5.3** con las 10 pruebas de
+  `docs/product/student-privacy.md`, incluida la pestaña nueva
+  «Actividades» (`/course/overview.php`): el alumno solo ve lo suyo.
+- `user_can_view_profile()` está obsoleta en 5.3 (usar
+  `\core\user::can_view_profile()`); nuestro código no la usa.

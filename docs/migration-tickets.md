@@ -734,7 +734,7 @@ revisa en su página:
 - **Hecho cuando**: cada fila verificada con captura a 1440 y 390 px; lo que ya
   no aplica se **borra**, no se deja muerto.
 
-#### MIG-26 · Lista de usuarios del admin (rehacer) 🔴
+#### MIG-26 · Lista de usuarios del admin ✅ decidido: la de 5.3 + título
 - **Origen**: SCSS §H (`#id_newfiltercontainer…`), ajuste `userfiltersdefault=email`,
   cadena `userlist` personalizada («Lista de usuarios»).
 - **Qué cambia**: en 5.3 `/admin/user.php` es un informe del *report builder*
@@ -746,7 +746,7 @@ revisa en su página:
 - **Hecho cuando**: el título dice «Lista de usuarios» y se puede filtrar por
   correo sin pasos extra.
 
-#### MIG-27 · Iconos de actividad (decidir) 🔴
+#### MIG-27 · Iconos de actividad ✅ decidido: los de Moodle 5.3
 - **Origen**: `scripts/build-activity-icons.py`, `theme/richimath/pix_plugins/mod/*/monologo.svg` (23), SCSS §J.
   Doc: `docs/product/activity-icons.md`.
 - **Qué cambia**: en 5.3 core ya pinta los iconos **en color y sin baldosa**,
@@ -770,7 +770,7 @@ revisa en su página:
 | Script | Qué cambia |
 |---|---|
 | `build-routes.php` | Escribir en `public/.htaccess` |
-| `build-activity-icons.py` | Según MIG-27 (borrar o adaptar) |
+| `build-activity-icons.py` | **Retirado** (MIG-27: iconos de Moodle) |
 | `build-theme-logos.py` | Salida a `public/theme/*/pix` |
 | `set-frontpage-banner.php` | Ruta del `config.php` (raíz) |
 | `build-h5p-escape-room.py`, `build-kepler-questions.py` | Sin cambios de código; ver MIG-32 |
