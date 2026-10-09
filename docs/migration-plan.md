@@ -77,23 +77,27 @@ funcionando en `localhost`.
 Sobre la 5.3 **limpia** de la Fase 0, ticket a ticket, en este orden (cada
 paso depende del anterior):
 
-| Paso | Tickets | Por qué en este orden |
-|---|---|---|
-| 1.1 | **MIG-10** base de `local_richimath` | Es la dependencia de todo lo demás (rutas, WhatsApp, planes) |
-| 1.2 | **MIG-20** base del tema + SCSS | Sin un tema que compile no se puede ver nada |
-| 1.3 | **MIG-21** las 5 plantillas de core | Login y `drawers` son el armazón de todas las páginas |
-| 1.4 | **MIG-22** renderers | El login y el catálogo dependen de ellos |
-| 1.5 | **MIG-24** los 4 temas de nivel | Heredan del padre ya estable |
-| 1.6 | **MIG-14** rutas limpias + `.htaccess` | Toca servidor y login: aislado y con sus pruebas |
-| 1.7 | **MIG-23** sitio institucional | Usa rutas, renderer y `levels` |
-| 1.8 | **MIG-11, 12, 13, 15, 16, 17** funciones | Independientes entre sí; cada una con su «Hecho cuando» |
-| 1.9 | **MIG-25** revisión sección a sección del SCSS | Al final, cuando todo el marcado ya es el de 5.3 |
-| 1.10 | **MIG-26, MIG-27** decisiones con Richi | Lista de usuarios e iconos: enseñar opciones, decidir, aplicar |
-| 1.11 | **MIG-30, 31, 32** scripts, recursos y manuales | Cerrar rutas a `public/` y actualizar manuales |
+| Paso | Tickets técnicos | Funciones que quedan listas (`FUN`) | Por qué en este orden |
+|---|---|---|---|
+| 1.1 | **MIG-10** base de `local_richimath` | — (base) | Es la dependencia de todo lo demás (rutas, WhatsApp, planes) |
+| 1.2 | **MIG-20** base del tema + SCSS | FUN-01 marca y títulos | Sin un tema que compile no se puede ver nada |
+| 1.3 | **MIG-21** las 5 plantillas de core | FUN-03 login · FUN-06 barra lateral y cajón móvil · FUN-07 calendario · FUN-08 chips del dashboard · FUN-09 paginación de «Mis cursos» · FUN-10 «Consultas» | Login y `drawers` son el armazón de todas las páginas |
+| 1.4 | **MIG-22** renderers | FUN-11 niveles y subniveles (tarjetas de categoría) | El login y el catálogo dependen de ellos |
+| 1.5 | **MIG-24** los 4 temas de nivel | FUN-02 logos (los 4 de nivel + favicon) · FUN-17 tema por plan (aspecto) | Heredan del padre ya estable |
+| 1.6 | **MIG-14** rutas limpias + `.htaccess` | FUN-04 sitio, `/students` y URL limpias (rutas) | Toca servidor y login: aislado y con sus pruebas |
+| 1.7 | **MIG-23** sitio institucional | FUN-04 (portada) · FUN-05 sistema solar y menú Niveles · FUN-02 (marca web) | Usa rutas, renderer y `levels` |
+| 1.8 | **MIG-11, 12, 13, 15, 16, 17** | FUN-18 invitaciones · FUN-17 planes (asignación) · FUN-19 **enlace de invitado BBB** · FUN-20 WhatsApp · FUN-21 privacidad | Independientes entre sí; cada una con su «Hecho cuando» |
+| 1.9 | **MIG-25** revisión sección a sección del SCSS | FUN-12 página del curso y ⋮ sin parpadeo · FUN-14 **UX de evaluaciones** · FUN-15 calificador · FUN-25 banner | Al final, cuando todo el marcado ya es el de 5.3 |
+| 1.10 | **MIG-26, MIG-27** decisiones con Richi | FUN-22 lista de usuarios · FUN-13 iconos | Enseñar opciones, decidir, aplicar |
+| 1.11 | **MIG-30, 31, 32** scripts, recursos y manuales | FUN-16 Kepler · FUN-23 despliegue · FUN-24 servidor BBB | Cerrar rutas a `public/` y actualizar manuales |
+
+Los 25 `FUN` aparecen en la tabla: ninguno queda sin paso asignado.
 
 **Cómo se trabaja cada ticket**:
 - Un commit por ticket (`feat(...)` / `refactor(...)` en inglés, sin
-  atribuciones), con el ID `MIG-xx` en el cuerpo.
+  atribuciones), con los IDs `MIG-xx` y los `FUN-xx` que cierra en el cuerpo.
+- Un `FUN` se da por listo cuando cumple su «Hecho cuando» **en el navegador**,
+  no cuando su `MIG` compila.
 - Depuración en **DEVELOPER** durante toda la fase: un aviso de obsoleto hoy es
   un error en la próxima versión.
 - Capturas a **1440 y 390 px**, como **admin y como alumno**, comparadas con
@@ -224,15 +228,20 @@ Plantilla de la ventana (horas de Lima):
 | T+? | **Pruebas de humo** (abajo), con mantenimiento todavía puesto (como admin) | Restaurar snapshot |
 | T+? | Quitar mantenimiento; volver a encender cron | — |
 
-**Pruebas de humo** (15 minutos, como admin y con una cuenta de alumno de
-prueba):
-1. `https://richiacademy.com` sin sesión: sistema solar y menú Niveles.
-2. Login correcto y login **fallido** (se queda en `/login` con el error).
-3. Dashboard, un curso de cada nivel con su tema, abrir una carpeta.
-4. Un examen: abrir sin enviar.
-5. Una actividad BBB: abrir la página (no hace falta iniciar).
-6. Como alumno: `/user/index.php?id=<curso>` dice «sin permisos».
-7. `admin/cli/cron.php` una vez a mano, sin errores.
+**Pruebas de humo** (20 minutos, como admin y con una cuenta de alumno de
+prueba). Una muestra de los `FUN`, no todos: el resto ya se probó en el ensayo.
+
+| # | Prueba | Cubre |
+|---|---|---|
+| 1 | `https://richiacademy.com` sin sesión: marca web, sistema solar, menú «Niveles» | FUN-02, 04, 05 |
+| 2 | Login correcto y login **fallido** (se queda en `/login` con el error) | FUN-03, 04 |
+| 3 | Dashboard con chips; barra lateral con el logo del nivel; un curso de cada nivel con su tema | FUN-02, 06, 08, 17 |
+| 4 | `/course/index.php` como admin: tarjetas de categoría con sus subcategorías | FUN-11 |
+| 5 | Un curso en modo edición: el ⋮ de una actividad se abre y se puede clicar | FUN-12 |
+| 6 | Un examen: abrir sin enviar (marca de agua, sin líneas entre opciones) | FUN-14 |
+| 7 | Una actividad BBB: abrir la página y la de «Invitar visitantes a esta sesión» | FUN-19, 24 |
+| 8 | Como alumno: `/user/index.php?id=<curso>` dice «sin permisos» | FUN-21 |
+| 9 | `admin/cli/cron.php` una vez a mano, sin errores | operación |
 
 **Regla de decisión**: si una prueba de humo falla y el arreglo no es evidente
 en **30 minutos**, se **restaura el snapshot** y se sale de la ventana en 4.3.
@@ -267,6 +276,9 @@ Mejor otra noche que una mañana de alumnos sin plataforma.
 | Traspaso de invitados BBB falla en silencio | Media | MIG-16: prueba anónima completa en el ensayo |
 | Rutas limpias rompen el login (POST redirigido) | Baja (ya pasó una vez) | MIG-14: guardas obligatorias + prueba de login fallido en humo |
 | Actividades de `chat`/`survey` en prod | Baja (0 en el espejo) | MIG-40 antes de fijar fecha |
+| La paginación de arriba de «Mis cursos» desaparece sin error (el JS depende de los `data-region` de `block_myoverview`) | Media | FUN-09: probarla con más de una página de cursos |
+| Los ajustes de logo propios de 5.x (*Apariencia → Logos*) compiten con nuestros logos por nivel | Baja | FUN-02: dejar esos ajustes vacíos y comprobar cada nivel |
+| Un cambio de marcado de 5.3 deja sin estilo una pantalla que nadie abrió en el ensayo | Media | MIG-25 recorre las secciones A–J página por página; cada `FUN` dice qué página mirar |
 | Fallos propios de un `.0` recién salido | Media | Esperar 2–3 semanas; preferir 5.3.1 si sale antes de la fecha |
 | Pérdida de datos | Muy baja | Backup fuera del VPS + snapshot + ensayo dos veces |
 
