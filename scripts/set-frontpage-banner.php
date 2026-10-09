@@ -33,6 +33,10 @@
 
 define('CLI_SCRIPT', true);
 
+// Moodle's CLI setup moves into the script's own directory: remember where
+// the command ran, or a relative image path is looked up under scripts/.
+$cwd = getcwd();
+
 require(__DIR__ . '/../config.php');
 require_once($CFG->libdir . '/clilib.php');
 require_once($CFG->dirroot . '/course/lib.php');
@@ -42,6 +46,9 @@ const BANNER_IDNUMBER = 'richimath-frontpage-banner';
 
 [$options, $args] = cli_get_params(['alt' => '', 'help' => false], ['h' => 'help']);
 $path = $args[0] ?? '';
+if ($path !== '' && $path[0] !== '/') {
+    $path = $cwd . '/' . $path;
+}
 if ($options['help'] || $path === '') {
     cli_writeln('Usage: php scripts/set-frontpage-banner.php <image> [--alt="Alt text"]');
     exit($options['help'] ? 0 : 1);
