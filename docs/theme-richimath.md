@@ -293,6 +293,26 @@ Los niveles y sus colores:
 Verificado con la copia de producción en `:8084`: intentos con respuestas
 incorrectas y correctas, admin y alumna (tema Preuniversitario), 1440 y 390.
 
+## Página de ajustes del tema en 5.3
+
+Apariencia → Temas → Richimath (el modo de barra lateral Blackboard/Canvas)
+daba «Error de sección» en 5.3. Core crea ahora la página de cada tema oculta y
+solo la lista si el tema la desoculta; Boost no lo nota porque la sustituye por
+su página de pestañas. `settings.php` pone `$settings->hidden = false;` al
+añadir su ajuste.
+
+## Calificador y botones flotantes en 5.3
+
+- **Calificador**: 5.3 desplaza la página entera en horizontal y fija la
+  columna de nombres en el borde de la ventana, debajo de nuestra barra
+  lateral. Se fija a la derecha de la barra (`left:
+  var(--richimath-sidebar-width)`). El índice del curso no necesita hueco:
+  `drawers.js` lo aparta cuando la página se desplaza más que su ancho.
+- **Botones flotantes en móvil**: por debajo de `md`, 5.3 pone los botones de
+  los cajones a `calc(99vh - navbar × 2.5)`, el carril donde iba «Consultas»,
+  que tapaba el del cajón de bloques. Si ese botón está en la página,
+  «Consultas» y WhatsApp suben justo encima con la misma fórmula.
+
 ## Cajón derecho de bloques en 5.3
 
 En las páginas `pagelayout-standard` y `body.limitedwidth` (cuestionario, casi

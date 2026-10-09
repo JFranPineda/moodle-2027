@@ -1,6 +1,6 @@
 # MEMORY.md — estado vivo de la migración a 5.3 (actualizar al terminar cada tarea)
 
-Última actualización: 2026-10-09 (Fase 2 EN CURSO: copia de producción bajada, upgrade 4.3 → 4.5 → 5.3 en verde con `scripts/rehearsal/`; falta la aceptación completa y el segundo ensayo).
+Última actualización: 2026-10-09 (Fase 2: ensayo 1 + aceptación completa sobre la copia; 4 arreglos durante la aceptación → toca el ensayo 2 desde una copia nueva).
 
 ## Árboles en disco
 
@@ -20,7 +20,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 |---|---|
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
 | 1 Portar código | ✅ 2026-10-09 — 23/23 MIG. MIG-27 = iconos de Moodle; MIG-26 = lista de usuarios de 5.3 + `core_admin/userlist` = «Lista de usuarios» (customlang) |
-| 2 Ensayo con copia de producción | 🟡 copia del 2026-10-09 en `~/richimath-prod-copy`; upgrade técnico ✅, humo ✅, MIG-40 ✅; falta aceptación FUN-01…25 + 2.º ensayo ([docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md)) |
+| 2 Ensayo con copia de producción | 🟡 ensayo 1 + aceptación FUN-01…25 hechos (22 ✅, FUN-16/25 no aplican, FUN-23 es de Fase 3); 4 arreglos en medio → falta el ensayo 2 con copia nueva ([docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md)) |
 | 3 Preparar servidor | — |
 | 4 Corte | — |
 | 5 Después | — |
@@ -235,3 +235,32 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    `document.querySelector('#page').scrollTop`.
 4. Compilar el CSS (≈2,5 min por entorno) en `:8084` y `:8083` a la vez: los dos
    montan el mismo árbol y cada uno tiene su caché.
+
+## Aceptación sobre la copia (2026-10-09) — trampas
+
+1. **5.3 crea la página de ajustes de cada tema OCULTA**
+   (`admin/settings/appearance.php`) y solo la lista si el tema la desoculta:
+   `$settings->hidden = false;` en `theme/richimath/settings.php`. Sin eso,
+   Apariencia → Temas → Richimath daba «Error de sección».
+2. **`drawers.js` aparta los cajones al desplazar en horizontal**
+   (`displaceDrawers`, calificador): el ancla de la columna fija solo necesita
+   el ancho de nuestra barra lateral.
+3. **Botones de cajón en móvil a `calc(99vh - navbar × 2.5)`** (5.3): el carril
+   de «Consultas» (7rem) los tapaba → con `.drawer-right-toggle` en la página,
+   los FAB suben encima.
+4. **`user_create_user()` obsoleta en 5.3** (MDL-82650) → `\core\user::create_user()`,
+   misma firma y misma política de contraseñas. Ningún otro uso obsoleto en
+   nuestro código (comprobado contra `deprecatedlib.php` y `#[deprecated]`).
+5. **«Entrar como» no dispara `user_loggedin`**: los temas por plan se prueban
+   con un inicio de sesión real → `qa.alumno` en la copia (contraseña en
+   `~/richimath-prod-copy/work/qa-alumno.txt`).
+6. **Las actividades BBB de la copia comparten sala con producción**: para
+   probar contra el VPS 6, crear una actividad NUEVA (meetingid aleatorio), sin
+   grabación, y cerrar la reunión al acabar (`mod_bigbluebuttonbn_end_meeting`).
+7. **En producción el usuario 5 es una alumna real**, no `estudiante.demo` como
+   en el espejo 4.3: no fiarse de los ids del espejo.
+8. agent-browser: el enlace «Terminar intento…» lo intercepta el JS del intento
+   (ir a su `href`); el modal de «Enviar todo y terminar» no abre bajo
+   automatización (`#frm-finishattempt.submit()`); la búsqueda de mensajes se
+   prueba con `core_message_message_search_users`; un elemento `position: fixed`
+   tiene `offsetParent` nulo (medir con `getBoundingClientRect`).

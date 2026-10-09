@@ -153,7 +153,57 @@ servidor antes de fijar la ventana del corte.
     nota y fórmulas intactas;
   - repetida sobre la ejecución con la collation unificada: su curso a 1440,
     con su tema y sus actividades.
-- **Falta** la lista completa: FUN-01…25 y los casos de §5.3 del plan.
+- **Aceptación completa (2026-10-09)**, con datos reales en `:8084`. Como
+  alumno, con «Entrar como» y con `qa.alumno`, un alumno de prueba creado en la
+  copia para iniciar sesión de verdad.
+
+| FUN | Resultado | Nota |
+|---|---|---|
+| 01 Marca y títulos | ✅ | «… \| Richi Academy» en login, dashboard, curso, examen y categorías; ningún «Richie» |
+| 02 Logos | ✅ | Cada tema sirve su logo (5 distintos). ⚠ Favicon: manda el del sitio (Apariencia → Logos), igual que en 4.3 → decisión |
+| 03 Login | ✅ | Correcto, fallido (se queda en `/login`), «¿Olvidó…?», glifos parados con *reducir movimiento*, 390 sin desborde |
+| 04 Rutas limpias | ✅ | 20 rutas en las dos direcciones. `/join` sin token y `/signup` (autorregistro apagado) responden con su error, como en 4.3 |
+| 05 Sistema solar | ✅ | Pausa al pasar el ratón, ficha con Escape, menú «Niveles» por hover; IB ya muestra sus 2 cursos reales |
+| 06 Barra lateral | ✅ tras arreglo | **La página de ajustes del tema no existía en 5.3** (ver abajo). Alumno sin enlace al catálogo; cajón móvil abre y cierra |
+| 07 Calendario | ✅ | Mes, día (con la línea de la hora) y próximos eventos |
+| 08 Chips | ✅ | 1 curso → 1 chip; 15 cursos → 12 + «Ver todos mis cursos» |
+| 09 Paginación arriba | ✅ | La de arriba cambia de página y queda sincronizada con la de abajo |
+| 10 Consultas | ✅ tras arreglo | Abre la conversación con el admin. A 390 **tapaba el botón del cajón de bloques** (ver abajo) |
+| 11 Niveles y subniveles | ✅ | Tarjetas por nivel; ESCOLAR → NIVEL PRIMARIA → QUINTO/SEXTO GRADO. Producción no tiene categorías ocultas |
+| 12 Página del curso | ✅ | El ⋮ de actividad y el de disponibilidad, por encima y clicables |
+| 13 Iconos | ✅ | Los de Moodle en color, sin baldosa ni negros |
+| 14 Evaluaciones | ✅ | Flujo completo en Universitaria (ficha, intento con temporizador, navegación, resumen, revisión) y revisiones en Primaria y Pre-U; 390: temporizador fijo y navegación por su botón |
+| 15 Calificador | ✅ tras arreglo | Menús por encima. **La columna de nombres quedaba bajo la barra lateral** al desplazar (ver abajo) |
+| 16 Kepler | — | No está en producción (su único H5P es «Test Actividad» y no hay preguntas `calculated`). Los recursos están en el repo |
+| 17 Tema por plan | ✅ | Inicio de sesión real: Secundaria → `rmsecundaria`; cambio a Universitaria en `/members` → `rmuniversidad` al volver a entrar |
+| 18 Invitaciones | ✅ tras arreglo | Invitación → cuenta → matriculado; el enlace compartido rechaza un correo fuera de la lista. **`user_create_user()` está obsoleta en 5.3** (ver abajo) |
+| 19 Invitado BBB | ✅ | Registro → lead → «Entrar a la clase» → sala real del VPS 6; mismo correo = 1 fila con 2 visitas; el CSV solo trae a quien aceptó |
+| 20 WhatsApp | ✅ | Profesor activado + curso «Lo que decida el profesor» → botón; «No mostrar» → sin botón. En producción nadie lo tiene configurado |
+| 21 Privacidad | ✅ | Las 8 pruebas con una alumna real; la búsqueda de mensajes encuentra al profesor y no al compañero |
+| 22 Lista de usuarios | ✅ | «Lista de usuarios» |
+| 23 Despliegue | ⏳ | Es del servidor: Fase 3 |
+| 24 Servidor BBB | ✅ | Desde 5.3, el admin crea y entra a una sala en el VPS 6 (actividad nueva, sin grabación, cerrada después: las de la copia comparten sala con producción) |
+| 25 Banner | — | Producción no tiene banner (solo existió en el espejo 4.3) → decisión |
+
+**Casos con datos reales (§5.3 del plan):**
+- **Temas por nivel:** cada nivel muestra su tema.
+- **Cursos, notas e intentos:** siguen ahí. Producción no tiene tareas.
+- **Carpetas, foros y ficheros:** las 152 carpetas y los 27 foros abren. Los 281 ficheros están en `moodledata` con su tamaño, y una muestra se descarga con 200 y tamaño exacto.
+- **BBB:** ✅ (FUN-19 y FUN-24).
+- **Privacidad:** ✅ (FUN-21).
+- **Sección E:** ✅.
+- **Correo y cron:** son del servidor (Fase 3/4).
+
+**Arreglado durante la aceptación** (por la regla del plan, el ensayo se repite entero):
+1. **Página de ajustes del tema.** 5.3 crea la página de cada tema oculta y solo la lista si el tema la desoculta. Apariencia → Temas → Richimath daba «Error de sección».
+2. **Calificador.** 5.3 desplaza la página entera en horizontal y fija la columna de nombres en el borde de la ventana, debajo de nuestra barra. Ahora se fija a su derecha. El índice del curso no necesita hueco: `drawers.js` lo aparta.
+3. **Botones flotantes en móvil.** 5.3 sube los botones de cajón a `calc(99vh - navbar × 2.5)`, justo donde estaba «Consultas». Con ese botón en la página, «Consultas» y WhatsApp van encima.
+4. **Cuentas de invitados.** `accept.php` usa `\core\user::create_user()` en vez de la obsoleta `user_create_user()` (MDL-82650). Nada más de nuestro código usa API obsoleta de 5.3, comprobado contra `deprecatedlib.php` y los atributos `#[deprecated]`.
+
+**Decisiones pendientes (Richi):**
+1. **Favicon:** ¿el de cada nivel? Habría que vaciar el del sitio en Apariencia → Logos.
+2. **Banner (FUN-25):** ¿instalarlo en el corte?
+3. **Botones flotantes en el examen:** en el móvil pasan por encima del enunciado. ¿Se ocultan en la página del intento?
 
 **Avisos de los upgrades:** solo el *callback* `after_config` de 4.3 en el
 salto a 4.5, esperado porque ese plugin es el viejo. En 5.3 ya es un *hook*.
