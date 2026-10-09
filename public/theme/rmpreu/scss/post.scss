@@ -1,0 +1,89 @@
+// theme_rmpreu post.scss — appended after the parent's rules.
+//
+// Red & Black (docs/design/themes/3_PREUNIV/DESIGN.md) is mostly a palette,
+// and the palette does most of the work. What variables cannot reach is the
+// spec's structural language: the red technical indicator rule on active
+// surfaces, the jet-black technical button, and the left accent that marks
+// the card you are working on.
+//
+// The parent paints these surfaces from inside `$richimath-skin`, so these
+// rules carry the same scope to win the cascade.
+
+$preu-red: $od-primary-container;
+$preu-red-bright: #ef4444;
+$preu-jet: $od-tertiary;
+$preu-rule: linear-gradient(90deg, $preu-red 0%, $preu-red-bright 100%);
+
+// Technical indicator rule: a 3px red edge at the top of the work surface,
+// the way the spec marks the active section of a study plan.
+#{$richimath-skin} #page.drawers .main-inner {
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 3px;
+        background: $preu-rule;
+    }
+}
+
+// Course and category cards carry the same rule, plus the left accent the
+// spec puts on the card in progress.
+#{$richimath-skin} {
+    .courses > .coursebox,
+    .course_category_tree .subcategories > .category {
+        position: relative;
+        border-left: 2px solid transparent;
+
+        &:hover,
+        &:focus-within {
+            border-left-color: $preu-red;
+        }
+    }
+
+    // Technical button: the spec reserves jet black for final submissions and
+    // master actions, with carmine kept for the primary call.
+    .btn-secondary {
+        background-color: $preu-jet;
+        border-color: $preu-jet;
+        color: $od-surface-lowest;
+
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: $od-on-surface-variant;
+            border-color: $od-on-surface-variant;
+            color: $od-surface-lowest;
+        }
+    }
+
+    // Brand capsule: outlined pill, light red wash, carmine ink. The quick
+    // access chips of the dashboard already have that shape, so only the
+    // colour changes — and the parent styles them one level deeper, so this
+    // has to reach as far to win.
+    .richimath-dashchips .richimath-dashchip {
+        border-color: #fca5a5;
+        background-color: #fef2f2;
+        color: $od-primary;
+
+        &:hover,
+        &:focus {
+            border-color: $preu-red;
+            background-color: #fee2e2;
+        }
+    }
+}
+
+// The exam flow (section F of the parent) reads carmine as its high-order
+// accent; the timer is the spec's live countdown bar, so it keeps the
+// monospaced tabular figures on jet black.
+body#page-mod-quiz-attempt,
+body#page-mod-quiz-summary {
+    #quiz-timer-wrapper {
+        background-color: $preu-jet;
+    }
+}

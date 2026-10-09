@@ -1,0 +1,67 @@
+// theme_rmprimaria palette — 01_elementary_school (Primary Moodle Odyssey).
+//
+// Tactile soft-materialism for ages 6-11: rounded Quicksand headings, chunky keys.
+//
+// Prepended to the parent's SCSS (see lib.php). Every token in
+// theme/richimath carries !default, so these values win and the ~3000 lines
+// of rules there follow them. Nothing else is copied.
+
+// Design-system roles.
+$od-primary: #004ccd;
+$od-primary-container: #0f62fe;
+// White rather than the spec's tint: this is the text ON the filled key
+// (active nav item, primary button), where the tint would drop under 4.5:1.
+$od-on-primary-container: #ffffff;
+$od-primary-shadow: #003da9;
+$od-secondary: #006d40;
+$od-secondary-container: #95f3b8;
+$od-tertiary: #9a3600;
+$od-tertiary-fixed: #ffdbce;
+$od-surface: #f9f9ff;
+$od-surface-lowest: #ffffff;
+$od-surface-low: #f0f3ff;
+$od-surface-container: #e7eeff;
+$od-surface-high: #dee8ff;
+$od-on-surface: #111c2c;
+$od-on-surface-variant: #424656;
+$od-outline: #737687;
+$od-outline-variant: #c3c6d8;
+$od-key-shadow: #cbd5e1;
+$od-body: 'Nunito Sans', sans-serif;
+$od-headline: 'Quicksand', 'Nunito Sans', sans-serif;
+
+// The legacy token names the older sections still read.
+$richimath-navy: #111c2c;
+$richimath-purple: #0f62fe;
+$richimath-purple-light: #95f3b8;
+$richimath-page-bg: #f9f9ff;
+$richimath-line: #c3c6d8;
+$richimath-ground: #f9f9ff;
+$richimath-navy-dark: #004ccd;
+$richimath-input-line: #c3c6d8;
+$richimath-hover-tint: #f0f3ff;
+$richimath-serif: 'Quicksand', 'Nunito Sans', sans-serif;
+$richimath-veil-light: #f9f9ff;
+$richimath-veil-solid: #f0f3ff;
+$richimath-course-accents: (#0f62fe, #d94f00, #6929c4, #0e7a4a, #da1e28, #005d5d);
+
+// Bootstrap, set before the Boost preset reads it.
+$primary: #004ccd;
+$success: #006d40;
+$info: #0f62fe;
+$body-bg: #f9f9ff;
+$body-color: #111c2c;
+$border-color: #c3c6d8;
+$link-color: #004ccd;
+$headings-color: #111c2c;
+$font-family-sans-serif: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$headings-font-family: 'Quicksand', 'Nunito Sans', sans-serif;
+$input-focus-border-color: #0f62fe;
+
+// Activity icon squares, by purpose.
+$activity-icon-assessment-bg: #0f62fe;
+$activity-icon-content-bg: #006d40;
+$activity-icon-collaboration-bg: #9a3600;
+$activity-icon-communication-bg: #004ccd;
+$activity-icon-administration-bg: #424656;
+$activity-icon-interactivecontent-bg: #9a3600;

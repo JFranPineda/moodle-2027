@@ -1,0 +1,95 @@
+// theme_rmpreu palette — Richi Math Pre-Universitario Red & Black
+// (docs/design/themes/3_PREUNIV/DESIGN.md).
+//
+// High-contrast modernism for admission prep: carmine red for everything that
+// demands attention, jet black for structure, sterile slate surfaces for long
+// problem-solving sessions.
+//
+// Prepended to the parent's SCSS (see lib.php). Every token in
+// theme/richimath carries !default, so these values win and the ~3500 lines
+// of rules there follow them. Nothing else is copied.
+
+// Design-system roles.
+$od-primary: #b70011;
+$od-primary-container: #dc2626;
+// White on the filled key: the spec's tint drops under 4.5:1 on carmine.
+$od-on-primary-container: #ffffff;
+$od-primary-shadow: #991b1b;
+// Emerald is reserved by the spec for mastery and correct answers, so it is
+// the level's secondary — never a second brand colour.
+$od-secondary: #059669;
+$od-secondary-container: #a7f3d0;
+// The jet the chrome is cut from; the spec's structural black.
+$od-tertiary: #0f172a;
+$od-tertiary-fixed: #e2e8f0;
+$od-surface: #f7f9fb;
+$od-surface-lowest: #ffffff;
+$od-surface-low: #f2f4f6;
+$od-surface-container: #eceef0;
+$od-surface-high: #e6e8ea;
+$od-on-surface: #191c1e;
+$od-on-surface-variant: #334155;
+// Slate 500 rather than the frontmatter's warm grey: this token also inks
+// placeholders and muted labels, where #94a3b8 would fall under 4.5:1.
+$od-outline: #64748b;
+$od-outline-variant: #cbd5e1;
+$od-key-shadow: #cbd5e1;
+$od-body: 'Inter', sans-serif;
+$od-headline: 'Outfit', 'Inter', sans-serif;
+// The exam flow reads carmine as its high-order accent, like the spec's
+// live-exam countdown bar.
+$od-exam-accent: #dc2626;
+
+// The legacy token names the older sections still read.
+$richimath-navy: #191c1e;
+$richimath-purple: #dc2626;
+$richimath-purple-light: #fca5a5;
+$richimath-page-bg: #f7f9fb;
+$richimath-line: #cbd5e1;
+$richimath-ground: #f7f9fb;
+$richimath-navy-dark: #991b1b;
+$richimath-input-line: #cbd5e1;
+$richimath-hover-tint: #f1f5f9;
+$richimath-serif: 'Outfit', 'Inter', sans-serif;
+$richimath-gold: #d97706;
+$richimath-veil-light: #f7f9fb;
+$richimath-veil-solid: #f1f5f9;
+// Ordered so the first three read apart (see the course grid and the category
+// cards): carmine, jet and gold. Carmine next to #991b1b was one red twice.
+$richimath-course-accents: (#dc2626, #0f172a, #d97706, #991b1b, #334155, #059669);
+
+// Bootstrap, set before the Boost preset reads it.
+$primary: #b70011;
+$secondary: #334155;
+$success: #059669;
+$info: #dc2626;
+$warning: #d97706;
+$danger: #b70011;
+$body-bg: #f7f9fb;
+$body-color: #191c1e;
+$border-color: #cbd5e1;
+$link-color: #b70011;
+$headings-color: #191c1e;
+$font-family-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$headings-font-family: 'Outfit', 'Inter', sans-serif;
+$input-focus-border-color: #dc2626;
+
+// Disciplined, semi-compact radii — the spec's roundedness 1: 4px on inputs
+// and data chrome, 8px on cards and modals, pills only for status.
+$border-radius: 0.5rem;
+$border-radius-sm: 0.25rem;
+$border-radius-lg: 0.5rem;
+$card-border-radius: 0.5rem;
+$input-border-radius: 0.25rem;
+$btn-border-radius: 0.5rem;
+$btn-border-radius-sm: 0.25rem;
+$btn-border-radius-lg: 0.5rem;
+$badge-border-radius: 9999px;
+
+// Activity icon squares, by purpose.
+$activity-icon-assessment-bg: #dc2626;
+$activity-icon-content-bg: #0f172a;
+$activity-icon-collaboration-bg: #334155;
+$activity-icon-communication-bg: #991b1b;
+$activity-icon-administration-bg: #64748b;
+$activity-icon-interactivecontent-bg: #059669;

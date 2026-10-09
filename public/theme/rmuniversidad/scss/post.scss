@@ -1,0 +1,188 @@
+// theme_rmuniversidad post.scss — appended after the parent's rules.
+//
+// Dynamic STEM Academy UI (docs/design/themes/4_UNIVERSIDAD/DESIGN.md) asks
+// for deep sapphire structure on "key navigation bars, hero headers and
+// dominant brand anchors", with electric blue as the interaction layer and
+// cyan for progress. So the anchor rail this level already had stays — it
+// just stops being Blackboard slate and becomes the brand's sapphire, and
+// its rows turn tactile again: rounded, filled on the page you are on.
+//
+// The parent paints the rail from inside `body.uses-drawers` in an lg media
+// query, so these rules carry the same weight to win the cascade.
+
+// The sapphire the rail is cut from, and the ink on it.
+// Sapphire top to deep sapphire bottom: the anchor the spec asks for, dark
+// enough that the electric-blue active pill still separates from it.
+$nexus-rail: $od-primary;
+$nexus-rail-top: $od-primary-container;
+$nexus-rail-deep: $od-primary-shadow;
+$nexus-rail-ink: rgba(255, 255, 255, 0.85);
+$nexus-rail-ink-strong: #ffffff;
+$nexus-rail-wash: rgba(255, 255, 255, 0.10);
+$nexus-rail-line: rgba(255, 255, 255, 0.16);
+// The active row is the brightest thing on the rail — the mock fills it with
+// sapphire on a white bar, so a dark bar inverts it: a white pill with
+// sapphire ink. Electric blue on the rail would read at 3.7:1, under AA.
+$nexus-rail-active: $od-surface-lowest;
+$nexus-rail-active-ink: $od-primary-container;
+$nexus-rail-accent: $od-secondary-container;
+$nexus-rail-radius: 0.75rem;
+
+@include media-breakpoint-up(lg) {
+    body.uses-drawers:not(.pagelayout-login) {
+        .richimath-sidebar {
+            background-color: $nexus-rail;
+            background-image: linear-gradient(180deg, $nexus-rail-top 0%, $nexus-rail 55%, $nexus-rail-deep 100%);
+            border-right: 0;
+            box-shadow: none;
+            color: $nexus-rail-ink-strong;
+        }
+
+        .richimath-sidebar-brand,
+        .richimath-sidebar-user .richimath-sidebar-userlink {
+            color: $nexus-rail-ink-strong;
+        }
+
+        .richimath-sidebar-user {
+            border-bottom-color: $nexus-rail-line;
+
+            .nav-link,
+            .usertext,
+            .login,
+            .login a {
+                color: $nexus-rail-ink-strong;
+            }
+
+            .richimath-sidebar-userlink:hover,
+            .richimath-sidebar-userlink:focus {
+                color: $nexus-rail-ink-strong;
+            }
+        }
+
+        .richimath-sidebar-divider {
+            border-top-color: $nexus-rail-line;
+        }
+
+        // Quick-access dock rows: rounded and tactile, hover washes the
+        // surface, the page you are on is a filled electric-blue pill with a
+        // cyan spark on its leading edge.
+        .richimath-sidebar-link {
+            margin: 0.15rem 0.5rem;
+            padding: 0.6rem 0.85rem;
+            border-radius: $nexus-rail-radius;
+            border-left: 3px solid transparent;
+            color: $nexus-rail-ink;
+
+            > .fa {
+                color: $nexus-rail-ink;
+            }
+
+            &:hover,
+            &:focus {
+                background-color: $nexus-rail-wash;
+                color: $nexus-rail-ink-strong;
+
+                > .fa {
+                    color: $nexus-rail-accent;
+                }
+            }
+
+            &.active {
+                background-color: $nexus-rail-active;
+                border-left-color: $nexus-rail-accent;
+                box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.55);
+                color: $nexus-rail-active-ink;
+
+                > .fa {
+                    color: $nexus-rail-active-ink;
+                }
+            }
+        }
+
+        .richimath-sidebar-bottom {
+            border-top-color: $nexus-rail-line;
+
+            // 5.3: the visible text is the switch component's own span.
+            .editmode-switch-form label,
+            .editmode-switch-form .mds-switch-label {
+                color: $nexus-rail-ink;
+            }
+        }
+    }
+
+    // Canvas variant: 88px has no room for a leading edge, so the cyan spark
+    // moves under the icon and the pill keeps its corners.
+    body.uses-drawers.richimath-sidebar-compact:not(.pagelayout-login) {
+        .richimath-sidebar-link {
+            margin: 0.15rem 0.35rem;
+            border-left-width: 0;
+            border-bottom: 3px solid transparent;
+
+            &.active {
+                border-bottom-color: $nexus-rail-accent;
+            }
+        }
+    }
+}
+
+// The phone drawer is the same rail: it would be odd for the navigation to
+// change colour with the width of the screen.
+body:not(.pagelayout-login) #theme_boost-drawers-primary {
+    background-color: $nexus-rail;
+    border-right: 0;
+
+    .drawerheader {
+        border-bottom-color: $nexus-rail-line;
+
+        .sitename {
+            color: $nexus-rail-ink-strong;
+        }
+    }
+
+    .drawertoggle {
+        color: $nexus-rail-ink-strong;
+
+        &:hover,
+        &:focus {
+            background-color: $nexus-rail-wash;
+            color: $nexus-rail-ink-strong;
+        }
+    }
+
+    .drawercontent .list-group .list-group-item {
+        margin: 0.15rem 0.5rem;
+        border-radius: $nexus-rail-radius;
+        border-left: 3px solid transparent;
+        color: $nexus-rail-ink;
+
+        &:hover,
+        &:focus {
+            background-color: $nexus-rail-wash;
+            color: $nexus-rail-ink-strong;
+        }
+
+        &.active {
+            background-color: $nexus-rail-active;
+            border-left-color: $nexus-rail-accent;
+            box-shadow: none;
+            color: $nexus-rail-active-ink;
+        }
+    }
+}
+
+// Sapphire primary action: the gradient face and the lift the spec asks for.
+#{$richimath-skin} .btn-primary {
+    background-image: linear-gradient(135deg, $od-primary-container 0%, $od-primary 100%);
+    border-color: $od-primary;
+
+    &:hover,
+    &:focus {
+        box-shadow: 0 10px 22px -10px rgba($od-primary-container, 0.9);
+        transform: translateY(-1px);
+    }
+}
+
+// Progress bars are the gamification layer: cyan into electric blue.
+#{$richimath-skin} .progress-bar {
+    background-image: linear-gradient(90deg, $od-secondary-container 0%, $od-primary-container 100%);
+}

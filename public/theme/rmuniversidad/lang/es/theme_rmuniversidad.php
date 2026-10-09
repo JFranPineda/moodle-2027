@@ -15,19 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Richimath theme.
- *
- * @package    theme_richimath
- * @copyright  2026 Richi Math
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   theme_rmuniversidad
+ * @copyright 2026 Richi Math
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// This line protects the file from being accessed by a URL directly.
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026100903;
-$plugin->requires = 2026100500;
-$plugin->component = 'theme_richimath';
-$plugin->release = '0.1.0';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = ['theme_boost' => 2026100500];
+$string['pluginname'] = 'Richi Universidad';
+$string['choosereadme'] = 'Tema de Richi Math para el nivel 04_university (Academic Nexus). Hijo de Richimath: mismos layouts y componentes, con la paleta y la tipografía de este nivel.';
+$string['configtitle'] = 'Richi Universidad';
+$string['region-side-pre'] = 'Right';
+$string['privacy:metadata'] = 'The Richi Universidad theme does not store any personal data.';

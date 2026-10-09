@@ -1019,7 +1019,9 @@ body:not(.pagelayout-login) .navbar.fixed-top {
             color: $od-on-surface;
         }
 
-        .editmode-switch-form label {
+        // 5.3: the visible text is the switch component's own span.
+        .editmode-switch-form label,
+        .editmode-switch-form .mds-switch-label {
             color: $od-on-surface;
         }
 
@@ -1461,7 +1463,8 @@ body.path-calendar .maincalendar {
             .editmode-switch-form {
                 padding: 0.25rem 1rem 0.5rem;
 
-                label {
+                label,
+                .mds-switch-label {
                     color: $od-on-surface-variant;
                 }
             }

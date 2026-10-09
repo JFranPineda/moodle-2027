@@ -15,19 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Richimath theme.
+ * Richi Secundaria callbacks.
  *
- * @package    theme_richimath
- * @copyright  2026 Richi Math
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   theme_rmsecundaria
+ * @copyright 2026 Richi Math
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// This line protects the file from being accessed by a URL directly.
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026100903;
-$plugin->requires = 2026100500;
-$plugin->component = 'theme_richimath';
-$plugin->release = '0.1.0';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = ['theme_boost' => 2026100500];
+/**
+ * The parent's SCSS with this level's palette prepended.
+ *
+ * @param theme_config $theme The theme config object.
+ * @return string
+ */
+function theme_rmsecundaria_get_main_scss_content($theme) {
+    global $CFG;
+
+    return theme_richimath_get_main_scss_content(
+        $theme,
+        file_get_contents($CFG->dirroot . '/theme/rmsecundaria/scss/palette.scss')
+    );
+}

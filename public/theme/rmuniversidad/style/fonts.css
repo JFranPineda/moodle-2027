@@ -1,0 +1,7 @@
+/* Webfonts for Dynamic STEM Academy UI (docs/design/themes/4_UNIVERSIDAD).
+   A plain sheet, not an SCSS @import: scssphp resolves @import as a file path
+   and refuses a remote URL. */
+@import url("https://fonts.googleapis.com/css?family=Outfit:500,600,700,800|Plus+Jakarta+Sans:400,500,600,700,800&display=swap");
+/* JetBrains Mono is the technical layer: timers, identifiers, metrics and
+   metadata. Never used for prose. */
+@import url("https://fonts.googleapis.com/css?family=JetBrains+Mono:400,500,600,700&display=swap");

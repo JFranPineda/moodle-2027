@@ -1,0 +1,6 @@
+/* Webfonts for 01_elementary_school (Primary Moodle Odyssey). A plain sheet, not an SCSS @import: scssphp
+   resolves @import as a file path and refuses a remote URL. */
+@import url("https://fonts.googleapis.com/css?family=Quicksand:500,600,700|Nunito+Sans:400,600,700,800&display=swap");
+/* JetBrains Mono is the technical layer both docs/ux_pro design systems share:
+   timers, identifiers, metadata and formulas. Never used for prose. */
+@import url("https://fonts.googleapis.com/css?family=JetBrains+Mono:400,500,600,700&display=swap");

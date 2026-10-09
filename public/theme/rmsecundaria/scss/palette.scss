@@ -1,0 +1,67 @@
+// theme_rmsecundaria palette — 02_high_school (EduMoodle Campus Secundaria).
+//
+// Modern academic neo-SaaS for ages 12-18: crisp cards, energetic accents, no toys.
+//
+// Prepended to the parent's SCSS (see lib.php). Every token in
+// theme/richimath carries !default, so these values win and the ~3000 lines
+// of rules there follow them. Nothing else is copied.
+
+// Design-system roles.
+$od-primary: #0037b0;
+$od-primary-container: #1d4ed8;
+// White rather than the spec's tint: this is the text ON the filled key
+// (active nav item, primary button), where the tint would drop under 4.5:1.
+$od-on-primary-container: #ffffff;
+$od-primary-shadow: #0037b0;
+$od-secondary: #00687a;
+$od-secondary-container: #57dffe;
+$od-tertiary: #2c2abc;
+$od-tertiary-fixed: #dfe0ff;
+$od-surface: #faf8ff;
+$od-surface-lowest: #ffffff;
+$od-surface-low: #f2f3ff;
+$od-surface-container: #eaedff;
+$od-surface-high: #e2e7ff;
+$od-on-surface: #131b2e;
+$od-on-surface-variant: #434655;
+$od-outline: #747686;
+$od-outline-variant: #c4c5d7;
+$od-key-shadow: #cbd0e6;
+$od-body: 'Inter', sans-serif;
+$od-headline: 'Plus Jakarta Sans', 'Inter', sans-serif;
+
+// The legacy token names the older sections still read.
+$richimath-navy: #131b2e;
+$richimath-purple: #1d4ed8;
+$richimath-purple-light: #57dffe;
+$richimath-page-bg: #faf8ff;
+$richimath-line: #c4c5d7;
+$richimath-ground: #faf8ff;
+$richimath-navy-dark: #0037b0;
+$richimath-input-line: #c4c5d7;
+$richimath-hover-tint: #f2f3ff;
+$richimath-serif: 'Plus Jakarta Sans', 'Inter', sans-serif;
+$richimath-veil-light: #faf8ff;
+$richimath-veil-solid: #f2f3ff;
+$richimath-course-accents: (#1d4ed8, #b45309, #2c2abc, #00687a, #ba1a1a, #0f766e);
+
+// Bootstrap, set before the Boost preset reads it.
+$primary: #0037b0;
+$success: #00687a;
+$info: #1d4ed8;
+$body-bg: #faf8ff;
+$body-color: #131b2e;
+$border-color: #c4c5d7;
+$link-color: #0037b0;
+$headings-color: #131b2e;
+$font-family-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$headings-font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+$input-focus-border-color: #1d4ed8;
+
+// Activity icon squares, by purpose.
+$activity-icon-assessment-bg: #1d4ed8;
+$activity-icon-content-bg: #00687a;
+$activity-icon-collaboration-bg: #2c2abc;
+$activity-icon-communication-bg: #0037b0;
+$activity-icon-administration-bg: #434655;
+$activity-icon-interactivecontent-bg: #2c2abc;

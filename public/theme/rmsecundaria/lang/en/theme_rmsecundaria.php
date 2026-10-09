@@ -15,19 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Richimath theme.
- *
- * @package    theme_richimath
- * @copyright  2026 Richi Math
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   theme_rmsecundaria
+ * @copyright 2026 Richi Math
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// This line protects the file from being accessed by a URL directly.
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026100903;
-$plugin->requires = 2026100500;
-$plugin->component = 'theme_richimath';
-$plugin->release = '0.1.0';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = ['theme_boost' => 2026100500];
+$string['pluginname'] = 'Richi Secundaria';
+$string['choosereadme'] = 'Richi Math theme for the 02_high_school (EduMoodle Campus Secundaria) level. A child of Richimath: same layouts and components, this level\'s palette and typography.';
+$string['configtitle'] = 'Richi Secundaria';
+$string['region-side-pre'] = 'Right';
+$string['privacy:metadata'] = 'The Richi Secundaria theme does not store any personal data.';

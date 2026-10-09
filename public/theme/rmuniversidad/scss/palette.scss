@@ -1,0 +1,93 @@
+// theme_rmuniversidad palette — Dynamic STEM Academy UI
+// (docs/design/themes/4_UNIVERSIDAD/DESIGN.md).
+//
+// Modern corporate EdTech: sapphire structure, electric blue interaction,
+// cyan for progress and achievement, on a clean slate canvas. Rounded and
+// tactile rather than severe — energetic enough to dispel maths anxiety.
+//
+// Prepended to the parent's SCSS (see lib.php). Every token in
+// theme/richimath carries !default, so these values win and the ~3500 lines
+// of rules there follow them. Nothing else is copied.
+
+// Design-system roles.
+$od-primary: #00288e;
+$od-primary-container: #1e40af;
+// White on the filled key: the spec's #a8b8ff tint is a hover ink, not body
+// text, and would drop under 4.5:1 on sapphire.
+$od-on-primary-container: #ffffff;
+$od-primary-shadow: #001453;
+$od-secondary: #00687a;
+// Cyan spark: progress, streaks, badges and the "join the class" action.
+$od-secondary-container: #06b6d4;
+$od-tertiary: #003272;
+$od-tertiary-fixed: #d8e2ff;
+$od-surface: #faf8ff;
+$od-surface-lowest: #ffffff;
+$od-surface-low: #f2f3ff;
+$od-surface-container: #eaedff;
+$od-surface-high: #e2e7ff;
+$od-on-surface: #131b2e;
+$od-on-surface-variant: #444653;
+$od-outline: #757684;
+$od-outline-variant: #c4c5d5;
+$od-key-shadow: #c9d2e4;
+$od-body: 'Plus Jakarta Sans', 'Inter', sans-serif;
+$od-headline: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+// Electric blue is the interaction layer: hovers, active states, and what
+// reads on the obsidian chrome of the exam flow.
+$od-electric: #3b82f6;
+$od-exam-accent: $od-electric;
+
+// The legacy token names the older sections still read.
+$richimath-navy: #131b2e;
+$richimath-purple: #1e40af;
+$richimath-purple-light: #93c5fd;
+$richimath-page-bg: #faf8ff;
+$richimath-line: #c4c5d5;
+$richimath-ground: #faf8ff;
+$richimath-navy-dark: #00288e;
+$richimath-input-line: #cbd5e1;
+$richimath-hover-tint: #eff6ff;
+$richimath-serif: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+$richimath-gold: #f59e0b;
+$richimath-veil-light: #faf8ff;
+$richimath-veil-solid: #f2f3ff;
+// Ordered so the first three read apart: they are what the course grid and
+// the category cards put side by side, and sapphire-electric-cyan in a row
+// was three shades of the same blue.
+$richimath-course-accents: (#1e40af, #06b6d4, #f59e0b, #3b82f6, #10b981, #ef4444);
+
+// Bootstrap, set before the Boost preset reads it.
+$primary: #1e40af;
+$secondary: #444653;
+$success: #10b981;
+$info: #3b82f6;
+$warning: #f59e0b;
+$danger: #ef4444;
+$body-bg: #faf8ff;
+$body-color: #131b2e;
+$border-color: #c4c5d5;
+$link-color: #1e40af;
+$headings-color: #131b2e;
+$font-family-sans-serif: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$headings-font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+$input-focus-border-color: #3b82f6;
+
+// Rounded level 2: 12px on controls, 16px on containers, pills for status.
+$border-radius: 0.75rem;
+$border-radius-sm: 0.5rem;
+$border-radius-lg: 1rem;
+$card-border-radius: 1rem;
+$input-border-radius: 0.75rem;
+$btn-border-radius: 0.75rem;
+$btn-border-radius-sm: 0.5rem;
+$btn-border-radius-lg: 0.75rem;
+$badge-border-radius: 9999px;
+
+// Activity icon squares, by purpose.
+$activity-icon-assessment-bg: #1e40af;
+$activity-icon-content-bg: #00687a;
+$activity-icon-collaboration-bg: #3b82f6;
+$activity-icon-communication-bg: #00288e;
+$activity-icon-administration-bg: #444653;
+$activity-icon-interactivecontent-bg: #06b6d4;
