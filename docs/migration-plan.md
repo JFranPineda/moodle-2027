@@ -172,6 +172,9 @@ repite entero.
 
 ## 6. Fase 3 — Preparar el servidor (en paralelo a la Fase 2)
 
+Guía paso a paso (inventario, preparación sin corte y ensayo general en el
+servidor con vuelta al snapshot): [migration/phase-3-server.md](migration/phase-3-server.md).
+
 ### 6.1 Inventario de producción (solo lectura)
 Antes de tocar nada, en Contabo:
 ```bash
@@ -243,8 +246,8 @@ Plantilla de la ventana (horas de Lima):
 | T+0:30 | Código **4.5.x** + plugins actuales → `upgrade.php` | Restaurar snapshot |
 | T+? | **PHP 8.3** (cambiar módulo de Apache) + **MySQL 8.0 → 8.4** | Volver a 8.2 / restaurar snapshot |
 | T+? | Código **moodle-2027** (5.3 + plugins portados); `DocumentRoot` → `public/`; `config.php` | Restaurar snapshot |
-| T+? | `upgrade.php` → 5.3 (instala el paquete `es` de 5.3: el VPS necesita salida a internet); `adhoc_task.php --execute` (CSS de los temas y `mod_qbank`; **no purgar después**, o el CSS se compila dos veces); personalización de idioma desde `assets/customlang/es`; `scripts/check-db-settings.php` en verde | Restaurar snapshot |
-| T+? | **Pruebas de humo** (abajo), con mantenimiento todavía puesto (como admin) | Restaurar snapshot |
+| T+? | `upgrade.php` → 5.3 (instala el paquete `es` de 5.3: el VPS necesita salida a internet); `adhoc_task.php --execute` (CSS de los temas y `mod_qbank`; **no purgar después**, o el CSS se compila dos veces); personalización de idioma desde `assets/customlang/es`; `scripts/check-db-settings.php` en verde. **Antes de las tareas adhoc**, `maintenance.php --enableold` y borrar `climaintenance.html`: `adhoc_task.php` no corre en mantenimiento por CLI | Restaurar snapshot |
+| T+? | **Pruebas de humo** (abajo), en el mantenimiento a medias (solo entran los admins); la 1 y la 8, al quitarlo | Restaurar snapshot |
 | T+? | Quitar mantenimiento; volver a encender cron | — |
 
 El ensayo con la copia real lo hace todo, de la collation a la

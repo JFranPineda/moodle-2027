@@ -21,7 +21,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
 | 1 Portar código | ✅ 2026-10-09 — 23/23 MIG. MIG-27 = iconos de Moodle; MIG-26 = lista de usuarios de 5.3 + `core_admin/userlist` = «Lista de usuarios» (customlang) |
 | 2 Ensayo con copia de producción | ✅ 2026-10-10 — ensayo 1 (a mano, 4 arreglos) · ensayo 2 (copia 2, 51/51 auto; 37 cadenas sin traducir → customlang) · ensayo 3 (misma copia, 52/52 auto, sin arreglos: primer verde limpio) · ensayo 4 (copia 3, 52/52 con BBB, sección E toda OK, 9,8 min: segundo verde) — ver [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md) |
-| 3 Preparar servidor | — |
+| 3 Preparar servidor | 🟡 guía lista: [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md) (A inventario → B preparar sin corte → C ensayo general en el VPS con vuelta al snapshot). Pendiente: bloque A |
 | 4 Corte | — |
 | 5 Después | — |
 
@@ -296,3 +296,25 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
   visibles en `assets/customlang/es/` (quiz, moodle, forum, block_timeline,
   h5pactivity, courseformat). Antes del corte, repetir el recuento
   (`docs/migration/phase-2-production-copy.md` §5).
+
+## Fase 3 — trampas sabidas antes de tocar el servidor (2026-10-10)
+
+1. **`adhoc_task.php` no corre en mantenimiento por CLI** («cron execution
+   suspended»), y el mantenimiento por CLI tampoco deja entrar al admin por la
+   web. Tras el upgrade: `maintenance.php --enableold` y DESPUÉS borrar
+   `climaintenance.html` (modo a medias). El ensayo en Docker no lo veía: no
+   activaba el mantenimiento.
+2. **Instalar `php8.3-cli` cambia `/usr/bin/php` a 8.3** y 4.3 rechaza 8.3
+   (cron y `deploy-contabo.sh` usan `php`): `update-alternatives --set php
+   /usr/bin/php8.2` en el acto.
+3. **Repositorio de Oracle añadido = `apt upgrade` subiría MySQL a 8.4** con 4.3
+   en vivo: paquetes `mysql-*` retenidos (`apt-mark hold`) hasta la noche.
+4. **Nunca arrancar código 4.5/5.3 contra la BD de producción antes del corte**
+   (ni `cfg.php`): escribe cachés de otra versión en `moodledata`.
+5. **Disposición del corte**: 4.3 → `/var/www/moodle43`, 5.3 ocupa
+   `/var/www/html` (deploy, cron y docs no cambian de ruta) y el vhost solo
+   cambia `DocumentRoot` a `public/`. Los ficheros del vhost conservan nombre
+   (certbot).
+6. `moodle-2027` en GitHub es **público** (`JFranPineda/moodle-2027`): el VPS lo
+   clona por HTTPS sin credenciales.
+
