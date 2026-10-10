@@ -21,7 +21,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
 | 1 Portar código | ✅ 2026-10-09 — 23/23 MIG. MIG-27 = iconos de Moodle; MIG-26 = lista de usuarios de 5.3 + `core_admin/userlist` = «Lista de usuarios» (customlang) |
 | 2 Ensayo con copia de producción | ✅ 2026-10-10 — ensayo 1 (a mano, 4 arreglos) · ensayo 2 (copia 2, 51/51 auto; 37 cadenas sin traducir → customlang) · ensayo 3 (misma copia, 52/52 auto, sin arreglos: primer verde limpio) · ensayo 4 (copia 3, 52/52 con BBB, sección E toda OK, 9,8 min: segundo verde) — ver [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md) |
-| 3 Preparar servidor | 🟡 guía lista: [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md) (A inventario → B preparar sin corte → C ensayo general en el VPS con vuelta al snapshot). Pendiente: bloque A |
+| 3 Preparar servidor | 🟡 guía: [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md) (A inventario → B preparar sin corte → C ensayo general en el VPS con vuelta al snapshot). A ✅ 2026-10-10 (resultado en la §2 de la guía); siguiente: B |
 | 4 Corte | — |
 | 5 Después | — |
 
@@ -190,8 +190,8 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    (líneas 18 y 30, repetida) y las 5 tablas `local_richimath_*` estaban en
    `utf8mb4_general_ci`; las 483 de core, en `unicode_ci`. Hecho con `sed` +
    `admin/cli/mysql_collation.php` (0 errores, 488/488, esquema OK). Respaldo:
-   `/root/moodle-backups/pre-collation-2026-10-09-1931.sql.gz` (borrar en unos
-   días). Las copias anteriores a esa hora aún necesitan el paso del ensayo.
+   `/root/moodle-backups/pre-collation-2026-10-09-1931.sql.gz` (ya borrado:
+   carpeta vacía el 2026-10-10). Las copias anteriores a esa hora aún necesitan el paso del ensayo.
 10. **Producción, BD**: usuario `moodleuser` con `caching_sha2_password`
     (MySQL 8.4 sin `mysql_native_password` no le afecta); `root` por
     `auth_socket`. VPS en **Ubuntu 24.04**, que trae MySQL 8.0: el 8.4 viene
@@ -317,4 +317,13 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    (certbot).
 6. `moodle-2027` en GitHub es **público** (`JFranPineda/moodle-2027`): el VPS lo
    clona por HTTPS sin credenciales.
+7. **Inventario del VPS (2026-10-10)**: 4 vCPU / 7,8 GB. PHP 8.3 YA instalado
+   (Ubuntu `8.3.6-0ubuntu0.24.04.11`, mismas extensiones que el 8.2 de sury, más
+   `ldap`; `mod-php8.3` apagado), y un 8.4 de sury sin usar. `php` → 8.2 en
+   modo **manual**. Valores PHP propios en `99-richimath.ini` (copiarlo a 8.3).
+   `apache2.conf`: `/var/www/` con `AllowOverride None` → el permiso del
+   `.htaccess` vive en los vhosts. MySQL 8.0.46 sin opciones que 8.4 elimine.
+   `config.php` de prod con dos bloques (XAMPP + servidor) bajo un `if`.
+8. **`grep -r` se salta los enlaces simbólicos** que encuentra al recorrer: los
+   vhosts de `sites-enabled` no salieron en el inventario. Usar `grep -R`.
 

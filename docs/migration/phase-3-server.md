@@ -69,7 +69,7 @@ echo "-- 8.2 apache:"; for k in memory_limit upload_max_filesize post_max_size m
 echo "-- ini propios:"; find /etc/php/8.2/*/conf.d -type f
 echo "== apache"; apache2ctl -v | head -1; a2query -m | grep -E 'php|mpm|rewrite|ssl'
 ls -l /etc/apache2/sites-enabled/
-grep -rnE 'DocumentRoot|<Directory|AllowOverride|ServerName|ServerAlias' /etc/apache2/sites-enabled/ /etc/apache2/apache2.conf | grep -v ':\s*#'
+grep -RnE 'DocumentRoot|<Directory|AllowOverride|ServerName|ServerAlias' /etc/apache2/sites-enabled/ /etc/apache2/apache2.conf | grep -v ':\s*#'
 echo "== mysql"; mysql --version; dpkg -l | awk '/^ii/ && $2 ~ /mysql/ {print $2, $3}'; apt-mark showhold
 grep -rnvE '^\s*([#;!]|$)' /etc/mysql/ --exclude=debian.cnf
 mysql -e "SELECT user, host, plugin FROM mysql.user"
@@ -103,6 +103,23 @@ Pegar la salida entera. Lo que se espera:
 | Salida a internet | `200` en las cuatro | Sin `download.moodle.org`, los textos nuevos de 4.4+ saldrían en inglés |
 | Disco | ≥ 3 GB libres en `/var` | — |
 
+`grep -R` y no `-r`: los vhosts de `sites-enabled` son enlaces simbólicos, y
+`grep -r` se los salta sin avisar.
+
+### Resultado (2026-10-10)
+
+| Dato | Encontrado |
+|---|---|
+| Máquina | Ubuntu 24.04.4, 4 vCPU, 7,8 GB de RAM, 88 GB libres |
+| PHP | 8.2 de sury (en uso). **8.3 ya instalado**, del archivo de Ubuntu (`8.3.6-0ubuntu0.24.04.11`), con las mismas extensiones que el 8.2 más `ldap`, y `libapache2-mod-php8.3` apagado. También hay un 8.4 de sury, sin usar. `php` → 8.2 en modo **manual**: instalar paquetes ya no lo cambia |
+| `php.ini` | Los valores propios están en `/etc/php/8.2/apache2/conf.d/99-richimath.ini`: `memory_limit` 512M, `upload_max_filesize` 200M, `post_max_size` 210M, `max_execution_time` 0, `max_input_vars` 5000 |
+| Apache | 2.4.58, `mpm_prefork` + `php8.2`, `ssl`, `rewrite`. Vhosts `000-default.conf` y `000-default-le-ssl.conf`. `apache2.conf` deja `/var/www/` con `AllowOverride None`: el permiso del `.htaccess` está en los vhosts |
+| MySQL | 8.0.46 de Ubuntu (6 paquetes `mysql-*`). La configuración no usa ninguna opción que 8.4 elimine. Ningún usuario con `mysql_native_password` |
+| Moodle | `3c044eae`, árbol limpio, tema `richimath`, `/var/www/html` en `safe.directory`. El `config.php` conserva dos bloques (XAMPP y servidor) que elige un `if`; el `require` de `lib/setup.php` va fuera, en la línea 40 |
+| Cron | `* * * * * /usr/bin/php /var/www/html/admin/cli/cron.php` en el crontab de `www-data` |
+| Salida a internet | `200` en las cuatro |
+| Respaldos | `/root/moodle-backups/` vacío: los de la collation ya están borrados |
+
 ---
 
 ## 3. Bloque B — Preparar sin corte
@@ -121,29 +138,33 @@ si no da lo esperado, **parar** y pegar la salida.
    cd /root/phase3
    ```
 
-### B2. PHP 8.3 al lado del 8.2
+### B2. PHP 8.3: ya instalado, solo comprobar
 
-Mismos paquetes que tiene el 8.2, con el nombre del 8.3:
+El inventario encontró el 8.3 de Ubuntu ya instalado, con las mismas
+extensiones que el 8.2. No hay que instalar nada. Solo poner al día sus parches
+de seguridad, sin tocar nada más:
 
 ```bash
 apt update
-PKGS=$(dpkg -l | awk '/^ii/ && $2 ~ /php8\.2/ {print $2}' | sed 's/8\.2/8.3/')
-echo $PKGS
-apt install -y $PKGS
+apt list --upgradable 2>/dev/null | grep -E 'php8\.3|mod-php8\.3'     # si sale algo:
+apt install --only-upgrade -y 'php8.3*' libapache2-mod-php8.3
 ```
 
-**Justo después**, devolver `php` al 8.2 (instalar 8.3 lo cambia solo):
+Después:
 
 ```bash
-update-alternatives --set php /usr/bin/php8.2
-php -v | head -1                          # PHP 8.2.x
+php -v | head -1                          # PHP 8.2.x (php sigue en modo manual)
+php8.3 -v | head -1                       # PHP 8.3.6 (Ubuntu)
 a2query -m | grep php                     # solo php8.2
 curl -sS -o /dev/null -w '%{http_code}\n' https://richiacademy.com/   # 200
-sudo -u www-data php /var/www/html/admin/cli/cfg.php --name=release   # 4.3.12
 ```
 
 Si `a2query` muestra `php8.3` activo:
 `a2dismod php8.3 && a2enmod php8.2 && systemctl restart apache2`.
+
+El ensayo en Docker usó el último 8.3 de la imagen de Moodle; aquí es la
+compilación de Ubuntu, con sus parches de seguridad. Moodle 5.3 pide 8.3.0 o
+superior, y el bloque C lo prueba con este binario.
 
 Extensiones que exige 5.3 (`public/admin/environment.xml`):
 
@@ -156,28 +177,24 @@ done; echo "fin de la lista"
 
 Si falta alguna: `apt install -y php8.3-<nombre>` y repetir.
 
-### B3. `php.ini` del 8.3 con los valores del 8.2
+### B3. `php.ini` del 8.3: el mismo fichero propio que el 8.2
+
+Los valores de Richi Math viven en un solo fichero, `99-richimath.ini`. Se
+copia tal cual:
 
 ```bash
+cat /etc/php/8.2/apache2/conf.d/99-richimath.ini
+ls /etc/php/8.3/apache2/conf.d/ | grep -v '^[0-9][0-9]-'           # ¿ya hay alguno propio en 8.3?
+cp -p /etc/php/8.2/apache2/conf.d/99-richimath.ini /etc/php/8.3/apache2/conf.d/
 ini82() { PHP_INI_SCAN_DIR=/etc/php/8.2/apache2/conf.d php8.2 -c /etc/php/8.2/apache2/php.ini -r "echo ini_get('$1');"; }
 ini83() { PHP_INI_SCAN_DIR=/etc/php/8.3/apache2/conf.d php8.3 -c /etc/php/8.3/apache2/php.ini -r "echo ini_get('$1');"; }
-INI=/etc/php/8.3/apache2/conf.d/99-moodle.ini
-{
-  echo '; Moodle 5.3: same values as PHP 8.2 (apache2), max_input_vars >= 5000.'
-  for k in memory_limit upload_max_filesize post_max_size max_execution_time max_input_time date.timezone; do
-    v=$(ini82 $k); [ -n "$v" ] && echo "$k = $v"
-  done
-  v=$(ini82 max_input_vars); echo "max_input_vars = $(( v > 5000 ? v : 5000 ))"
-} > $INI
-cat $INI
-for k in memory_limit upload_max_filesize post_max_size max_execution_time max_input_vars; do
+for k in memory_limit upload_max_filesize post_max_size max_execution_time max_input_time max_input_vars date.timezone opcache.enable; do
   echo "$k  8.2=$(ini82 $k)  8.3=$(ini83 $k)"
 done
 ```
 
-Las dos columnas tienen que coincidir, salvo `max_input_vars`, que en 8.3 es
-≥ 5000. El módulo 8.3 está apagado: este fichero no afecta al sitio hasta el
-corte.
+Las dos columnas tienen que coincidir (`max_input_vars` = 5000). El módulo 8.3
+está apagado: el fichero no afecta al sitio hasta el corte.
 
 ### B4. MySQL 8.4: repositorio retenido y comprobador oficial
 
@@ -278,6 +295,15 @@ En el corte, el código 4.3 pasa a `/var/www/moodle43` y el 5.3 ocupa
 `/var/www/html`. El script de despliegue, el cron y la documentación siguen
 apuntando a la misma ruta, y solo cambia el `DocumentRoot` a `public/`. Los
 ficheros conservan su nombre, así que certbot no nota nada.
+
+Primero ver dónde está hoy el permiso del `.htaccess` (el inventario no lo
+mostró: `apache2.conf` deja `/var/www/` con `AllowOverride None`):
+
+```bash
+grep -RnE 'DocumentRoot|<Directory|AllowOverride|Rewrite|ServerName|ServerAlias' /etc/apache2/sites-enabled/
+```
+
+Después, los vhosts de 5.3:
 
 ```bash
 mkdir -p /root/phase3/apache43 /root/phase3/apache53
@@ -563,5 +589,4 @@ Con la columna del servidor se fijan los `T+?` de la plantilla del corte
 - **FUN-23**: la primera vez que haga falta desplegar sobre 5.3,
   `bash /var/www/html/scripts/deploy-contabo.sh`. No se prueba en el bloque C,
   porque termina quitando el mantenimiento.
-- **Fase 5:** retirar PHP 8.2 y `/var/www/moodle43` tras dos semanas estables;
-  borrar `/root/moodle-backups/pre-collation-*`.
+- **Fase 5:** retirar PHP 8.2 y `/var/www/moodle43` tras dos semanas estables.

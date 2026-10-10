@@ -75,7 +75,7 @@ borrar el ensayo y la copia de producción (`docs/migration/phase-2-production-c
 | Qué | Cómo | Resultado |
 |---|---|---|
 | **Collation unificada** | En `config.php`, `dbcollation` pasó de `utf8mb4_general_ci` a `utf8mb4_unicode_ci` (está repetido en las líneas 18 y 30). Después, `admin/cli/mysql_collation.php --collation=utf8mb4_unicode_ci`, con ~1 min de mantenimiento | `Converted: 5, errors: 0`; 488/488 tablas en `unicode_ci`; esquema OK |
-| Respaldo previo a la collation | `/root/moodle-backups/pre-collation-2026-10-09-1931.sql.gz` y `config.php.pre-collation-…` | **Borrar en unos días** (lleva datos de alumnos) |
+| Respaldo previo a la collation | `/root/moodle-backups/pre-collation-2026-10-09-1931.sql.gz` y `config.php.pre-collation-…` | Borrado (carpeta vacía en el inventario del 2026-10-10) |
 | **Acceso de invitados BBB** | Ajuste global (Extensiones → BigBlueButton → Características experimentales) y en una actividad (`course/modedit.php?update=261`) | El enlace de invitado (FUN-19) ya funciona en 4.3 |
 | **Banner de portada** (FUN-25) | `sudo -u www-data php scripts/set-frontpage-banner.php /var/www/html/assets/frontpage-banner.jpg` | Instalado. La ruta va absoluta porque el script de 4.3 no resuelve relativas (§9) |
 | **Tema del sitio** | El usuario lo cambió a `rmuniversidad` probando la interfaz y lo **devolvió a Richimath** el mismo día | Ver la explicación debajo |
@@ -316,7 +316,6 @@ Todos en 5.3 y verificados en el navegador.
        del corte.
    - **Tras el corte:** cron de `www-data` y SMTP; `check-db-settings.php` en
      verde.
-   - Borrar `/root/moodle-backups/pre-collation-*` cuando no hagan falta.
 3. **Fase 4:**
    - fecha con Richi;
    - una noche, según la plantilla del plan
