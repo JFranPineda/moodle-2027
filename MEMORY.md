@@ -21,7 +21,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
 | 1 Portar código | ✅ 2026-10-09 — 23/23 MIG. MIG-27 = iconos de Moodle; MIG-26 = lista de usuarios de 5.3 + `core_admin/userlist` = «Lista de usuarios» (customlang) |
 | 2 Ensayo con copia de producción | ✅ 2026-10-10 — ensayo 1 (a mano, 4 arreglos) · ensayo 2 (copia 2, 51/51 auto; 37 cadenas sin traducir → customlang) · ensayo 3 (misma copia, 52/52 auto, sin arreglos: primer verde limpio) · ensayo 4 (copia 3, 52/52 con BBB, sección E toda OK, 9,8 min: segundo verde) — ver [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md) |
-| 3 Preparar servidor | 🟡 guía: [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md) (A inventario → B preparar sin corte → C ensayo general en el VPS con vuelta al snapshot). A ✅ 2026-10-10 (resultado en la §2 de la guía); siguiente: B |
+| 3 Preparar servidor | 🟡 destino (2026-10-10): **Ubuntu 26.04 + PHP 8.4-FPM + MySQL 8.4 + Apache event/HTTP/2**, en el mismo VPS. Guía: [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md) (A ✅ → B preparar → dos verdes con PHP 8.4 en local → C ensayo en el VPS con vuelta al snapshot) |
 | 4 Corte | — |
 | 5 Después | — |
 
@@ -326,4 +326,18 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    `config.php` de prod con dos bloques (XAMPP + servidor) bajo un `if`.
 8. **`grep -r` se salta los enlaces simbólicos** que encuentra al recorrer: los
    vhosts de `sites-enabled` no salieron en el inventario. Usar `grep -R`.
+9. **Destino decidido el 2026-10-10: lo más nuevo que admite 5.3**, en el mismo
+   VPS (el usuario descartó un VPS nuevo). Ubuntu **26.04** trae PHP **8.5**, que
+   Moodle 5.3 NO admite (solo 8.3 y 8.4): PHP **8.4** de `packages.sury.org`
+   (`resolute`; clave …B188E2B695BD4743; el PPA de Launchpad no tiene
+   `resolute`). MySQL **8.4** del propio Ubuntu 26.04 (sin repo de Oracle; 9.7 LTS
+   existe pero 5.3 no lo menciona). Apache `mpm_event` + PHP-FPM + HTTP/2.
+10. **Orden obligado**: 4.3 no vive en 26.04 → salto a 4.5 en 24.04, después
+    `do-release-upgrade`, después PHP 8.4 y salto a 5.3. Durante el salto de
+    Ubuntu, Apache sirve `assets/maintenance/index.html` (vhost con `[END]` para
+    `/index.html` + `R=503`): sin PHP, un `.php` bajo la raíz web se serviría
+    como texto (`config.php`).
+11. **PHP 8.4 comprobado en local**: 75 ficheros nuestros limpios con `php -l`
+    de 8.4; `:8083` y `rehearse-upgrade.sh` ya usan `moodlehq/moodle-php-apache:8.4`.
+    Faltan dos verdes con datos reales (copia 4).
 

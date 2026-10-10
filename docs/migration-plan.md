@@ -43,7 +43,7 @@ porta el tema a 4.5**. El código propio se porta una sola vez, a 5.3.
 Fase 0  Preparar         repo moodle-2027 + entorno local 5.3            (MIG-01..03)
 Fase 1  Portar código    local_richimath + temas sobre 5.3 limpia         (MIG-10..32)
 Fase 2  Ensayo general   copia de producción: 4.3 → 4.5 → 5.3 en local     (todos)
-Fase 3  Preparar server  inventario, snapshot, PHP 8.3, MySQL 8.4 (ensayo) (servidor)
+Fase 3  Preparar server  inventario, árboles, vhosts, ensayo en el VPS    (servidor)
 Fase 4  Corte            ventana de mantenimiento en producción
 Fase 5  Después          vigilancia, ajustes en BD, backlog
 ```
@@ -132,7 +132,7 @@ tiempos: [migration/phase-2-production-copy.md](migration/phase-2-production-cop
    │  PHP 8.2 · MySQL 8.0      ← mismo servidor que prod hoy
    ▼  php admin/cli/upgrade.php --non-interactive
 4.5.x
-   │  cambiar a PHP 8.3 · MySQL 8.4 (upgrade in-place de la base)
+   │  cambiar a PHP 8.4 · MySQL 8.4 (upgrade in-place de la base)
    │  código: moodle-2027 (5.3 + plugins portados)
    ▼  php admin/cli/upgrade.php --non-interactive
 5.3
@@ -205,12 +205,14 @@ Más la consulta de **MIG-40** (actividades de `chat` y `survey`).
   en `unicode_ci`, esquema OK. Respaldo previo en
   `/root/moodle-backups/pre-collation-2026-10-09-1931.sql.gz`. En el corte ya
   no es un paso: `scripts/check-db-settings.php` lo comprueba.
-- **PHP 8.3 al lado de 8.2** (PPA ondrej, el mismo de hoy): instalar
-  `php8.3` con las mismas extensiones (`php8.2 -m` como lista) y cambiar el
-  módulo de Apache solo en el corte. Así volver atrás es cambiar el módulo de
-  vuelta.
-- **`max_input_vars ≥ 5000`** en el `php.ini` de 8.3 (ya fue una trampa en
-  4.3).
+- **Destino decidido el 2026-10-10: lo más nuevo que admite 5.3.** Ubuntu
+  26.04 LTS (en el mismo VPS, con `do-release-upgrade`), PHP 8.4 con FPM (de
+  `packages.sury.org`; 26.04 trae 8.5, que 5.3 no admite), MySQL 8.4 del propio
+  Ubuntu, y Apache con `mpm_event` y HTTP/2. Moodle 4.3 no puede vivir en 26.04,
+  así que el salto a 4.5 va antes que el de Ubuntu, la misma noche. Detalle:
+  [migration/phase-3-server.md](migration/phase-3-server.md) §0.
+- **`max_input_vars ≥ 5000`**: viaja en `99-richimath.ini`, que se copia al
+  PHP 8.4 (ya fue una trampa en 4.3).
 - **`DocumentRoot` → `/var/www/html/public`** y `AllowOverride FileInfo
   Indexes` en el nuevo directorio, por el `.htaccess` de rutas.
 - **Router de Moodle**: en 5.3 sin configurar es una comprobación **crítica**.
@@ -244,8 +246,8 @@ Plantilla de la ventana (horas de Lima):
 | T+0:05 | Backup: `mysqldump` + `tar` de `moodledata` → copia fuera del VPS | — |
 | T+0:20 | **Snapshot del VPS 4** en Contabo | — |
 | T+0:30 | Código **4.5.x** + plugins actuales → `upgrade.php` | Restaurar snapshot |
-| T+? | **PHP 8.3** (cambiar módulo de Apache) + **MySQL 8.0 → 8.4** | Volver a 8.2 / restaurar snapshot |
-| T+? | Código **moodle-2027** (5.3 + plugins portados); `DocumentRoot` → `public/`; `config.php` | Restaurar snapshot |
+| T+? | Página estática de mantenimiento; PHP 8.2 fuera; **Ubuntu 24.04 → 26.04** (`do-release-upgrade`, sube MySQL a **8.4**); **PHP 8.4-FPM** | Restaurar snapshot |
+| T+? | Código **moodle-2027** (5.3 + plugins portados); `config.php`; después del upgrade, vhost con `DocumentRoot` → `public/`, `mpm_event` y HTTP/2 | Restaurar snapshot |
 | T+? | `upgrade.php` → 5.3 (instala el paquete `es` de 5.3: el VPS necesita salida a internet); `adhoc_task.php --execute` (CSS de los temas y `mod_qbank`; **no purgar después**, o el CSS se compila dos veces); personalización de idioma desde `assets/customlang/es`; `scripts/check-db-settings.php` en verde. **Antes de las tareas adhoc**, `maintenance.php --enableold` y borrar `climaintenance.html`: `adhoc_task.php` no corre en mantenimiento por CLI | Restaurar snapshot |
 | T+? | **Pruebas de humo** (abajo), en el mantenimiento a medias (solo entran los admins); la 1 y la 8, al quitarlo | Restaurar snapshot |
 | T+? | Quitar mantenimiento; volver a encender cron | — |
@@ -283,8 +285,9 @@ Mejor otra noche que una mañana de alumnos sin plataforma.
 - **Semana 1**: canal directo con Richi y los profesores para reportes;
   arreglos como hotfix sobre `moodle-2027`.
 - **Verificar ajustes en BD** (sección E de los tickets) uno por uno.
-- **Retirar PHP 8.2**: desinstalarlo cuando lleve 2 semanas estable;
-  borrar las copias de la BD y de `moodledata` del portátil.
+- **Limpiar**: `apt autoremove --purge`, `/var/www/moodle43`, `/var/www/moodle45`
+  y `/var/www/maintenance` cuando lleve 2 semanas estable; borrar las copias de
+  la BD y de `moodledata` del portátil.
 - **Actualizar documentación**: `MEMORY.md` del repo nuevo con lo aprendido;
   marcar `github/moodle` como **archivado** (solo lectura) en su README.
 - **Actualizaciones menores de 5.3**: aplicar cada 5.3.x de seguridad. El

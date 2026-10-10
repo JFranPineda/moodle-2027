@@ -1,61 +1,88 @@
-# Fase 3 — Preparar el servidor
+# Fase 3 — Preparar el servidor: Ubuntu 26.04, PHP 8.4 y MySQL 8.4
 
 Cómo se deja listo el VPS 4 de Contabo (`richiacademy.com`) para que la noche
-del corte (Fase 4) sea solo ejecutar, y cómo se miden en el propio servidor
-los tiempos que fijan la ventana. Plan general:
-[../migration-plan.md](../migration-plan.md) §6. Ensayos en local:
-[phase-2-production-copy.md](phase-2-production-copy.md).
+del corte (Fase 4) sea solo ejecutar, y cómo se ensaya esa noche en el propio
+servidor. Plan general: [../migration-plan.md](../migration-plan.md) §6.
+Ensayos en local: [phase-2-production-copy.md](phase-2-production-copy.md).
 
 ---
 
-## 0. Qué se hace y qué no
+## 0. Destino, decisión y orden
+
+### Destino: lo más nuevo que Moodle 5.3 admite
+
+| Pieza | Hoy | Después del corte | Por qué esa y no otra |
+|---|---|---|---|
+| Ubuntu | 24.04 LTS | **26.04 LTS** | La LTS más reciente (26.04.1 salió en agosto de 2026) |
+| PHP | 8.2 (sury) | **8.4**, de `packages.sury.org` | Moodle 5.3 admite 8.3 y 8.4. Ubuntu 26.04 trae 8.5, que 5.3 todavía no admite («en implementación») |
+| MySQL | 8.0.46 | **8.4 LTS**, el del propio Ubuntu 26.04 | Moodle 5.3 pide 8.4 como mínimo y no menciona 9.x. Ubuntu 26.04 lo trae de serie: no hace falta el repositorio de Oracle |
+| Apache | 2.4.58, `mpm_prefork` + `mod_php` | **2.4 de Ubuntu 26.04, `mpm_event` + PHP-FPM + HTTP/2** | Lo actual: más concurrencia con menos memoria, y HTTP/2 (que `prefork` no admite) |
+| Moodle | 4.3.12 | **5.3** | — |
+
+Fuentes: [Moodle 5.3](https://moodledev.io/general/releases/5.3),
+[Moodle: PHP](https://docs.moodle.org/503/en/PHP),
+[Ubuntu 26.04 LTS](https://documentation.ubuntu.com/release-notes/26.04/summary-for-lts-users/).
+El repositorio `packages.sury.org/php` publica 8.2–8.5 para 26.04
+(`resolute`), firmado con la clave `15058500 A0235D97 F5D10063 B188E2B6 95BD4743`
+(comprobado el 2026-10-10). El PPA de Launchpad no tiene `resolute` (404).
+
+### Decisión (2026-10-10)
+
+Se actualiza **el VPS actual en caliente**. Se descartó montar un VPS nuevo.
+Consecuencia: la vuelta atrás es **revertir el snapshot**, y por eso el bloque
+C ensaya la noche entera en el servidor, revertir incluido.
+
+### Por qué todo en una noche, y en este orden
+
+- **Moodle 4.3 no puede vivir en Ubuntu 26.04**: rechaza PHP > 8.2, y 26.04
+  solo trae MySQL 8.4.
+- Así que el salto a **4.5 se hace primero, en 24.04** (PHP 8.2 + MySQL 8.0):
+  exactamente como en los cuatro ensayos en verde.
+- Después se **actualiza Ubuntu**, que sube MySQL a 8.4 sobre los mismos datos
+  (lo mismo que hicieron los ensayos). Moodle 4.5 espera sin tráfico web.
+- Por último, **PHP 8.4 con FPM** y el salto a **5.3**.
+- Mientras Ubuntu se actualiza, Apache sirve una **página estática de
+  mantenimiento**. Si Apache se quedara sin PHP con `/var/www/html` como raíz,
+  serviría `config.php` como texto, contraseña incluida.
+
+```
+24.04 · PHP 8.2 · MySQL 8.0      4.3 ──upgrade──▶ 4.5
+página estática, PHP 8.2 fuera   do-release-upgrade ──▶ 26.04 · MySQL 8.4
+26.04 · PHP 8.4-FPM · MySQL 8.4  4.5 ──upgrade──▶ 5.3 ──▶ Apache event + HTTP/2
+```
+
+### Bloques
 
 | Bloque | Qué | ¿Corta el sitio? | Duración |
 |---|---|---|---|
-| **A. Inventario** | Solo lectura: versiones, Apache, PHP, MySQL, cron, salida a internet | No | 5 min |
-| **B. Preparar sin corte** | PHP 8.3 instalado **apagado**; repositorio de MySQL 8.4 añadido **retenido** y comprobador oficial; árboles 4.5 y 5.3 preparados al lado; vhost de 5.3 escrito sin activar | No (Apache se recarga una vez) | 45–60 min |
-| **C. Ensayo general en el servidor** | La secuencia exacta de la noche del corte, cronometrada, y **vuelta al snapshot** al final | Sí: unas 2 h de mantenimiento, de noche | 2–2,5 h |
-
-**Lo que NO se hace en esta fase:** dejar producción en 5.3. Al terminar el
-bloque C el sitio vuelve a 4.3, PHP 8.2 y MySQL 8.0, como si nada.
-
-**Por qué el bloque C:** el ensayo en Docker no prueba cuatro cosas que solo
-existen en el servidor:
-1. el cambio de paquetes de MySQL (8.0 de Ubuntu → 8.4 de Oracle) sobre la
-   configuración real de `/etc/mysql`;
-2. la comprobación del router de 5.3 por HTTPS contra el dominio real;
-3. los tiempos con la CPU del VPS;
-4. **cuánto tarda revertir un snapshot de Contabo**, que es la vuelta atrás de
-   la regla de los 30 minutos.
-
-Si Richi no concede esa noche, se puede saltar el bloque C: la Fase 4 asume
-entonces esos cuatro riesgos con el snapshot como red, y la ventana se calcula
-con los tiempos del portátil × 2.
-
-**Orden:** A → (pegar la salida para revisarla) → B → (pegar las salidas) → C.
+| **A. Inventario** ✅ | Solo lectura | No | Hecho el 2026-10-10 |
+| **B. Preparar** | 24.04 al día, PHP sin uso fuera, árboles 4.5 y 5.3, página de mantenimiento, vhosts escritos sin activar | Solo un reinicio (1–2 min) | 45–60 min |
+| **Dos verdes con PHP 8.4** (§4) | Copia 4 y ensayos 5 y 6 en el portátil, con la imagen 8.4 | No | ~1 h |
+| **C. Ensayo general** | La noche entera, cronometrada, y **vuelta al snapshot** | Sí, de noche | 3–4 h |
+| **Fase 4** (§6) | Lo mismo que C, sin revertir | Sí, de noche | Lo que mida C |
 
 ---
 
 ## 1. Reglas de la fase
 
-- **Snapshot antes de B y antes de C.** El panel de Contabo puede tener un
-  número limitado de snapshots: borrar el viejo si no queda hueco.
-- **Todo dentro de `tmux`.** Si el SSH se corta a mitad de un `upgrade.php`,
-  el proceso muere con él. Con `tmux` se reengancha con `tmux attach`.
+- **Snapshot antes de B y antes de C.** El panel de Contabo puede tener pocos
+  huecos: borrar el viejo si hace falta.
+- **Todo dentro de `tmux`.** Un SSH cortado mata el `upgrade.php` o el
+  `do-release-upgrade` que esté corriendo. El reinicio del final de la
+  actualización de Ubuntu cierra `tmux`: se abre otra sesión.
+- **Nunca un `.php` bajo la raíz web sin PHP detrás.** Apache lo serviría como
+  texto. Antes de apagar PHP 8.2, la página estática (C6).
+- **`php` sigue siendo 8.2 hasta la noche.** Moodle 4.3 rechaza 8.3 o más, y el
+  cron y `deploy-contabo.sh` llaman a `php` a secas.
 - **Nunca arrancar el código 4.5 o 5.3 contra la base de producción antes de
-  la noche** (ni siquiera `cfg.php`). Escribiría cachés de otra versión
-  (`moodledata/cache`, `muc/`) que lee el 4.3 en vivo. En B solo se copian
-  ficheros y se comprueba sintaxis.
-- **`php` tiene que seguir siendo 8.2** hasta el corte. Moodle 4.3 rechaza PHP
-  8.3, y el cron y `deploy-contabo.sh` llaman a `php` a secas.
-- **No pegar contraseñas en el chat.** Los comandos de esta guía no las
-  imprimen; `debian.cnf` y las líneas `dbpass` quedan fuera a propósito.
-- **Datos de alumnos:** las copias de la base y de `moodledata` del bloque C se
-  borran al terminar, como en la Fase 2.
+  la noche** (ni `cfg.php`): escribiría cachés de otra versión en
+  `moodledata`, que lee el 4.3 en vivo.
+- **No pegar contraseñas en el chat.** Los comandos de esta guía no las imprimen.
+- **Datos de alumnos:** las copias se borran al terminar, como en la Fase 2.
 
 ---
 
-## 2. Bloque A — Inventario (solo lectura)
+## 2. Bloque A — Inventario (solo lectura) ✅
 
 ```bash
 ssh root@169.58.171.171
@@ -89,20 +116,6 @@ echo "== respaldos"; ls -lh /root/moodle-backups/ 2>&1
 } 2>&1 | tee /root/phase3/inventory.txt
 ```
 
-Pegar la salida entera. Lo que se espera:
-
-| Dato | Esperado | Si no |
-|---|---|---|
-| PHP | `php8.2-*` y `libapache2-mod-php8.2`; `php` → 8.2; sin `php8.3-*` | Si ya hay `php8.3-*` (Ubuntu 24.04 trae 8.3 de serie), se ajusta B2 |
-| Apache | `php8.2` y `mpm_prefork` activos; `rewrite` y `ssl` activos | Si sale `php8.2-fpm`/`proxy_fcgi`, el cambio de PHP es otro: se ajusta B y C |
-| `max_input_vars` | ≥ 5000 | B3 lo sube en 8.3 de todas formas |
-| MySQL | 8.0.x de Ubuntu; `moodleuser` con `caching_sha2_password`; `root` con `auth_socket` | — |
-| Config de MySQL | Sin opciones que 8.4 elimina (`default_authentication_plugin`, `expire_logs_days`…) | El comprobador de B4 lo confirma |
-| Moodle | `3c044eae`, árbol limpio; tema `richimath`; `/var/www/html` en `safe.directory` | — |
-| Cron | Una línea de `www-data` con `php …/admin/cli/cron.php` | Si está en `/etc/cron.d`, se ajusta C |
-| Salida a internet | `200` en las cuatro | Sin `download.moodle.org`, los textos nuevos de 4.4+ saldrían en inglés |
-| Disco | ≥ 3 GB libres en `/var` | — |
-
 `grep -R` y no `-r`: los vhosts de `sites-enabled` son enlaces simbólicos, y
 `grep -r` se los salta sin avisar.
 
@@ -122,129 +135,89 @@ Pegar la salida entera. Lo que se espera:
 
 ---
 
-## 3. Bloque B — Preparar sin corte
+## 3. Bloque B — Preparar (en 24.04)
 
-De noche (B2 recarga Apache una vez). Cada paso termina con una comprobación:
-si no da lo esperado, **parar** y pegar la salida.
+De noche: B2 puede reiniciar el servidor. Cada paso termina con una
+comprobación; si no da lo esperado, **parar** y pegar la salida.
 
 ### B1. Snapshot y sesión
 
-1. Panel de Contabo → VPS 4 → **Snapshots** → crear `pre-fase3-<fecha>`.
-   Esperar a que termine. **Anotar cuántos minutos tarda.**
-2. En el servidor:
-   ```bash
+1. Contabo → VPS 4 → **Snapshots** → crear `pre-fase3-<fecha>`. Esperar a que
+   termine y **anotar cuánto tarda**.
+2. ```bash
    ssh root@169.58.171.171
-   tmux new -s fase3          # si se corta: ssh … y luego  tmux attach -t fase3
+   tmux new -s fase3          # si se corta:  ssh …  y luego  tmux attach -t fase3
    cd /root/phase3
    ```
 
-### B2. PHP 8.3: ya instalado, solo comprobar
+### B2. Ubuntu 24.04 al día
 
-El inventario encontró el 8.3 de Ubuntu ya instalado, con las mismas
-extensiones que el 8.2. No hay que instalar nada. Solo poner al día sus parches
-de seguridad, sin tocar nada más:
+`do-release-upgrade` exige el sistema actualizado. Esto sube PHP 8.2, MySQL 8.0
+y el kernel a su último parche:
 
 ```bash
 apt update
-apt list --upgradable 2>/dev/null | grep -E 'php8\.3|mod-php8\.3'     # si sale algo:
-apt install --only-upgrade -y $(dpkg -l | awk '/^ii/ && $2 ~ /php8\.3/ {print $2}')
+apt full-upgrade -y          # si pregunta por un fichero de configuración: conservar el actual
+[ -f /var/run/reboot-required ] && echo "HAY QUE REINICIAR"
 ```
 
-Después:
+Si hay que reiniciar: `reboot` (1–2 min sin servicio). Luego `ssh`,
+`tmux new -s fase3`, y:
 
 ```bash
-php -v | head -1                          # PHP 8.2.x (php sigue en modo manual)
-php8.3 -v | head -1                       # PHP 8.3.6 (Ubuntu)
-a2query -m | grep php                     # solo php8.2
-curl -sS -o /dev/null -w '%{http_code}\n' https://richiacademy.com/   # 200
+php -v | head -1; mysql --version
+curl -sS -o /dev/null -w '%{http_code}\n' https://richiacademy.com/       # 200
+sudo -u www-data php /var/www/html/admin/cli/cfg.php --name=release       # 4.3.12
 ```
 
-Si `a2query` muestra `php8.3` activo:
-`a2dismod php8.3 && a2enmod php8.2 && systemctl restart apache2`.
+### B3. Quitar el PHP que no se usa
 
-El ensayo en Docker usó el último 8.3 de la imagen de Moodle; aquí es la
-compilación de Ubuntu, con sus parches de seguridad. Moodle 5.3 pide 8.3.0 o
-superior, y el bloque C lo prueba con este binario.
-
-Extensiones que exige 5.3 (`public/admin/environment.xml`):
+El 8.3 de Ubuntu y el 8.4 de sury para 24.04 no los usa nadie. Además
+estorbarían en la actualización: el 8.4 se instala la noche del corte, ya
+compilado para 26.04.
 
 ```bash
-for e in iconv mbstring curl openssl ctype zip zlib gd simplexml spl pcre dom xml xmlreader \
-         intl json hash fileinfo sodium filter tokenizer soap exif mysqli; do
-  php8.3 -m | grep -qix "$e" || echo "FALTA $e"
-done; echo "fin de la lista"
+UNUSED=$(dpkg -l | awk '/^ii/ && ($2 ~ /^(php8\.[345]|libapache2-mod-php8\.[345])/ || ($2 ~ /^php(-[a-z0-9.]+)?$/ && $2 != "php-common")) {print $2}')
+echo $UNUSED
+apt-get -s purge $UNUSED | awk '/^(Purg|Remv) /{print $2}' | tr '\n' ' '; echo     # simulación
 ```
 
-Si falta alguna: `apt install -y php8.3-<nombre>` y repetir.
-
-### B3. `php.ini` del 8.3: el mismo fichero propio que el 8.2
-
-Los valores de Richi Math viven en un solo fichero, `99-richimath.ini`. Se
-copia tal cual:
+La simulación **no** puede incluir `php8.2-*`, `libapache2-mod-php8.2` ni
+`php-common`. Si los incluye, parar. Si no:
 
 ```bash
-cat /etc/php/8.2/apache2/conf.d/99-richimath.ini
-ls /etc/php/8.3/apache2/conf.d/ | grep -v '^[0-9][0-9]-'           # ¿ya hay alguno propio en 8.3?
-cp -p /etc/php/8.2/apache2/conf.d/99-richimath.ini /etc/php/8.3/apache2/conf.d/
-ini82() { PHP_INI_SCAN_DIR=/etc/php/8.2/apache2/conf.d php8.2 -c /etc/php/8.2/apache2/php.ini -r "echo ini_get('$1');"; }
-ini83() { PHP_INI_SCAN_DIR=/etc/php/8.3/apache2/conf.d php8.3 -c /etc/php/8.3/apache2/php.ini -r "echo ini_get('$1');"; }
-for k in memory_limit upload_max_filesize post_max_size max_execution_time max_input_time max_input_vars date.timezone opcache.enable; do
-  echo "$k  8.2=$(ini82 $k)  8.3=$(ini83 $k)"
-done
+apt-get purge -y $UNUSED
+dpkg -l | awk '/^rc/ && $2 ~ /php/ {print $2}' | xargs -r dpkg --purge     # restos de configuración
+ls /etc/php
+php -v | head -1; a2query -m | grep php                                   # 8.2 · solo php8.2
+curl -sS -o /dev/null -w '%{http_code}\n' https://richiacademy.com/       # 200
 ```
 
-Las dos columnas tienen que coincidir (`max_input_vars` = 5000). El módulo 8.3
-está apagado: el fichero no afecta al sitio hasta el corte.
-
-### B4. MySQL 8.4: repositorio retenido y comprobador oficial
-
-**Primero retener** los paquetes de MySQL instalados. Así, con el repositorio
-de Oracle añadido, ningún `apt upgrade` sube MySQL antes de la noche:
+### B4. Comprobar que el salto a 26.04 está disponible (sin hacerlo)
 
 ```bash
-apt-mark hold $(dpkg -l | awk '/^ii/ && $2 ~ /^mysql-/ {print $2}')
-apt-mark showhold
+grep '^Prompt' /etc/update-manager/release-upgrades      # Prompt=lts
+do-release-upgrade -c                                     # «New release '26.04.x LTS' available»: solo mira
+ls /etc/apt/sources.list.d/                               # el PPA de sury (ondrej-…)
+ufw status | head -1
 ```
 
-Repositorio oficial, rama 8.4 LTS:
+Si `do-release-upgrade -c` no ofrece 26.04, parar y pegar la salida.
+
+### B5. Guardar lo que la noche necesita
+
+PHP 8.2 se desinstala esa noche, y con él su `99-richimath.ini`:
 
 ```bash
-cd /root/phase3
-F=$(curl -s https://dev.mysql.com/downloads/repo/apt/ | grep -o 'mysql-apt-config_[0-9.]*-[0-9]*_all\.deb' | head -1)
-echo "$F"                          # mysql-apt-config_0.8.xx-1_all.deb (si sale vacío: copiar el nombre de esa página)
-wget -q "https://dev.mysql.com/get/$F"
-echo 'mysql-apt-config mysql-apt-config/select-server select mysql-8.4-lts' | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive dpkg -i "$F"
-cat /etc/apt/sources.list.d/mysql.list        # tiene que decir mysql-8.4-lts
-apt update                                     # sin errores de firma (EXPKEYSIG / NO_PUBKEY)
-apt-cache policy mysql-server | head -4        # Instalado: 8.0.x (Ubuntu) · Candidato: 8.4.x (repo.mysql.com)
-apt-get -s upgrade | grep -i mysql             # vacío o «retenidos»: nada de MySQL sube solo
-apt-get -s install mysql-server 2>&1 | tail -25   # SOLO simulación: lo que la noche quitará e instalará
+mkdir -p /root/phase3/php
+cp -p /etc/php/8.2/apache2/conf.d/99-richimath.ini /root/phase3/php/
+cat /root/phase3/php/99-richimath.ini
 ```
 
-Si `mysql.list` no dice `mysql-8.4-lts`: `dpkg-reconfigure mysql-apt-config`
-y elegir *MySQL Server & Cluster* → `mysql-8.4-lts`.
+### B6. Árbol 4.5 para el salto intermedio
 
-**Comprobador oficial de compatibilidad 8.0 → 8.4** (MySQL Shell, solo
-lectura):
-
-```bash
-apt install -y mysql-shell
-T=$(apt-cache policy mysql-community-server | awk '/Candid/{print $2}' | cut -d- -f1); echo "$T"
-mysqlsh --socket=/var/run/mysqld/mysqld.sock --user=root --no-password -- \
-  util check-for-server-upgrade --target-version="$T" \
-  --config-path=/etc/mysql/mysql.conf.d/mysqld.cnf 2>&1 | tee /root/phase3/mysql-upgrade-check.txt
-```
-
-Tiene que terminar con *«No fatal errors were found that would prevent an
-upgrade»*. Los avisos se revisan uno a uno. Si `apt install mysql-shell`
-choca con los paquetes retenidos, pegar el error: se usa el tarball de MySQL
-Shell, que no instala nada.
-
-### B5. Árbol 4.5 para el salto intermedio
-
-Es el mismo que el del ensayo: `github/moodle-2026` y los 6 plugins de 4.3,
-pero estos salen del propio clon de producción, del commit desplegado.
+Es el de los ensayos: `github/moodle-2026` y los 6 plugins de 4.3, sacados del
+propio clon de producción, del commit desplegado.
 
 En el **portátil**:
 
@@ -264,87 +237,135 @@ ls /var/www/moodle45/local/richimath/version.php /var/www/moodle45/theme/rmpreu/
 php8.2 -l /var/www/moodle45/config.php
 ```
 
-Nada de `cfg.php` ni otro CLI desde este árbol (regla de la §1).
+### B7. Árbol 5.3 (clon de `moodle-2027`)
 
-### B6. Árbol 5.3 (clon de `moodle-2027`)
-
-El clon tiene que traer exactamente lo ensayado: primero sube tus commits.
-Después, `git log origin/main -1` en el portátil y en el servidor deben dar el
-mismo commit. `.gitignore` solo excluye `config.php`, así que el clon es el
-mismo árbol que montó el ensayo.
+Sube antes tus commits: el clon tiene que traer lo ensayado.
+`.gitignore` solo excluye `config.php`, así que el clon es el mismo árbol que
+montan los ensayos.
 
 ```bash
 git clone https://github.com/JFranPineda/moodle-2027.git /var/www/moodle53
-git -C /var/www/moodle53 log -1 --format='%h %s'      # el mismo commit que en el portátil
+git -C /var/www/moodle53 log -1 --format='%h %s'      # el mismo commit que origin/main en el portátil
 cp -p /var/www/html/config.php /var/www/moodle53/config.php
 sed -i '/lib\/setup\.php/i $CFG->routerconfigured = true;' /var/www/moodle53/config.php
-php8.3 -l /var/www/moodle53/config.php
+php8.2 -l /var/www/moodle53/config.php
 diff /var/www/html/config.php /var/www/moodle53/config.php    # solo la línea routerconfigured
 chown -R www-data:www-data /var/www/moodle53
 ```
 
-- El `git log` va **antes** del `chown`: después, git se niega a operar como
-  `root` en un árbol de otro dueño, salvo que esté en `safe.directory`. Tras el
-  corte el árbol vive en `/var/www/html`, que ya está en la lista.
-- `config.php` y `admin/cli/` quedan en la raíz, fuera de `public/`: dejan de
-  ser accesibles por HTTP, a diferencia de 4.3.
+El `git log` va antes del `chown`: después, git se niega a operar como `root`
+en un árbol de otro dueño. Tras el corte el árbol vive en `/var/www/html`, que
+ya está en `safe.directory`.
 
-### B7. Vhost de 5.3, escrito sin activar
+### B8. Página de mantenimiento y vhosts, escritos sin activar
 
-En el corte, el código 4.3 pasa a `/var/www/moodle43` y el 5.3 ocupa
-`/var/www/html`. El script de despliegue, el cron y la documentación siguen
-apuntando a la misma ruta, y solo cambia el `DocumentRoot` a `public/`. Los
-ficheros conservan su nombre, así que certbot no nota nada.
-
-Primero ver dónde está hoy el permiso del `.htaccess` (el inventario no lo
-mostró: `apache2.conf` deja `/var/www/` con `AllowOverride None`):
+Primero, cómo están hoy (el inventario no los mostró):
 
 ```bash
 grep -RnE 'DocumentRoot|<Directory|AllowOverride|Rewrite|ServerName|ServerAlias' /etc/apache2/sites-enabled/
 ```
 
-Después, los vhosts de 5.3:
+Después, la página estática (está en el repo, `assets/maintenance/`) y tres
+juegos de vhosts:
+- `apache43`: copia de los de hoy;
+- `apachemaint`: la página estática, con 503 para todo;
+- `apache53`: la raíz en `public/`.
+
+Los ficheros conservan su nombre, así que certbot no nota nada.
 
 ```bash
-mkdir -p /root/phase3/apache43 /root/phase3/apache53
+mkdir -p /var/www/maintenance
+cp /var/www/moodle53/assets/maintenance/index.html /var/www/maintenance/
+mkdir -p /root/phase3/apache43 /root/phase3/apachemaint /root/phase3/apache53
 cd /etc/apache2/sites-enabled
 for f in *.conf; do
   cp -L "$f" /root/phase3/apache43/
+  awk '/^[[:space:]]*DocumentRoot[[:space:]]/ {
+         print "    DocumentRoot /var/www/maintenance"
+         print "    # Static maintenance page while the OS is upgraded: no PHP behind this root."
+         print "    <Directory /var/www/maintenance>"
+         print "        Require all granted"
+         print "    </Directory>"
+         print "    RewriteEngine On"
+         print "    RewriteRule ^/index\\.html$ - [END]"
+         print "    RewriteRule ^ - [R=503,L]"
+         print "    ErrorDocument 503 /index.html"
+         next }
+       { print }' "$f" > /root/phase3/apachemaint/"$f"
   sed -E 's#^([[:space:]]*DocumentRoot[[:space:]]+)"?/var/www/html/?"?[[:space:]]*$#\1/var/www/html/public#;
           s#<Directory[[:space:]]+"?/var/www/html/?"?[[:space:]]*>#<Directory /var/www/html/public>#' \
       "$f" > /root/phase3/apache53/"$f"
-  echo "== $f"; diff "$f" /root/phase3/apache53/"$f"
+  echo "== $f (5.3)"; diff "$f" /root/phase3/apache53/"$f"
 done
+printf 'Protocols h2 http/1.1\n' > /root/phase3/richimath-http2.conf
 ```
 
-Pegar el `diff`: solo deben cambiar las líneas `DocumentRoot` (y `<Directory>`
-si el vhost la tiene). Para las rutas limpias y el router hacen falta
-`mod_rewrite` y `AllowOverride FileInfo Indexes` sobre `public/`. Si
-`AllowOverride` está en `apache2.conf` para `/var/www/` o `/var/www/html`, ya
-alcanza a `public/`. La regla del router está al final de `public/.htaccess`,
-en el repo.
+Pegar el `grep` y los `diff`.
+- **Vhosts de 5.3:** solo deben cambiar las líneas `DocumentRoot` (y
+  `<Directory>` si el vhost la tiene).
+- **Rutas limpias y router:** necesitan `mod_rewrite` y
+  `AllowOverride FileInfo Indexes` sobre `public/`. Un `<Directory /var/www/html>`
+  también alcanza a `public/`.
 
-### B8. Cierre del bloque B
+**Probado en un Apache de Docker (2026-10-10):**
+- **Vhost de mantenimiento:** `https://…/`, `/login` y `/config.php`, por
+  dominio y por IP, dan 503 con la página, y `/index.html` da 200.
+  `config.php` no se sirve nunca.
+- **Vhost de 5.3:** sirve `public/`, y `/config.php` da 404.
+- **La regla `[END]`:** sin ella, la redirección a HTTPS de certbot en el vhost
+  `:80` se comía la página de error y devolvía un 301.
+
+### B9. Cierre del bloque B
 
 ```bash
-php -v | head -1; a2query -m | grep php; apt-mark showhold
+php -v | head -1; a2query -m | grep -E 'php|mpm'
 curl -sS -o /dev/null -w '%{http_code}\n' https://richiacademy.com/
 crontab -u www-data -l
-ls -ld /var/www/moodle45 /var/www/moodle53; df -h /var
+ls -ld /var/www/*; ls /root/phase3 /root/phase3/*/
 ```
 
-Producción sigue igual: PHP 8.2, MySQL 8.0, 4.3, cron intacto. Pegar las
-salidas de B2–B8.
+Producción sigue igual: 4.3, PHP 8.2, MySQL 8.0, cron intacto. Pegar las
+salidas de B2–B9.
 
 ---
 
-## 4. Bloque C — Ensayo general en el servidor (y vuelta atrás)
+## 4. Antes del bloque C: dos verdes con PHP 8.4 en el portátil
 
-Es el guion de la noche del corte. La única diferencia es el final: en vez de
-abrir el sitio en 5.3, **se revierte el snapshot**. Necesita:
-- una noche sin clases acordada con Richi, con unas 2 h de mantenimiento;
+Los cuatro ensayos de la Fase 2 subieron a 5.3 con PHP 8.3. Desde el
+2026-10-10, `rehearse-upgrade.sh` y el entorno `:8083` usan **PHP 8.4**. Lo
+comprobado hasta ahora:
+- nuestros 75 ficheros PHP pasan `php -l` de 8.4 con todos los avisos
+  activados;
+- `:8083` en 8.4 responde sin un solo aviso, como admin a 1440 y como alumno a
+  390.
+
+Falta la prueba con datos reales: **dos verdes seguidos**.
+
+1. **Copia 4** de producción, con el procedimiento de siempre
+   ([phase-2-production-copy.md](phase-2-production-copy.md) §2).
+2. Ensayo 5:
+   ```bash
+   cd ~/Documentos/github/moodle-2027
+   scripts/rehearsal/rehearse-upgrade.sh ~/richimath-prod-copy 2>&1 | tee ~/richimath-prod-copy/run5.out
+   scripts/rehearsal/acceptance.sh ~/richimath-prod-copy --bbb 2>&1 | tee ~/richimath-prod-copy/acceptance5.out
+   ```
+   Se espera la línea `switch to PHP 8.4 + MySQL 8.4`, la sección E toda en
+   OK y `52 passed, 0 failed`.
+3. Ensayo 6: los mismos dos comandos (con `run6.out` y `acceptance6.out`). El
+   script empieza de cero cada vez.
+
+La copia 4 sirve además de copia de seguridad reciente fuera del VPS. Se borra
+al cerrar el bloque C.
+
+---
+
+## 5. Bloque C — Ensayo general en el servidor (y vuelta atrás)
+
+Es el guion de la noche del corte, entero. La única diferencia es el final: en
+vez de abrir el sitio en 5.3, **se revierte el snapshot**. Necesita:
+- una noche sin clases acordada con Richi, con unas 3–4 h de servicio cortado;
 - un hueco libre de snapshot en Contabo;
-- el portátil a mano para la copia de seguridad.
+- el portátil a mano.
 
 Los alumnos no pierden nada: el snapshot se toma con el sitio ya en
 mantenimiento.
@@ -384,80 +405,131 @@ sha256sum *.gz > SHA256SUMS
 En el **portátil**, en otra terminal:
 
 ```bash
-mkdir -p ~/richimath-prod-copy && chmod 700 ~/richimath-prod-copy
-rsync -avP root@169.58.171.171:/root/moodle-copy/ ~/richimath-prod-copy/
-cd ~/richimath-prod-copy && sha256sum -c SHA256SUMS
+mkdir -p ~/richimath-prod-copy/night && chmod 700 ~/richimath-prod-copy ~/richimath-prod-copy/night
+rsync -avP root@169.58.171.171:/root/moodle-copy/ ~/richimath-prod-copy/night/
+cd ~/richimath-prod-copy/night && sha256sum -c SHA256SUMS
 ssh root@169.58.171.171 'rm -rf /root/moodle-copy'      # solo después del OK
 ```
 
 ### C4. Snapshot
 
-Panel de Contabo → Snapshots → crear `ensayo-53-<fecha>`. Esperar a que
-termine. En el servidor:
+Contabo → Snapshots → crear `ensayo-53-<fecha>`. Esperar a que termine.
 
 ```bash
 echo "snapshot: <minutos> min" | tee -a /root/phase3/times.log
 ```
 
-### C5. Salto 4.3 → 4.5 (PHP 8.2 + MySQL 8.0, como hoy)
+### C5. Salto 4.3 → 4.5 (24.04 · PHP 8.2 · MySQL 8.0, como en los ensayos)
 
 ```bash
 s "upgrade 4.3 → 4.5" sudo -u www-data php8.2 /var/www/moodle45/admin/cli/upgrade.php --non-interactive
 ```
 
-Tiene que terminar con *«…finalizada con éxito»* y con el paquete `es` de 4.5
+Tiene que terminar con *«…finalizada con éxito»*, con el paquete `es` de 4.5
 instalado.
 
-### C6. MySQL 8.0 → 8.4
-
-```bash
-mysql -e "SET GLOBAL innodb_fast_shutdown = 0"
-apt-mark unhold $(apt-mark showhold | grep '^mysql-')
-s "MySQL 8.0 → 8.4" apt-get install -y mysql-server
-```
-
-- **Si pregunta por un fichero de configuración**, conservar el actual (`N`):
-  es el que validó el comprobador de B4. Anotar la pregunta.
-- **Si pide contraseña de root**, dejarla vacía: `root` sigue por
-  `auth_socket`.
-
-```bash
-systemctl is-active mysql; mysql -e "SELECT VERSION()"          # active · 8.4.x
-mysql -e "SELECT user, plugin FROM mysql.user WHERE user IN ('root', 'moodleuser')"
-tail -20 /var/log/mysql/error.log
-```
-
-### C7. PHP 8.3, código 5.3 y vhost
+### C6. Página estática, y PHP 8.2 fuera
 
 ```bash
 T=$SECONDS
-a2dismod -q php8.2 && a2enmod -q php8.3
-update-alternatives --set php /usr/bin/php8.3
-mv /var/www/html /var/www/moodle43 && mv /var/www/moodle53 /var/www/html
-cp /root/phase3/apache53/*.conf /etc/apache2/sites-enabled/
+cp /root/phase3/apachemaint/*.conf /etc/apache2/sites-enabled/
+a2dismod -q php8.2 && a2dismod -q mpm_prefork && a2enmod -q mpm_event
 apache2ctl configtest && systemctl restart apache2
-echo "switch PHP + code + vhost $((SECONDS - T))s" | tee -a /root/phase3/times.log
-php -v | head -1                                              # PHP 8.3.x
-# Server rehearsal only: this site is about to be reverted, so cron must not mail anyone.
-sed -i '/lib\/setup\.php/i $CFG->noemailever = true;' /var/www/html/config.php
+curl -s -o /dev/null -w '%{http_code}\n' https://richiacademy.com/              # 503
+curl -s -o /dev/null -w '%{http_code}\n' http://169.58.171.171/config.php       # 503: nunca el fichero
+apt-get purge -y $(dpkg -l | awk '/^ii/ && $2 ~ /^(php8\.2|libapache2-mod-php8\.2)/ {print $2}')
+rm -f /etc/apt/sources.list.d/ondrej-*          # el PPA de 24.04; el de 26.04 se añade en C9
+apt update
+echo "static page, PHP 8.2 out $((SECONDS - T))s" | tee -a /root/phase3/times.log
 ```
 
-La línea de `noemailever` es **solo del ensayo**. La reversión del snapshot la
-quita sola; la noche del corte no se añade.
+Si `config.php` diera otra cosa que 503, **parar**: el vhost no es el de
+mantenimiento.
 
-### C8. Salto 4.5 → 5.3
+### C7. Ubuntu 24.04 → 26.04
 
 ```bash
+date +%T | tee -a /root/phase3/times.log      # inicio
+do-release-upgrade
+```
+
+| Pregunta | Respuesta |
+|---|---|
+| Fuentes de terceros desactivadas / ¿continuar? | `y` |
+| ¿Arrancar un `sshd` adicional en el puerto 1022? | `y` |
+| Resumen de paquetes: ¿empezar la actualización? | `y` |
+| ¿Reiniciar servicios sin preguntar? | Sí |
+| Fichero de configuración modificado (`mysqld.cnf`, `apache2.conf`, `sshd_config`…) | **Conservar el instalado** (`N`). Anotar cuál fue |
+| ¿Quitar paquetes obsoletos? | `N`: se limpian a mano tras el corte |
+| ¿Reiniciar ahora? | `y` |
+
+El reinicio cierra `script` y `tmux`; lo escrito en los registros se conserva.
+
+### C8. Tras el reinicio: Ubuntu 26.04 y MySQL 8.4
+
+```bash
+ssh root@169.58.171.171
+tmux new -s ensayo2
+script -a /root/phase3/server-rehearsal.log
+s() { local n=$1 t=$SECONDS; shift; "$@"; local rc=$?; printf '%-30s %5ds rc=%s\n' "$n" $((SECONDS - t)) $rc | tee -a /root/phase3/times.log; return $rc; }
+date +%T | tee -a /root/phase3/times.log      # fin del salto de Ubuntu
+lsb_release -ds                                # Ubuntu 26.04.x LTS
+systemctl is-active mysql apache2              # active · active
+mysql -e "SELECT VERSION()"                    # 8.4.x
+mysql -e "SELECT user, plugin FROM mysql.user WHERE user IN ('root', 'moodleuser')"
+tail -20 /var/log/mysql/error.log
+curl -s -o /dev/null -w '%{http_code}\n' https://richiacademy.com/       # 503 (página estática)
+```
+
+Si MySQL no arranca: pegar `error.log` y aplicar la regla de los 30 minutos.
+
+### C9. PHP 8.4 con FPM
+
+```bash
+curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb
+dpkg -i /tmp/debsuryorg-archive-keyring.deb
+echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ resolute main" \
+    > /etc/apt/sources.list.d/php.list
+apt update                                          # sin errores de firma
+apt-cache policy php8.4-fpm | head -3               # candidato 8.4.x…ubuntu26.04, de packages.sury.org
+s "install PHP 8.4" apt-get install -y php8.4-fpm php8.4-cli php8.4-curl php8.4-gd php8.4-intl \
+    php8.4-mbstring php8.4-mysql php8.4-opcache php8.4-readline php8.4-soap php8.4-xml php8.4-zip
+for e in iconv mbstring curl openssl ctype zip zlib gd simplexml spl pcre dom xml xmlreader \
+         intl json hash fileinfo sodium filter tokenizer soap exif mysqli; do
+  php8.4 -m | grep -qix "$e" || echo "FALTA $e"
+done; echo "fin de la lista"
+```
+
+Valores de Richi Math y tamaño del pool. 30 procesos de ~100 MB son ~3 GB de
+los 7,8 GB, y dejan sitio a MySQL:
+
+```bash
+cp /root/phase3/php/99-richimath.ini /etc/php/8.4/fpm/conf.d/
+P=/etc/php/8.4/fpm/pool.d/www.conf
+sed -i -E 's/^pm\.max_children = .*/pm.max_children = 30/; s/^pm\.start_servers = .*/pm.start_servers = 6/;
+           s/^pm\.min_spare_servers = .*/pm.min_spare_servers = 4/; s/^pm\.max_spare_servers = .*/pm.max_spare_servers = 10/;
+           s/^;?pm\.max_requests = .*/pm.max_requests = 500/' $P
+grep -E '^pm' $P
+php-fpm8.4 -t && systemctl restart php8.4-fpm
+php-fpm8.4 -i | grep -E '^(memory_limit|upload_max_filesize|post_max_size|max_input_vars|max_execution_time) '
+update-alternatives --set php /usr/bin/php8.4; php -v | head -1
+```
+
+Los valores tienen que ser los de `99-richimath.ini`: 512M, 200M, 210M, 5000 y 0.
+
+### C10. Salto 4.5 → 5.3
+
+```bash
+mv /var/www/html /var/www/moodle43 && mv /var/www/moodle53 /var/www/html
+# Server rehearsal only: this site is about to be reverted, so cron must not mail anyone.
+sed -i '/lib\/setup\.php/i $CFG->noemailever = true;' /var/www/html/config.php
 cd /var/www/html
 s "upgrade 4.5 → 5.3" sudo -u www-data php admin/cli/upgrade.php --non-interactive
 ```
 
-`adhoc_task.php` **se niega a correr en mantenimiento por CLI** («CLI
-maintenance mode active, cron execution suspended»). Hay que pasar antes al
-mantenimiento «a medias»: solo entran los administradores, y eso es lo que
-permite las pruebas de humo como admin. El orden importa: primero
-`--enableold`, después borrar el fichero, para que el sitio no quede abierto
-ni un instante.
+`adhoc_task.php` **se niega a correr en mantenimiento por CLI**: antes, el
+mantenimiento «a medias» (solo admins). Primero `--enableold` y después borrar
+el fichero, para que no haya un instante abierto:
 
 ```bash
 sudo -u www-data php admin/cli/maintenance.php --enableold
@@ -467,9 +539,23 @@ s "Spanish customisations" sudo -u www-data php public/admin/tool/customlang/cli
     --lang=es --source=/var/www/html/assets/customlang/es --checkin
 ```
 
-No purgar cachés después: el CSS se compilaría dos veces.
+No purgar cachés después: el CSS se compilaría dos veces. Apache sigue
+sirviendo la página estática todo este paso.
 
-### C9. Comprobaciones técnicas
+### C11. Apache: FPM, HTTP/2 y el vhost de 5.3
+
+```bash
+T=$SECONDS
+a2enmod -q proxy_fcgi setenvif http2 && a2enconf -q php8.4-fpm
+cp /root/phase3/richimath-http2.conf /etc/apache2/conf-available/ && a2enconf -q richimath-http2
+cp /root/phase3/apache53/*.conf /etc/apache2/sites-enabled/
+apache2ctl configtest && systemctl reload apache2
+echo "Apache → 5.3 $((SECONDS - T))s" | tee -a /root/phase3/times.log
+curl -s -o /dev/null -w '%{http_code} HTTP/%{http_version}\n' https://richiacademy.com/login   # 200 HTTP/2
+curl -s -o /dev/null -w '%{http_code}\n' https://richiacademy.com/config.php                    # 404
+```
+
+### C12. Comprobaciones técnicas
 
 ```bash
 sudo -u www-data php admin/cli/checks.php                    # sin críticos; el aviso del cron es esperado
@@ -480,15 +566,16 @@ sudo -u www-data php scripts/check-db-settings.php            # todo OK/INFO
 `checks.php` hace aquí la prueba que Docker no podía: la del router, desde el
 servidor contra `https://richiacademy.com`.
 
-### C10. Pruebas de humo como admin (navegador)
+### C13. Pruebas de humo como admin (navegador)
 
-`https://richiacademy.com/login` con la cuenta de administrador (`richi85`).
-Sin sesión, el sitio muestra la página de mantenimiento. Las pruebas son las de
-la tabla del plan ([../migration-plan.md](../migration-plan.md) §7), salvo la
-1 y la 8: esas necesitan el sitio abierto y quedan para la noche del corte.
+Abrir `https://richiacademy.com/login` y entrar con la cuenta de administrador
+(`richi85`). Sin sesión, el sitio muestra el aviso de mantenimiento. Las
+pruebas son las de la tabla del plan
+([../migration-plan.md](../migration-plan.md) §7), salvo la 1 y la 8: esas
+necesitan el sitio abierto y quedan para la noche del corte.
 
-- **Prueba 2:** login correcto. Para el login fallido, ventana privada con un
-  usuario inventado: no debe salir de `/login`.
+- **Prueba 2:** login correcto. Para el login fallido, una ventana privada con
+  un usuario inventado: no debe salir de `/login`.
 - **Pruebas 3–7:** como admin.
 - **Prueba 9:** `sudo -u www-data php admin/cli/cron.php` una vez. Con
   `noemailever` no sale ningún correo.
@@ -497,96 +584,103 @@ la tabla del plan ([../migration-plan.md](../migration-plan.md) §7), salvo la
 echo "smoke: <OK / qué falló>" | tee -a /root/phase3/times.log
 ```
 
-### C11. Sacar los registros ANTES de revertir
-
-La reversión borra todo lo escrito después del snapshot, también estos
-registros:
+### C14. Sacar los registros ANTES de revertir
 
 ```bash
-exit                                  # cierra script (vuelca el registro); sigues en tmux
+exit                                  # cierra script; sigues en tmux
 cat /root/phase3/times.log
 ```
 
 En el **portátil**:
 
 ```bash
-scp root@169.58.171.171:'/root/phase3/{times.log,server-rehearsal.log}' ~/richimath-prod-copy/
+scp root@169.58.171.171:'/root/phase3/{times.log,server-rehearsal.log}' ~/richimath-prod-copy/night/
 ```
 
-### C12. Revertir el snapshot y abrir 4.3
+### C15. Revertir el snapshot y abrir 4.3
 
-Panel de Contabo → Snapshots → `ensayo-53-<fecha>` → **Revert**. **Anotar
-cuánto tarda** hasta que el SSH vuelve a responder. Después:
+Contabo → Snapshots → `ensayo-53-<fecha>` → **Revert**. **Anotar cuánto
+tarda** hasta que el SSH vuelve a responder. Después:
 
 ```bash
 ssh root@169.58.171.171
-php -v | head -1; mysql --version                    # 8.2 · 8.0
-ls -d /var/www/*                                       # html (4.3), moodle45, moodle53
+lsb_release -ds; php -v | head -1; mysql --version      # 24.04 · 8.2 · 8.0
+ls -d /var/www/*                                         # html (4.3), maintenance, moodle45, moodle53
 cd /var/www/html && sudo -u www-data php admin/cli/cfg.php --name=release    # 4.3.12
 crontab -u www-data /root/phase3/www-data.crontab && crontab -u www-data -l
 sudo -u www-data php admin/cli/maintenance.php --disable
-curl -sS -o /dev/null -w '%{http_code}\n' https://richiacademy.com/        # 200
+curl -sS -o /dev/null -w '%{http_code}\n' https://richiacademy.com/            # 200
 ```
 
-Abrir el sitio en una ventana privada: portada y login de 4.3. Avisar a Richi.
-La copia del portátil (`~/richimath-prod-copy`) se borra cuando el registro
-esté anotado.
+Abrir el sitio en una ventana privada (portada y login de 4.3) y avisar a
+Richi. Con los tiempos de `times.log` se fija la ventana del corte.
 
 ---
 
-## 5. Trampas conocidas antes de empezar
+## 6. La noche del corte (Fase 4)
 
-1. **`adhoc_task.php` no corre en mantenimiento por CLI**: hay que pasar antes
-   a `--enableold` y borrar `climaintenance.html` (C8). El ensayo en Docker no
-   lo veía porque no activaba el mantenimiento.
-2. **El mantenimiento por CLI tampoco deja entrar al admin** por la web. Las
-   pruebas de humo «con mantenimiento puesto» solo son posibles en el modo a
-   medias.
-3. **Instalar `php8.3-cli` cambia `/usr/bin/php` a 8.3**, y Moodle 4.3 lo
-   rechaza: hay que devolverlo con `update-alternatives` en el mismo momento
-   (B2).
-4. **Con el repositorio de Oracle añadido, `apt upgrade` subiría MySQL a 8.4**
-   con el 4.3 en vivo: por eso los paquetes quedan retenidos (B4) hasta C6.
-5. **Arrancar el código nuevo contra la base de producción** escribe cachés de
+Lo mismo que C1–C13, **sin** la línea de `noemailever` de C10. Después:
+
+```bash
+sudo -u www-data php /var/www/html/admin/cli/maintenance.php --disable
+crontab -u www-data /root/phase3/www-data.crontab      # /usr/bin/php ya es 8.4
+certbot renew --dry-run
+```
+
+- Pruebas de humo 1 (portada sin sesión) y 8 (como alumno).
+- Una prueba de correo: Administración → Servidor → Correo → Probar.
+- **FUN-23:** el primer despliegue sobre 5.3, con
+  `bash /var/www/html/scripts/deploy-contabo.sh`.
+- **Días después** (Fase 5):
+  - `apt autoremove --purge`;
+  - borrar `/var/www/moodle43`, `/var/www/moodle45` y `/var/www/maintenance`;
+  - borrar la copia del portátil.
+
+---
+
+## 7. Trampas sabidas antes de empezar
+
+1. **`adhoc_task.php` no corre en mantenimiento por CLI**, y ese mantenimiento
+   tampoco deja entrar al admin por la web: hay que pasar al modo a medias
+   (C10). El ensayo en Docker no lo veía porque no activaba el mantenimiento.
+2. **Apache sin PHP con un `.php` bajo la raíz web sirve el código como
+   texto**, `config.php` incluido. Por eso, página estática antes de apagar
+   PHP (C6).
+3. **La redirección a HTTPS de certbot se come la página de error** en el vhost
+   `:80`. La regla `[END]` para `/index.html` lo evita (B8, probado).
+4. **4.3 no puede vivir en 26.04** (PHP ≤ 8.2, y 26.04 solo trae MySQL 8.4):
+   el salto a 4.5 va antes que Ubuntu.
+5. **Ubuntu 26.04 trae PHP 8.5, y Moodle 5.3 no lo admite**: 8.4 de
+   `packages.sury.org`. El PPA de Launchpad no tiene `resolute`.
+6. **Arrancar el código nuevo contra la base de producción** escribe cachés de
    otra versión en `moodledata`: nada de CLI desde `moodle45`/`moodle53` antes
    de la noche.
-6. **Un SSH cortado mata el `upgrade.php`** que esté corriendo: siempre dentro
-   de `tmux`.
-7. **Revertir el snapshot borra los registros de la noche**: sacarlos antes
-   (C11).
-8. **`git` como `root` en un árbol de `www-data`** pide `safe.directory`
-   (B6).
+7. **Un SSH cortado mata lo que esté corriendo**: siempre dentro de `tmux`. El
+   reinicio de C7 cierra la sesión: se abre otra.
+8. **Revertir el snapshot borra los registros de la noche**: sacarlos antes
+   (C14).
+9. **`git` como `root` en un árbol de `www-data`** pide `safe.directory` (B7).
+10. **`grep -r` se salta los enlaces simbólicos** que encuentra (los vhosts de
+    `sites-enabled`): usar `grep -R`.
 
 ---
 
-## 6. Registro
+## 8. Registro
 
 | Paso | Portátil (ensayo 4) | Servidor (bloque C) |
 |---|---|---|
 | Snapshot (crear) | — | |
 | Copia: volcado + `tar` | 21–27 s + 14 s (Fase 2) | |
 | Upgrade 4.3 → 4.5 | 159 s | |
-| MySQL 8.0 → 8.4 | 20 s | |
-| Cambio de PHP, código y vhost | — | |
+| Página estática y PHP 8.2 fuera | — | |
+| Ubuntu 24.04 → 26.04 (incluye MySQL 8.4 y reinicio) | 20 s (solo MySQL) | |
+| PHP 8.4 (instalar y configurar) | — | |
 | Upgrade 4.5 → 5.3 | 164 s | |
 | Tareas adhoc (CSS, `mod_qbank`) | 229 s | |
 | Personalización de idioma | 12 s | |
+| Apache → 5.3 | — | |
 | Pruebas de humo | — | |
 | Snapshot (revertir) | — | |
 
 Con la columna del servidor se fijan los `T+?` de la plantilla del corte
-([../migration-plan.md](../migration-plan.md) §7), con margen × 2.
-
-## 7. Qué pasa a la Fase 4
-
-- La noche del corte es el bloque C hasta C10 sin la línea de `noemailever`,
-  y después:
-  1. prueba de humo 1 (portada sin sesión) y 8 (como alumno);
-  2. `maintenance.php --disable`;
-  3. restaurar el cron (`crontab -u www-data /root/phase3/www-data.crontab`;
-     con `php` ya en 8.3, la misma línea sirve);
-  4. una prueba de correo (Administración → Servidor → Correo → Probar).
-- **FUN-23**: la primera vez que haga falta desplegar sobre 5.3,
-  `bash /var/www/html/scripts/deploy-contabo.sh`. No se prueba en el bloque C,
-  porque termina quitando el mantenimiento.
-- **Fase 5:** retirar PHP 8.2 y `/var/www/moodle43` tras dos semanas estables.
+([../migration-plan.md](../migration-plan.md) §7), con margen × 1,5.

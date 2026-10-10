@@ -296,19 +296,14 @@ Todos en 5.3 y verificados en el navegador.
    `docker compose -p rmrehearsal down -v` y `rm -rf ~/richimath-prod-copy`.
 2. **Fase 3, preparar el servidor:** el usuario ejecuta en el VPS lo que se le
    prepare, siempre con un **snapshot** antes.
-   - **PHP 8.3** junto al 8.2 (PPA ondrej), con las mismas extensiones
-     (`php8.2 -m`) y `max_input_vars ≥ 5000`. Sin cambiar todavía el módulo de
-     Apache.
-   - **MySQL 8.4** desde el repositorio APT oficial (8.0 → 8.4 sobre los mismos
-     datos). Ensayar con snapshot.
+   - **Destino cambiado el 2026-10-10** (ver
+     [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md)):
+     Ubuntu 26.04 + PHP 8.4-FPM + MySQL 8.4 + Apache event/HTTP/2, en el mismo
+     VPS. Sustituye a «PHP 8.3 al lado del 8.2» y al repositorio APT de Oracle.
    - **Vhost de 5.3:** `DocumentRoot` en `public/`, `AllowOverride FileInfo
      Indexes`, `mod_rewrite`, y la regla del router a `/r.php` al **final** de
      `public/.htaccess`.
-   - **`config.php` de 5.3:**
-     - `routerconfigured = true`;
-     - `dbcollation = utf8mb4_unicode_ci`;
-     - `wwwroot = https://richiacademy.com`;
-     - `config.php` y `admin/cli/` en la raíz, fuera de `public/`.
+   - **`config.php` de 5.3:** el de producción más `routerconfigured = true`.
    - **Comprobar:**
      - la salida a internet a `download.moodle.org`;
      - el script de despliegue contra 5.3 (FUN-23);
