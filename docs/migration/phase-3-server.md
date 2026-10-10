@@ -232,7 +232,7 @@ git -C /var/www/html archive HEAD local/richimath theme/richimath theme/rmprimar
     theme/rmsecundaria theme/rmpreu theme/rmuniversidad | tar -x -C /var/www/moodle45
 cp -p /var/www/html/config.php /var/www/moodle45/config.php
 chown -R www-data:www-data /var/www/moodle45
-grep -m1 'release' /var/www/moodle45/version.php      # 4.5.14+ (Build: 20261002)
+grep '^\$release' /var/www/moodle45/version.php      # 4.5.14+ (Build: 20261002)
 ls /var/www/moodle45/local/richimath/version.php /var/www/moodle45/theme/rmpreu/version.php
 php8.2 -l /var/www/moodle45/config.php
 ```
