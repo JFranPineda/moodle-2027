@@ -1,5 +1,8 @@
 # SUMMARY.md — traspaso de la sesión del 2026-10-09 (Fase 2 y cambios en producción)
 
+> **Actualizado el 2026-10-10:** la Fase 2 quedó cerrada con la copia 3 y el
+> ensayo 4 (52/52, sección E toda en OK). Lo que sigue es la Fase 3 (§10).
+
 Qué se hizo en esta sesión, por qué y dónde quedó cada cosa, para retomarla sin
 volver a descubrirla.
 
@@ -57,20 +60,13 @@ Son unos 2,5 min por entorno; los dos pueden ir en paralelo.
 |---|---|
 | 0 Preparar | ✅ |
 | 1 Portar el código | ✅ (23/23 MIG) |
-| **2 Ensayo con copia de producción** | 🟡 Tres ensayos hechos; el **3 es el primer verde limpio** (52/52 con BBB real, sin arreglos en medio). Falta **uno más igual** |
+| 2 Ensayo con copia de producción | ✅ 2026-10-10: ensayos 3 y 4 en verde seguidos (52/52 con BBB real, sin arreglos). El 4, sobre la copia 3, deja la sección E toda en OK |
 | 3 Preparar el servidor | Pendiente; puede ir en paralelo con la 2 |
 | 4 Corte (una noche) | Fecha a fijar con Richi: no antes del **19–26 de octubre** y fuera de semana de exámenes |
 | 5 Después | Dos semanas de vigilancia |
 
-**Siguiente paso inmediato:**
-1. Sacar la **copia 3** de producción, ya con el tema del sitio devuelto a
-   Richimath (§3).
-2. Lanzar:
-   ```bash
-   scripts/rehearsal/rehearse-upgrade.sh ~/richimath-prod-copy
-   scripts/rehearsal/acceptance.sh ~/richimath-prod-copy --bbb
-   ```
-3. Si sale limpio, la Fase 2 queda cerrada.
+**Siguiente paso inmediato:** la Fase 3, preparar el servidor (§10). Antes,
+borrar el ensayo y la copia de producción (`docs/migration/phase-2-production-copy.md` §6).
 
 ---
 
@@ -83,7 +79,7 @@ Son unos 2,5 min por entorno; los dos pueden ir en paralelo.
 | **Acceso de invitados BBB** | Ajuste global (Extensiones → BigBlueButton → Características experimentales) y en una actividad (`course/modedit.php?update=261`) | El enlace de invitado (FUN-19) ya funciona en 4.3 |
 | **Banner de portada** (FUN-25) | `sudo -u www-data php scripts/set-frontpage-banner.php /var/www/html/assets/frontpage-banner.jpg` | Instalado. La ruta va absoluta porque el script de 4.3 no resuelve relativas (§9) |
 | **Tema del sitio** | El usuario lo cambió a `rmuniversidad` probando la interfaz y lo **devolvió a Richimath** el mismo día | Ver la explicación debajo |
-| **Copias para el ensayo** | Copia 1 (`2026-10-09-1643`, hora del servidor) y copia 2 (`2026-10-09-2354`) | Las dos borradas del VPS. La 1 también del portátil; la 2 está en `~/richimath-prod-copy` |
+| **Copias para el ensayo** | Copia 1 (`2026-10-09-1643`, hora del servidor), copia 2 (`2026-10-09-2354`) y copia 3 (`2026-10-10-0637`) | La 1 y la 2, borradas del VPS y del portátil; la 3 queda en `~/richimath-prod-copy` hasta cerrar la fase |
 
 **Por qué cambiar el tema del sitio «no hacía nada» con sesión iniciada:**
 - Cada usuario tiene su tema según su **plan** (`/members`). Así se asigna en el
@@ -147,13 +143,13 @@ correos.
 
 ## 5. Ensayos y aceptación
 
-| | Ensayo 1 | Ensayo 2 | Ensayo 3 |
-|---|---|---|---|
-| Copia | 1 | 2 | 2 |
-| Upgrade (de la collation al último paso) | 8,6 min | 10,2 min | 11,7 min |
-| Técnico | Esquema OK | Esquema OK | Esquema OK |
-| Sección E | Invitados BBB apagados (así venía) | Tema del sitio `rmuniversidad` (así venía) | Igual que el 2 |
-| Aceptación | A mano, 22/25 ✅, **4 arreglos** | Automática 51/51 (un fallo del script, corregido); a ojo, textos en inglés → **37 cadenas traducidas** | **52/52 ✅ sin arreglos** |
+| | Ensayo 1 | Ensayo 2 | Ensayo 3 | Ensayo 4 |
+|---|---|---|---|---|
+| Copia | 1 | 2 | 2 | 3 |
+| Upgrade (de la collation al último paso) | 8,6 min | 10,2 min | 11,7 min | 9,8 min |
+| Técnico | Esquema OK | Esquema OK | Esquema OK | Esquema OK |
+| Sección E | Invitados BBB apagados (así venía) | Tema del sitio `rmuniversidad` (así venía) | Igual que el 2 | **Toda en OK** |
+| Aceptación | A mano, 22/25 ✅, **4 arreglos** | Automática 51/51 (un fallo del script, corregido); a ojo, textos en inglés → **37 cadenas traducidas** | **52/52 ✅ sin arreglos** | **52/52 ✅ sin arreglos** |
 
 Los tiempos varían con la carga del portátil. La ventana real del corte se mide
 en el servidor (Fase 3).
@@ -296,11 +292,8 @@ Todos en 5.3 y verificados en el navegador.
 
 ## 10. Lo que queda
 
-1. **Cerrar la Fase 2:**
-   - el usuario saca la copia 3;
-   - se ejecutan `rehearse-upgrade.sh` y `acceptance.sh --bbb`;
-   - si sale limpio, son dos verdes seguidos. Luego se borra
-     `~/richimath-prod-copy`.
+1. **Fase 2 ✅ (2026-10-10).** Solo queda borrar el ensayo y la copia:
+   `docker compose -p rmrehearsal down -v` y `rm -rf ~/richimath-prod-copy`.
 2. **Fase 3, preparar el servidor:** el usuario ejecuta en el VPS lo que se le
    prepare, siempre con un **snapshot** antes.
    - **PHP 8.3** junto al 8.2 (PPA ondrej), con las mismas extensiones

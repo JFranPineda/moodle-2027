@@ -7,6 +7,8 @@ producción. Plan general: [../migration-plan.md](../migration-plan.md) §5.
 La fase sale cuando el ensayo queda **en verde dos veces seguidas**, cada una
 desde una copia limpia. Por eso este procedimiento se repite entero cada vez.
 
+**Cerrada el 2026-10-10**: los ensayos 3 y 4 salieron en verde seguidos (§4).
+
 ---
 
 ## 1. Reglas: son datos reales de alumnos
@@ -157,25 +159,27 @@ movimiento del sistema solar.
 
 ## 4. Registro de ensayos
 
-| Paso | Ensayo 1 · copia 1 | Ensayo 2 · copia 2 | Ensayo 3 · copia 2 |
-|---|---|---|---|
-| Importar base + `moodledata` | 24 s | 30 s | 32 s |
-| Unificar collation | 4 s | 4 s (nada que convertir) | 4 s |
-| Upgrade 4.3 → 4.5 | 139 s | 173 s | 198 s |
-| Cambio a PHP 8.3 + MySQL 8.4 | 20 s | 24 s | 25 s |
-| Upgrade 4.5 → 5.3 | 148 s | 199 s | 225 s |
-| Tareas adhoc (≈ todo CSS; `mod_qbank` ≈ 1 s) | 197 s | 205 s | 240 s |
-| Personalización de idioma | 7 s | 9 s | 11 s |
-| **Total, de la collation al último paso** | **515 s ≈ 8,6 min** | **614 s ≈ 10,2 min** | **703 s ≈ 11,7 min** |
-| Resultado técnico | Esquema OK; sección E: acceso de invitados BBB apagado (venía así) | Esquema OK; sección E: **tema del sitio = `rmuniversidad`** (venía así de producción, ver §5) | Esquema OK; sección E igual que el ensayo 2 (tema del sitio = `rmuniversidad`, de producción) |
-| Aceptación | A mano: 22/25 ✅, 4 arreglos | Automática: 51/51 ✅ (un fallo del propio script, corregido); a ojo: «Attempt submitted.» en inglés → 37 cadenas traducidas | Automática: **52/52 ✅** con BBB real; sin arreglos en medio |
+| Paso | Ensayo 1 · copia 1 | Ensayo 2 · copia 2 | Ensayo 3 · copia 2 | Ensayo 4 · copia 3 |
+|---|---|---|---|---|
+| Importar base + `moodledata` | 24 s | 30 s | 32 s | 29 s |
+| Unificar collation | 4 s | 4 s (nada que convertir) | 4 s | 4 s (nada que convertir) |
+| Upgrade 4.3 → 4.5 | 139 s | 173 s | 198 s | 159 s |
+| Cambio a PHP 8.3 + MySQL 8.4 | 20 s | 24 s | 25 s | 20 s |
+| Upgrade 4.5 → 5.3 | 148 s | 199 s | 225 s | 164 s |
+| Tareas adhoc (≈ todo CSS; `mod_qbank` ≈ 1 s) | 197 s | 205 s | 240 s | 229 s |
+| Personalización de idioma | 7 s | 9 s | 11 s | 12 s |
+| **Total, de la collation al último paso** | **515 s ≈ 8,6 min** | **614 s ≈ 10,2 min** | **703 s ≈ 11,7 min** | **588 s ≈ 9,8 min** |
+| Resultado técnico | Esquema OK; sección E: acceso de invitados BBB apagado (venía así) | Esquema OK; sección E: **tema del sitio = `rmuniversidad`** (venía así de producción, ver §5) | Esquema OK; sección E igual que el ensayo 2 (tema del sitio = `rmuniversidad`, de producción) | Esquema OK; **sección E toda en OK**, con el tema del sitio = `richimath` |
+| Aceptación | A mano: 22/25 ✅, 4 arreglos | Automática: 51/51 ✅ (un fallo del propio script, corregido); a ojo: «Attempt submitted.» en inglés → 37 cadenas traducidas | Automática: **52/52 ✅** con BBB real; sin arreglos en medio | Automática: **52/52 ✅** con BBB real; sin arreglos. **Segundo verde seguido: la fase queda cerrada** |
 
 - **Copia 1**: tomada el 2026-10-09 a las 16:43 (hora del servidor).
 - **Copia 2**: tomada a las 23:54, ya con la collation unificada, el acceso de
   invitados encendido y el banner instalado.
+- **Copia 3**: tomada el 2026-10-10 a las 06:37 (hora del servidor), con el
+  tema del sitio ya devuelto a Richimath.
 
 Los tiempos varían con la carga del portátil (119–198 s el salto a 4.5 y
-126–225 s el salto a 5.3, entre seis ejecuciones); la ventana real sale de
+126–225 s el salto a 5.3, entre siete ejecuciones); la ventana real sale de
 medirlos en el servidor (Fase 3).
 
 Tiempos del portátil: el VPS 4 tiene menos CPU. La Fase 3 los repite en el
@@ -281,7 +285,9 @@ arrancar (`lib/setup.php`), y el script de 4.3 todavía no lo compensa (el de
    usuario probando la interfaz y lo **devolvió a Richimath** el mismo día. No
    quedó en `config_log`, porque el selector de temas no deja rastro. Con sesión
    iniciada no se nota: cada usuario tiene el tema de su plan, y el plan Admin
-   usa el aspecto Universidad. Solo lo ven los visitantes sin sesión.
+   usa el aspecto Universidad. Solo lo ven los visitantes sin sesión. La
+   copia 3 ya lo trae en `richimath`, y el ensayo 4 dejó la sección E toda en
+   OK.
 8. **El paquete español de 5.3 aún no traduce todo**: la versión acaba de salir.
    37 cadenas que ven alumnos o profesores van traducidas en
    `assets/customlang/es/` y se importan en el corte. Antes del corte conviene
@@ -293,7 +299,9 @@ arrancar (`lib/setup.php`), y el script de 4.3 todavía no lo compensa (el de
      $string = []; include "/var/moodledata/lang/es/quiz.php";
      print_r(array_keys(array_diff_key($en, $string)));'
    ```
-   Se cambia `quiz` por el componente que se quiera revisar.
+   Se cambia `quiz` por el componente que se quiera revisar. Con el ensayo ya
+   borrado (§6), el mismo comando sirve en `:8083` sin `-p rmrehearsal`, desde
+   la raíz del repo: monta `moodledata` en la misma ruta.
 
 ## 6. Al cerrar la Fase 2
 

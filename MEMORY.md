@@ -1,6 +1,6 @@
 # MEMORY.md — estado vivo de la migración a 5.3 (actualizar al terminar cada tarea)
 
-Última actualización: 2026-10-09 cierre de sesión (ver SUMMARY.md). Fase 2: ensayo 3 = primer verde limpio; falta copia 3 + ensayo 4. Tema del sitio en prod ya devuelto a Richimath.
+Última actualización: 2026-10-10 (ver SUMMARY.md). **Fase 2 cerrada**: ensayos 3 y 4 en verde seguidos (ensayo 4 = copia 3, 52/52, sección E toda en OK). Siguiente: Fase 3 (servidor).
 
 ## Árboles en disco
 
@@ -20,7 +20,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 |---|---|
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
 | 1 Portar código | ✅ 2026-10-09 — 23/23 MIG. MIG-27 = iconos de Moodle; MIG-26 = lista de usuarios de 5.3 + `core_admin/userlist` = «Lista de usuarios» (customlang) |
-| 2 Ensayo con copia de producción | 🟡 ensayo 1 (a mano, 4 arreglos) · ensayo 2 (copia 2, 51/51 auto; 37 cadenas sin traducir → customlang) · ensayo 3 (misma copia, 52/52 auto, sin arreglos: primer verde limpio) — ver [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md) |
+| 2 Ensayo con copia de producción | ✅ 2026-10-10 — ensayo 1 (a mano, 4 arreglos) · ensayo 2 (copia 2, 51/51 auto; 37 cadenas sin traducir → customlang) · ensayo 3 (misma copia, 52/52 auto, sin arreglos: primer verde limpio) · ensayo 4 (copia 3, 52/52 con BBB, sección E toda OK, 9,8 min: segundo verde) — ver [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md) |
 | 3 Preparar servidor | — |
 | 4 Corte | — |
 | 5 Después | — |
@@ -157,7 +157,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 ## Fase 2 — copia de producción y ensayo (2026-10-09)
 
 - **Copia** en `~/richimath-prod-copy` (fuera de repos, `chmod 700`; datos
-  reales: borrar al cerrar la fase). Origen: MySQL **8.0.46**, código
+  reales: se borra al cerrar la fase, con el ensayo; §6 del documento). Origen: MySQL **8.0.46**, código
   `3c044eae`, BD 43 MB (3,2 MB gz), `moodledata` 220 MB (102 MB gz).
   Procedimiento: [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md).
 - **Ensayo**: `scripts/rehearsal/rehearse-upgrade.sh ~/richimath-prod-copy` →
