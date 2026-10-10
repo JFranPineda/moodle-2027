@@ -7,7 +7,7 @@ las dos versiones lado a lado.
 | Servicio | Imagen | Qué hace |
 |---|---|---|
 | `db` | `mysql:8.4` | La base que exige 5.3 y la que tendrá producción |
-| `web` | `moodlehq/moodle-php-apache:8.3` | Apache + PHP 8.3, `DocumentRoot` en `public/` |
+| `web` | `moodlehq/moodle-php-apache:8.4` | Apache + PHP 8.4 (lo más nuevo que admite 5.3, y lo que tendrá producción), `DocumentRoot` en `public/` |
 | `cron` | la misma imagen | `admin/cli/cron.php` cada 60 s, como en producción |
 
 ## Lo que el contenedor `web` configura al arrancar (y por qué)

@@ -107,10 +107,11 @@ upgrade() {
 }
 
 # MySQL upgrades its data dictionary in place on the first start of 8.4; a
-# clean stop of 8.0 first, as on the server.
+# clean stop of 8.0 first, as on the server. PHP 8.4: the newest 5.3 supports,
+# and the one production runs after the cutover (docs/migration/phase-3-server.md).
 switch_to_53() {
     dc stop web db
-    hop mysql:8.4 moodlehq/moodle-php-apache:8.3 "$REPO53" /var/www/html/public "$WORK/config53.php"
+    hop mysql:8.4 moodlehq/moodle-php-apache:8.4 "$REPO53" /var/www/html/public "$WORK/config53.php"
     dc up -d --wait
 }
 
@@ -142,7 +143,7 @@ step "restore moodledata"             restore_moodledata
 echo "Production release: $(web admin/cli/cfg.php --name=release | tail -1)" | tee -a "$LOG"
 step "unify collation (unicode_ci)"   web admin/cli/mysql_collation.php --collation=utf8mb4_unicode_ci
 step "upgrade 4.3 → 4.5"              upgrade 4.5
-step "switch to PHP 8.3 + MySQL 8.4"  switch_to_53
+step "switch to PHP 8.4 + MySQL 8.4"  switch_to_53
 step "upgrade 4.5 → 5.3"              upgrade 5.3
 # The upgrade queues core's CSS build for every installed theme (nearly all of
 # this step) and the question bank move to mod_qbank. Both belong to the

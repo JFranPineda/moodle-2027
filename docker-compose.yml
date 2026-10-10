@@ -1,5 +1,5 @@
-# Local environment for Moodle 5.3: PHP 8.3 + MySQL 8.4, the versions 5.3
-# requires and the ones production will run. Runs next to the 4.3 mirror
+# Local environment for Moodle 5.3: PHP 8.4 + MySQL 8.4, the newest versions 5.3
+# supports and the ones production will run. Runs next to the 4.3 mirror
 # (github/moodle on :8080) so both can be compared side by side.
 # Usage: docker compose up -d → http://localhost:8083
 services:
@@ -22,7 +22,7 @@ services:
       - db_data:/var/lib/mysql
 
   web:
-    image: moodlehq/moodle-php-apache:8.3
+    image: moodlehq/moodle-php-apache:8.4
     depends_on:
       db:
         condition: service_healthy
@@ -54,7 +54,7 @@ services:
   # Moodle's cron, every minute, as production runs it. Without it 5.3 flags a
   # warning and adhoc tasks (mail, caches, BBB recordings) never run.
   cron:
-    image: moodlehq/moodle-php-apache:8.3
+    image: moodlehq/moodle-php-apache:8.4
     depends_on:
       db:
         condition: service_healthy
