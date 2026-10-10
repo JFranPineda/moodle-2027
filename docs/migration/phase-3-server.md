@@ -147,7 +147,7 @@ de seguridad, sin tocar nada más:
 ```bash
 apt update
 apt list --upgradable 2>/dev/null | grep -E 'php8\.3|mod-php8\.3'     # si sale algo:
-apt install --only-upgrade -y 'php8.3*' libapache2-mod-php8.3
+apt install --only-upgrade -y $(dpkg -l | awk '/^ii/ && $2 ~ /php8\.3/ {print $2}')
 ```
 
 Después:
