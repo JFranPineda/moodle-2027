@@ -57,7 +57,7 @@ página estática, PHP 8.2 fuera   do-release-upgrade ──▶ 26.04 · MySQL 8
 |---|---|---|---|
 | **A. Inventario** ✅ | Solo lectura | No | Hecho el 2026-10-10 |
 | **B. Preparar** ✅ | 24.04 al día, PHP sin uso fuera, árboles 4.5 y 5.3, página de mantenimiento, vhosts escritos sin activar | Solo un reinicio (1–2 min) | Hecho el 2026-10-10 |
-| **Dos verdes con PHP 8.4** (§4) | Copia 4 y ensayos 5 y 6 en el portátil, con la imagen 8.4 | No | ~1 h |
+| **Dos verdes con PHP 8.4** (§4) ✅ | Copia 4 y ensayos 5 y 6 en el portátil, con la imagen 8.4 | No | Hecho el 2026-10-11 |
 | **C. Ensayo general** | La noche entera, cronometrada, y **vuelta al snapshot** | Sí, de noche | 3–4 h |
 | **Fase 4** (§6) | Lo mismo que C, sin revertir | Sí, de noche | Lo que mida C |
 
@@ -373,6 +373,27 @@ Falta la prueba con datos reales: **dos verdes seguidos**.
 La copia 4 sirve además de copia de seguridad reciente fuera del VPS. Se borra
 al cerrar el bloque C.
 
+**Resultado (2026-10-11), copia 4 (`2026-10-11-0821`, hora del servidor):**
+
+| | Ensayo 5 | Ensayo 6 |
+|---|---|---|
+| PHP del salto a 5.3 | 8.4.26 | 8.4.26 |
+| Upgrade 4.3 → 4.5 | 129 s | 113 s |
+| Cambio a PHP 8.4 + MySQL 8.4 | 20 s | 19 s |
+| Upgrade 4.5 → 5.3 | 153 s | 128 s |
+| Tareas adhoc | 160 s | 176 s |
+| Personalización de idioma | 5 s | 9 s |
+| **Total, de la collation al último paso** | **471 s ≈ 7,9 min** | **448 s ≈ 7,5 min** |
+| Técnico | Esquema OK; sección E toda en OK; 0 avisos de obsoleto | Igual |
+| Aceptación | 51/52: el FAIL de FUN-25 era de la comprobación, no del sitio (ver debajo) | **52/52 ✅** con BBB real |
+
+- **FUN-25 en el ensayo 5:** Richi había cambiado el banner desde la web el
+  2026-10-10, por su propia imagen (`Logo R M (1).png`). La comprobación
+  buscaba el nombre del fichero viejo. Ahora cuenta la imagen de la etiqueta de
+  la portada (`832c10e96`). Se queda el banner de Richi.
+- **A ojo, ensayo 6:** la revisión del examen sale en español con las fórmulas
+  compuestas, y el área personal del alumno sale con su tema y sus chips.
+
 ---
 
 ## 5. Bloque C — Ensayo general en el servidor (y vuelta atrás)
@@ -686,17 +707,17 @@ certbot renew --dry-run
 
 ## 8. Registro
 
-| Paso | Portátil (ensayo 4) | Servidor (bloque C) |
+| Paso | Portátil (ensayo 6, PHP 8.4) | Servidor (bloque C) |
 |---|---|---|
 | Snapshot (crear) | — | |
 | Copia: volcado + `tar` | 21–27 s + 14 s (Fase 2) | |
-| Upgrade 4.3 → 4.5 | 159 s | |
+| Upgrade 4.3 → 4.5 | 113 s | |
 | Página estática y PHP 8.2 fuera | — | |
-| Ubuntu 24.04 → 26.04 (incluye MySQL 8.4 y reinicio) | 20 s (solo MySQL) | |
+| Ubuntu 24.04 → 26.04 (incluye MySQL 8.4 y reinicio) | 19 s (solo MySQL y PHP) | |
 | PHP 8.4 (instalar y configurar) | — | |
-| Upgrade 4.5 → 5.3 | 164 s | |
-| Tareas adhoc (CSS, `mod_qbank`) | 229 s | |
-| Personalización de idioma | 12 s | |
+| Upgrade 4.5 → 5.3 | 128 s | |
+| Tareas adhoc (CSS, `mod_qbank`) | 176 s | |
+| Personalización de idioma | 9 s | |
 | Apache → 5.3 | — | |
 | Pruebas de humo | — | |
 | Snapshot (revertir) | — | |

@@ -21,7 +21,7 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
 | 1 Portar código | ✅ 2026-10-09 — 23/23 MIG. MIG-27 = iconos de Moodle; MIG-26 = lista de usuarios de 5.3 + `core_admin/userlist` = «Lista de usuarios» (customlang) |
 | 2 Ensayo con copia de producción | ✅ 2026-10-10 — ensayo 1 (a mano, 4 arreglos) · ensayo 2 (copia 2, 51/51 auto; 37 cadenas sin traducir → customlang) · ensayo 3 (misma copia, 52/52 auto, sin arreglos: primer verde limpio) · ensayo 4 (copia 3, 52/52 con BBB, sección E toda OK, 9,8 min: segundo verde) — ver [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md) |
-| 3 Preparar servidor | 🟡 destino (2026-10-10): **Ubuntu 26.04 + PHP 8.4-FPM + MySQL 8.4 + Apache event/HTTP/2**, en el mismo VPS. Guía: [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md) (A ✅ · B ✅ 2026-10-10 → dos verdes con PHP 8.4 en local (copia 4) → C ensayo en el VPS con vuelta al snapshot) |
+| 3 Preparar servidor | 🟡 destino (2026-10-10): **Ubuntu 26.04 + PHP 8.4-FPM + MySQL 8.4 + Apache event/HTTP/2**, en el mismo VPS. Guía: [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md) (A ✅ · B ✅ 2026-10-10 · dos verdes con PHP 8.4 ✅ 2026-10-11: ensayos 5 y 6 con la copia 4, 52/52 y 0 avisos de obsoleto, ~7,5 min → **siguiente: C**, ensayo en el VPS con vuelta al snapshot) |
 | 4 Corte | — |
 | 5 Después | — |
 
@@ -347,5 +347,5 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
     como texto (`config.php`).
 11. **PHP 8.4 comprobado en local**: 75 ficheros nuestros limpios con `php -l`
     de 8.4; `:8083` y `rehearse-upgrade.sh` ya usan `moodlehq/moodle-php-apache:8.4`.
-    Faltan dos verdes con datos reales (copia 4).
+    Dos verdes con datos reales hechos (ensayos 5 y 6, 2026-10-11).
 
