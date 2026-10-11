@@ -107,7 +107,8 @@ check FUN-01 "admin lands on the dashboard" "$(js $S "location.pathname")" '^/da
 go $S /admin/user.php
 check FUN-22 "user list title" "$(ab $S get title)" '^Lista de usuarios'
 go $S '/?redirect=0'
-check FUN-25 "banner once, no empty band above it" "$(js $S "(() => { const i = [...document.querySelectorAll('#region-main img')].filter(x => /frontpage-banner/.test(x.src)); const h = document.querySelector('#region-main .course-section-header'); return i.length + ' ' + (h ? getComputedStyle(h).display : 'none'); })()")" '^1 none$'
+# The banner is whatever image the front page label holds: Richi swaps it from the browser.
+check FUN-25 "banner once, no empty band above it" "$(js $S "(() => { const i = document.querySelectorAll('#region-main li.activity.modtype_label img'); const h = document.querySelector('#region-main .course-section-header'); return i.length + ' ' + (h ? getComputedStyle(h).display : 'none'); })()")" '^1 none$'
 shot $S home-banner-1440
 go $S '/calendar/view.php?view=day'
 check FUN-07 "day view draws the current-time line" "$(js $S "!!document.querySelector('.richimath-dayview-nowline')")" '^true$'
