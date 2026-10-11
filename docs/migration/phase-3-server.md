@@ -125,7 +125,7 @@ echo "== respaldos"; ls -lh /root/moodle-backups/ 2>&1
 |---|---|
 | Máquina | Ubuntu 24.04.4, 4 vCPU, 7,8 GB de RAM, 88 GB libres |
 | PHP | 8.2 de sury (en uso). **8.3 ya instalado**, del archivo de Ubuntu (`8.3.6-0ubuntu0.24.04.11`), con las mismas extensiones que el 8.2 más `ldap`, y `libapache2-mod-php8.3` apagado. También hay un 8.4 de sury, sin usar. `php` → 8.2 en modo **manual**: instalar paquetes ya no lo cambia |
-| `php.ini` | Los valores propios están en `/etc/php/8.2/apache2/conf.d/99-richimath.ini`: `memory_limit` 512M, `upload_max_filesize` 200M, `post_max_size` 210M, `max_execution_time` 0, `max_input_vars` 5000 |
+| `php.ini` | Los valores propios están en `/etc/php/8.2/apache2/conf.d/99-richimath.ini`: `memory_limit` 512M, `upload_max_filesize` 200M, `post_max_size` 210M, `max_execution_time` 300, `max_input_time` 300, `max_input_vars` 5000. (El inventario leyó 0 y -1 en los dos tiempos: el binario CLI de PHP los fuerza, sea cual sea el `.ini`) |
 | Apache | 2.4.58, `mpm_prefork` + `php8.2`, `ssl`, `rewrite`. Vhosts `000-default.conf` y `000-default-le-ssl.conf`. `apache2.conf` deja `/var/www/` con `AllowOverride None`: el permiso del `.htaccess` está en los vhosts |
 | MySQL | 8.0.46 de Ubuntu (6 paquetes `mysql-*`). La configuración no usa ninguna opción que 8.4 elimine. Ningún usuario con `mysql_native_password` |
 | Moodle | `3c044eae`, árbol limpio, tema `richimath`, `/var/www/html` en `safe.directory`. El `config.php` conserva dos bloques (XAMPP y servidor) que elige un `if`; el `require` de `lib/setup.php` va fuera, en la línea 40 |
@@ -515,7 +515,7 @@ php-fpm8.4 -i | grep -E '^(memory_limit|upload_max_filesize|post_max_size|max_in
 update-alternatives --set php /usr/bin/php8.4; php -v | head -1
 ```
 
-Los valores tienen que ser los de `99-richimath.ini`: 512M, 200M, 210M, 5000 y 0.
+Los valores tienen que ser los de `99-richimath.ini`: 512M, 200M, 210M, 5000 y 300.
 
 ### C10. Salto 4.5 → 5.3
 
@@ -662,6 +662,9 @@ certbot renew --dry-run
 9. **`git` como `root` en un árbol de `www-data`** pide `safe.directory` (B7).
 10. **`grep -r` se salta los enlaces simbólicos** que encuentra (los vhosts de
     `sites-enabled`): usar `grep -R`.
+11. **El binario CLI de PHP fuerza `max_execution_time = 0` y `max_input_time = -1`**,
+    aunque se le pase el `php.ini` de Apache: para leer esos dos valores, el
+    fichero (`99-richimath.ini`) o `php-fpm8.4 -i`.
 
 ---
 
