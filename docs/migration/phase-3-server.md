@@ -664,7 +664,15 @@ Richi. Con los tiempos de `times.log` se fija la ventana del corte.
 
 ## 6. La noche del corte (Fase 4)
 
-Lo mismo que C1–C13, **sin** la línea de `noemailever` de C10. Después:
+**2026-10-11: el usuario decidió hacer el bloque C y la Fase 4 el mismo día**,
+en una sola pasada y sin esperar las 2–3 semanas del plan. El punto de decisión
+es C13:
+- **todo en verde:** se quita la línea de `noemailever` y se abre (esta
+  sección), en vez de revertir;
+- **algo falla y no se arregla en 30 minutos:** C14–C15, vuelta al 4.3.
+
+Lo mismo que C1–C13, **sin** la línea de `noemailever` de C10 (o quitándola
+antes de abrir). Después:
 
 ```bash
 sudo -u www-data php /var/www/html/admin/cli/maintenance.php --disable
