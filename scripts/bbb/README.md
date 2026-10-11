@@ -11,6 +11,7 @@ Cómo se instala, se dimensiona y se opera:
 |---|---|---|
 | `config/bbb-web.properties` | `/etc/bigbluebutton/bbb-web.properties` | Duración, grabación, tope por sala, cámaras de alumno |
 | `config/rap-night-window/bbb-rap-worker-*.{timer,service}` | `/etc/systemd/system/` | La ventana nocturna de procesado de grabaciones (BBB 3.0 no trae timer: se para el worker de día) |
+| `config/sysctl/90-bbb-udp.conf` | `/etc/sysctl.d/` | Búferes UDP del kernel: con los de fábrica descartaba paquetes de audio en las ráfagas (audio lento y entrecortado) |
 
 ## Lo que NO vive aquí, y no debe
 

@@ -117,6 +117,17 @@ meetingCameraCap=2
 dimensionamiento**: bloquea la cámara de los alumnos. Los bloqueos de BBB se
 aplican solo a espectadores, así que el profesor conserva la suya.
 
+Búferes UDP del kernel. Con los de fábrica (212 KB), el kernel tira paquetes
+de audio cuando llega una ráfaga y FreeSWITCH o mediasoup no los leen a tiempo:
+el audio llega lento y entrecortado. Pasó en producción (106.307
+`UdpRcvbufErrors` en 26 días, 2026-10-11). El fichero está en
+[`scripts/bbb/config/sysctl/90-bbb-udp.conf`](../scripts/bbb/config/sysctl/90-bbb-udp.conf):
+
+```bash
+cp 90-bbb-udp.conf /etc/sysctl.d/ && sysctl --system
+sysctl net.core.rmem_max net.core.rmem_default     # 16777216 · 1048576
+```
+
 ```bash
 bbb-conf --restart
 ```
@@ -622,6 +633,7 @@ du -sh /var/bigbluebutton/recording/published/ ; df -h /
 | La grabación no aparece **tampoco al día siguiente** | disco lleno, cola parada o los timers mal | `df -h`; `systemctl list-timers 'bbb-rap-worker-*'`; arrancar el worker a mano con `systemctl start bbb-rap-resque-worker` y mirar `journalctl -u bbb-rap-resque-worker` |
 | Con 5 clases a la vez se entrecorta la pantalla compartida | CPU o puerto al tope | mirar `htop` y `vnstat`; si es CPU o swap, subir a Cloud VPS 8; si es red, escalonar los horarios |
 | El servidor va bien 40 min y luego se arrastra | swap en uso: 12 GB se agotaron | `free -h` durante la clase; si se repite, es la señal de subir de plan |
+| El audio llega lento y entrecortado | el kernel descarta paquetes UDP: búferes de fábrica demasiado pequeños | `nstat -az \| grep UdpRcvbufErrors` sube durante las clases → `90-bbb-udp.conf` (paso 5). Si deja de subir y el audio sigue mal: `vmstat` (columna `st`) y `mtr` desde Lima, y ticket a Contabo |
 | Un alumno pide encender su cámara | está bloqueado a propósito (paso 5) | el profesor puede desbloquearlo en esa sala desde *Gestionar usuarios* |
 
 ## G. Seguridad mínima
