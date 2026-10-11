@@ -231,6 +231,9 @@ Más la consulta de **MIG-40** (actividades de `chat` y `survey`).
 
 ## 7. Fase 4 — El corte en producción (una noche)
 
+**Hecho el 2026-10-11** (domingo, de día, junto con el ensayo del bloque C):
+resultado y tiempos en [migration/phase-3-server.md](migration/phase-3-server.md) §8–§9.
+
 **Cuándo**: con la Fase 2 en verde dos veces, y no antes de **2–3 semanas
 después del 5 oct** (decisión ya tomada: un `.0` recién salido trae fallos).
 Fecha concreta: la eliges tú con Richi, fuera de semana de exámenes. La

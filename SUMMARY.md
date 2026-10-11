@@ -1,7 +1,9 @@
 # SUMMARY.md — traspaso de la sesión del 2026-10-09 (Fase 2 y cambios en producción)
 
-> **Actualizado el 2026-10-10:** la Fase 2 quedó cerrada con la copia 3 y el
-> ensayo 4 (52/52, sección E toda en OK). Lo que sigue es la Fase 3 (§10).
+> **Actualizado el 2026-10-11: CORTE HECHO.** Producción corre Moodle 5.3 sobre
+> Ubuntu 26.04, PHP 8.4-FPM y MySQL 8.4 desde las 15:59 (Lima). Fases 3 y 4:
+> [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md) (§8 tiempos,
+> §9 resultado, §10 lo que queda). Este fichero es la historia hasta la Fase 2.
 
 Qué se hizo en esta sesión, por qué y dónde quedó cada cosa, para retomarla sin
 volver a descubrirla.
@@ -61,9 +63,9 @@ Son unos 2,5 min por entorno; los dos pueden ir en paralelo.
 | 0 Preparar | ✅ |
 | 1 Portar el código | ✅ (23/23 MIG) |
 | 2 Ensayo con copia de producción | ✅ 2026-10-10: ensayos 3 y 4 en verde seguidos (52/52 con BBB real, sin arreglos). El 4, sobre la copia 3, deja la sección E toda en OK |
-| 3 Preparar el servidor | Pendiente; puede ir en paralelo con la 2 |
-| 4 Corte (una noche) | Fecha a fijar con Richi: no antes del **19–26 de octubre** y fuera de semana de exámenes |
-| 5 Después | Dos semanas de vigilancia |
+| 3 Preparar el servidor | ✅ 2026-10-11 (destino: Ubuntu 26.04 + PHP 8.4-FPM + MySQL 8.4) |
+| 4 Corte | ✅ 2026-10-11, 3 h 10 min |
+| 5 Después | 🟡 vigilancia hasta ~2026-10-25 |
 
 **Siguiente paso inmediato:** la Fase 3, preparar el servidor (§10). Antes,
 borrar el ensayo y la copia de producción (`docs/migration/phase-2-production-copy.md` §6).

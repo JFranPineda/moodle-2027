@@ -426,6 +426,9 @@ Todas las comprobaciones se hacen a **1440 y 390 px**, como **admin** y como
 - **En 5.3**: MIG-30 (el `DocumentRoot` cambia; `config.php` y `admin/cli/`
   siguen en la raíz).
 - **Hecho cuando**: el script corre de punta a punta contra 5.3 en el ensayo.
+- **2026-10-11**: tras el corte, el script hace también `composer install` (5.1+
+  necesita `vendor/`) y compila el CSS de los 5 temas antes de quitar el
+  mantenimiento. Falta su primera ejecución en producción.
 
 #### FUN-24 · Configuración del servidor BigBlueButton versionada 🟢
 - **Qué es**: la ventana nocturna de procesado de grabaciones (23:00–06:00 Lima)

@@ -58,8 +58,7 @@ página estática, PHP 8.2 fuera   do-release-upgrade ──▶ 26.04 · MySQL 8
 | **A. Inventario** ✅ | Solo lectura | No | Hecho el 2026-10-10 |
 | **B. Preparar** ✅ | 24.04 al día, PHP sin uso fuera, árboles 4.5 y 5.3, página de mantenimiento, vhosts escritos sin activar | Solo un reinicio (1–2 min) | Hecho el 2026-10-10 |
 | **Dos verdes con PHP 8.4** (§4) ✅ | Copia 4 y ensayos 5 y 6 en el portátil, con la imagen 8.4 | No | Hecho el 2026-10-11 |
-| **C. Ensayo general** | La noche entera, cronometrada, y **vuelta al snapshot** | Sí, de noche | 3–4 h |
-| **Fase 4** (§6) | Lo mismo que C, sin revertir | Sí, de noche | Lo que mida C |
+| **C + Fase 4** ✅ | Una sola pasada el 2026-10-11 (§6): todo verde en C13, así que se abrió en vez de revertir | Sí: 3 h 10 min | Hecho el 2026-10-11 (§9) |
 
 ---
 
@@ -723,20 +722,98 @@ certbot renew --dry-run
 
 ## 8. Registro
 
-| Paso | Portátil (ensayo 6, PHP 8.4) | Servidor (bloque C) |
+| Paso | Portátil (ensayo 6, PHP 8.4) | Servidor (corte, 2026-10-11) |
 |---|---|---|
-| Snapshot (crear) | — | |
-| Copia: volcado + `tar` | 21–27 s + 14 s (Fase 2) | |
-| Upgrade 4.3 → 4.5 | 113 s | |
-| Página estática y PHP 8.2 fuera | — | |
-| Ubuntu 24.04 → 26.04 (incluye MySQL 8.4 y reinicio) | 19 s (solo MySQL y PHP) | |
-| PHP 8.4 (instalar y configurar) | — | |
-| Upgrade 4.5 → 5.3 | 128 s | |
-| Tareas adhoc (CSS, `mod_qbank`) | 176 s | |
-| Personalización de idioma | 9 s | |
-| Apache → 5.3 | — | |
-| Pruebas de humo | — | |
-| Snapshot (revertir) | — | |
+| Snapshot (crear) | — | 1 min |
+| Copia: volcado + `tar` | 21–27 s + 14 s (Fase 2) | 15 s + 17 s (más ~15 s de descarga) |
+| Upgrade 4.3 → 4.5 | 113 s | 198 s |
+| Página estática, PHP 8.2 fuera y 24.04 al día | — | ~20 min (incluye arreglar dos paquetes ajenos, §9) |
+| Ubuntu 24.04 → 26.04 (incluye MySQL 8.4 y reinicio) | 19 s (solo MySQL y PHP) | ~36 min (20:41 → 21:17, hora del servidor) |
+| PHP 8.4 (instalar y configurar) | — | 63 s de instalación |
+| Upgrade 4.5 → 5.3 | 128 s | 212 s (más dos arreglos antes, §9) |
+| Tareas adhoc (CSS, `mod_qbank`) | 176 s | 402 s |
+| Personalización de idioma | 9 s | 37 s |
+| Apache → 5.3 | — | 1 s |
+| Pruebas de humo | — | ~20 min |
+| **Sitio cerrado, en total** | — | **3 h 10 min** (19:49 → 22:59 CEST; 12:49 → 15:59 en Lima) |
 
-Con la columna del servidor se fijan los `T+?` de la plantilla del corte
-([../migration-plan.md](../migration-plan.md) §7), con margen × 1,5.
+El VPS es unas 2–2,5 veces más lento que el portátil en los saltos de Moodle.
+Sin los arreglos de §9, que ya están en la guía y en los scripts, el corte se
+habría quedado en unas 2 h.
+
+---
+
+## 9. Resultado del corte (2026-10-11)
+
+**Producción en Moodle 5.3**, sobre Ubuntu 26.04.1, PHP 8.4.26 con FPM, MySQL
+8.4.11, y Apache 2.4.66 con `mpm_event` y HTTP/2.
+
+**Comprobaciones finales:**
+- `checks.php` sin avisos y esquema bien;
+- sección E toda en OK;
+- pruebas de humo 1–8 en verde: portada pública, login, cursos por nivel,
+  categorías, edición, examen, BBB y privacidad;
+- correo saliente probado;
+- Let's Debug «All OK» para la renovación del certificado (§10).
+
+**Lo que se encontró en el servidor y no en los ensayos**, ya resuelto y
+llevado a la guía y a los scripts:
+
+1. **El `config.php` de producción conectaba con `debian-sys-maint`**, la
+   cuenta de mantenimiento de Ubuntu, no con `moodleuser`. MySQL 8.4 de Ubuntu
+   26.04 la pasó a `auth_socket`, y Moodle no pudo conectar (error 1698).
+   Moodle usa ya `moodleuser`, con una contraseña nueva generada en el servidor
+   (solo vive en `config.php`) y permisos solo sobre `moodle.*`. Copia del
+   `config.php` anterior: `/root/phase3/config.php.before-dbuser`.
+2. **5.3 exige `max_input_vars ≥ 5000` también en el PHP de línea de
+   comandos**, o `upgrade.php` se para. La imagen de Docker ya lo traía, y por
+   eso los ensayos no lo vieron. Arreglo:
+   `/etc/php/8.4/cli/conf.d/99-richimath.ini` con esa línea.
+3. **Desde 5.1, Moodle guarda parte de sus librerías en `vendor/`** (Composer:
+   `league/oauth2-server`, `symfony/console`), y nadie las instalaba. La API
+   REST daba un error fatal, y `checks.php` lo marcaba CRITICAL en el router.
+   En los ensayos se escondía: con la depuración visible, el error volvía con
+   un 200. Composer 2.10.3 está en `/usr/local/bin/composer`, y se ejecutó
+   `composer install --no-dev --classmap-authoritative`. Lo hacen ahora
+   `deploy-contabo.sh`, el ensayo y el entorno de desarrollo
+   (`scripts/composer-install.sh`), y la aceptación comprueba que la API
+   devuelve JSON.
+4. **`do-release-upgrade` se negó a empezar por dos paquetes ajenos:**
+   `php-common` y `libgd3`, que quedaron de sury al quitar su PPA. Se purgó
+   el primero y se bajó el segundo a la versión de Ubuntu.
+5. **`/config.php` da 200 vacío, y no es una fuga:** 5.3 trae un
+   `public/config.php` de core que solo hace `require` del de la raíz.
+
+**Estado del servidor tras el corte:**
+- `/var/www/html` → 5.3 (clon de `moodle-2027` con `vendor/`);
+- `/var/www/moodle43` → el 4.3, para consulta;
+- `/var/www/moodle45` y `/var/www/maintenance` → ya sin uso;
+- snapshot `Corte-53-2026-10-11` en Contabo, que se borra solo el 10 de
+  noviembre;
+- copia de la base y de `moodledata` en el portátil,
+  `~/richimath-prod-copy/night/`.
+
+## 10. Fase 5: lo que queda
+
+- **Vigilar dos semanas:**
+  - registros de Apache y de PHP-FPM;
+  - cola de tareas;
+  - correo;
+  - primeras clases de BBB.
+- **Certificado:** la renovación de prueba falló dos veces en la «validación
+  secundaria» de Let's Encrypt, que no consiguió consultar el DNS de Porkbun.
+  El DNS responde bien desde fuera, y Let's Debug da «All OK». Caduca el
+  2026-11-28, y certbot lo intenta solo desde el ~29 de octubre. Repetir
+  `certbot renew --dry-run` a finales de octubre; si sigue fallando, Porkbun o
+  mover el DNS.
+- **Primer despliegue sobre 5.3 (FUN-23):** el de la corrección del aviso
+  «identificado como» (`bd44a6cec`), con
+  `bash /var/www/html/scripts/deploy-contabo.sh`. Es la primera vez que se
+  ejecuta el script con `composer install` y la compilación del CSS.
+- **A las dos semanas:**
+  - `apt autoremove --purge`;
+  - borrar `/var/www/moodle43`, `/var/www/moodle45`, `/var/www/maintenance` y
+    `/etc/php/8.2`;
+  - borrar `~/richimath-prod-copy` en el portátil;
+  - cambiar la contraseña de `root` que se dio a Contabo, si se usó (ticket
+    del VPS 6).

@@ -1,6 +1,6 @@
 # MEMORY.md — estado vivo de la migración a 5.3 (actualizar al terminar cada tarea)
 
-Última actualización: 2026-10-10 (ver SUMMARY.md). **Fase 2 cerrada**: ensayos 3 y 4 en verde seguidos (ensayo 4 = copia 3, 52/52, sección E toda en OK). Siguiente: Fase 3 (servidor).
+Última actualización: 2026-10-11. **CORTE HECHO: producción en Moodle 5.3** (Ubuntu 26.04 + PHP 8.4-FPM + MySQL 8.4 + Apache event/HTTP/2) desde el 2026-10-11 15:59 (Lima). Fase 5 (vigilancia) en curso: ver `docs/migration/phase-3-server.md` §9–§10.
 
 ## Árboles en disco
 
@@ -21,16 +21,20 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 | 0 Preparar | ✅ 2026-10-09 (MIG-01, 02, 03 + línea base en docs/migration/baseline-5.3) |
 | 1 Portar código | ✅ 2026-10-09 — 23/23 MIG. MIG-27 = iconos de Moodle; MIG-26 = lista de usuarios de 5.3 + `core_admin/userlist` = «Lista de usuarios» (customlang) |
 | 2 Ensayo con copia de producción | ✅ 2026-10-10 — ensayo 1 (a mano, 4 arreglos) · ensayo 2 (copia 2, 51/51 auto; 37 cadenas sin traducir → customlang) · ensayo 3 (misma copia, 52/52 auto, sin arreglos: primer verde limpio) · ensayo 4 (copia 3, 52/52 con BBB, sección E toda OK, 9,8 min: segundo verde) — ver [docs/migration/phase-2-production-copy.md](docs/migration/phase-2-production-copy.md) |
-| 3 Preparar servidor | 🟡 destino (2026-10-10): **Ubuntu 26.04 + PHP 8.4-FPM + MySQL 8.4 + Apache event/HTTP/2**, en el mismo VPS. Guía: [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md) (A ✅ · B ✅ 2026-10-10 · dos verdes con PHP 8.4 ✅ 2026-10-11: ensayos 5 y 6 con la copia 4, 52/52 y 0 avisos de obsoleto, ~7,5 min → **siguiente: C**, ensayo en el VPS con vuelta al snapshot) |
-| 4 Corte | — |
-| 5 Después | — |
+| 3 Preparar servidor | ✅ 2026-10-11 — A, B, dos verdes con PHP 8.4 (ensayos 5–6) y C hecho junto con el corte |
+| 4 Corte | ✅ 2026-10-11, 12:49 → 15:59 Lima (3 h 10 min, con 3 arreglos en vivo). Guía y tiempos: [docs/migration/phase-3-server.md](docs/migration/phase-3-server.md) §8–§9 |
+| 5 Después | 🟡 vigilancia hasta ~2026-10-25; pendientes en la guía §10 (certificado a finales de octubre, primer despliegue con `deploy-contabo.sh`, limpieza) |
 
 ## Hechos verificados de 5.3
 
 - Sube solo desde **4.4+** (`public/admin/environment.xml`): ruta 4.3 → 4.5 → 5.3.
 - Exige **PHP 8.3** y **MySQL 8.4 / MariaDB 11.4**.
-- Librerías en `public/lib/` (no hace falta `composer`); `config.php` y
-  `admin/cli/` en la raíz.
+- Librerías en `public/lib/`, **salvo las de `composer.lock` que no vienen en el
+  árbol** (`league/oauth2-server`, `symfony/console`): desde 5.1 hace falta
+  `composer install --no-dev --classmap-authoritative` → `vendor/` en la raíz
+  (`scripts/composer-install.sh` en local; `deploy-contabo.sh` en el VPS).
+  `config.php` y `admin/cli/` en la raíz; `public/config.php` es un cargador de
+  core (da 200 vacío).
 
 ## Entorno local 5.3 (Fase 0)
 
@@ -348,4 +352,25 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
 11. **PHP 8.4 comprobado en local**: 75 ficheros nuestros limpios con `php -l`
     de 8.4; `:8083` y `rehearse-upgrade.sh` ya usan `moodlehq/moodle-php-apache:8.4`.
     Dos verdes con datos reales hechos (ensayos 5 y 6, 2026-10-11).
+
+## Corte 2026-10-11 — trampas que solo salieron en el servidor
+
+1. **`config.php` de prod conectaba con `debian-sys-maint`** (cuenta de
+   mantenimiento de Ubuntu). MySQL 8.4 de 26.04 la pasó a `auth_socket` →
+   error 1698. Ahora `moodleuser` (contraseña nueva solo en `config.php`;
+   copia previa en `/root/phase3/config.php.before-dbuser`).
+2. **`max_input_vars ≥ 5000` también en la CLI** o `upgrade.php` de 5.3 se
+   para (`/etc/php/8.4/cli/conf.d/99-richimath.ini`). La imagen Docker ya lo
+   traía.
+3. **`vendor/` (Composer) obligatorio desde 5.1**; sin él la API REST da un
+   error fatal. **Con `debugdisplay` el fatal sale con un 200**: la
+   comprobación del router de `checks.php` solo mira el código. `acceptance.sh`
+   ahora exige JSON.
+4. **`do-release-upgrade` rechaza paquetes ajenos** (`php-common`, `libgd3` de
+   sury tras quitar el PPA): purgar o bajar a la versión de Ubuntu.
+5. **Aviso «Usted se ha identificado como…»**: el `.usertext.d-flex` de core
+   (`!important`) se colaba en la barra compacta y sacaba el avatar de la
+   pantalla en móvil → marcado propio en `local/sidebar.mustache` (`bd44a6cec`).
+6. VPS 4 ≈ 2–2,5× más lento que el portátil en los saltos; `do-release-upgrade`
+   ~36 min.
 
