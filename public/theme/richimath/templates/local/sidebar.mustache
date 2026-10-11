@@ -56,8 +56,14 @@
             {{/unauthenticateduser}}
             {{^unauthenticateduser}}
                 <a href="{{{ output.routes.profile }}}" class="richimath-sidebar-userlink d-flex align-items-center">
-                    {{> core/user_menu_metadata }}
+                    {{! Same data as core/user_menu_metadata, own markup: core wraps the
+                        "logged in as" notice in a .d-flex span (!important) built for a
+                        wide navbar, and it spilled across the 88px compact sidebar. }}
+                    <span class="richimath-sidebar-avatars">
+                        {{#avatardata}}<span class="avatar {{classes}}">{{{content}}}</span>{{/avatardata}}
+                    </span>
                     <span class="usertext ms-2">{{userfullname}}</span>
+                    {{#metadata}}<span class="richimath-sidebar-meta {{classes}}">{{{content}}}</span>{{/metadata}}
                 </a>
             {{/unauthenticateduser}}
         {{/usermenu}}

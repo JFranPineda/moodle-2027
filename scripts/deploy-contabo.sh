@@ -27,6 +27,11 @@ $RUN php admin/cli/upgrade.php --non-interactive
 echo "→ purge caches"
 $RUN php admin/cli/purge_caches.php
 
+# Rebuild every theme's CSS before reopening: otherwise the first visitors
+# wait for it, or get the previous CSS cached under the new revision.
+echo "→ build theme CSS"
+$RUN php admin/cli/build_theme_css.php --themes=richimath,rmprimaria,rmsecundaria,rmpreu,rmuniversidad
+
 echo "→ maintenance OFF"
 $RUN php admin/cli/maintenance.php --disable
 trap - ERR
