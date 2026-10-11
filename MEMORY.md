@@ -321,8 +321,10 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
    (Ubuntu `8.3.6-0ubuntu0.24.04.11`, mismas extensiones que el 8.2 de sury, más
    `ldap`; `mod-php8.3` apagado), y un 8.4 de sury sin usar. `php` → 8.2 en
    modo **manual**. Valores PHP propios en `99-richimath.ini` (copiarlo a 8.3).
-   `apache2.conf`: `/var/www/` con `AllowOverride None` → el permiso del
-   `.htaccess` vive en los vhosts. MySQL 8.0.46 sin opciones que 8.4 elimine.
+   `apache2.conf`: `/var/www/` con `AllowOverride None`; el permiso del
+   `.htaccess` vive en `conf-enabled/richimath-routes.conf` (`<Directory
+   /var/www/html>`), que alcanza a `public/`. Los vhosts solo traen
+   `DocumentRoot`. MySQL 8.0.46 sin opciones que 8.4 elimine.
    `config.php` de prod con dos bloques (XAMPP + servidor) bajo un `if`.
 8. **`grep -r` se salta los enlaces simbólicos** que encuentra al recorrer: los
    vhosts de `sites-enabled` no salieron en el inventario. Usar `grep -R`.

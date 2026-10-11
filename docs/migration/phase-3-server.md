@@ -126,7 +126,7 @@ echo "== respaldos"; ls -lh /root/moodle-backups/ 2>&1
 | Máquina | Ubuntu 24.04.4, 4 vCPU, 7,8 GB de RAM, 88 GB libres |
 | PHP | 8.2 de sury (en uso). **8.3 ya instalado**, del archivo de Ubuntu (`8.3.6-0ubuntu0.24.04.11`), con las mismas extensiones que el 8.2 más `ldap`, y `libapache2-mod-php8.3` apagado. También hay un 8.4 de sury, sin usar. `php` → 8.2 en modo **manual**: instalar paquetes ya no lo cambia |
 | `php.ini` | Los valores propios están en `/etc/php/8.2/apache2/conf.d/99-richimath.ini`: `memory_limit` 512M, `upload_max_filesize` 200M, `post_max_size` 210M, `max_execution_time` 300, `max_input_time` 300, `max_input_vars` 5000. (El inventario leyó 0 y -1 en los dos tiempos: el binario CLI de PHP los fuerza, sea cual sea el `.ini`) |
-| Apache | 2.4.58, `mpm_prefork` + `php8.2`, `ssl`, `rewrite`. Vhosts `000-default.conf` y `000-default-le-ssl.conf`. `apache2.conf` deja `/var/www/` con `AllowOverride None`: el permiso del `.htaccess` está en los vhosts |
+| Apache | 2.4.58, `mpm_prefork` + `php8.2`, `ssl`, `rewrite`. Vhosts `000-default.conf` y `000-default-le-ssl.conf`. `apache2.conf` deja `/var/www/` con `AllowOverride None`. Los vhosts solo traen `DocumentRoot /var/www/html` y la redirección de certbot. El permiso del `.htaccess` está en `conf-enabled/richimath-routes.conf` (`<Directory /var/www/html>` + `AllowOverride FileInfo Indexes`), que también alcanza a `public/` tras el corte |
 | MySQL | 8.0.46 de Ubuntu (6 paquetes `mysql-*`). La configuración no usa ninguna opción que 8.4 elimine. Ningún usuario con `mysql_native_password` |
 | Moodle | `3c044eae`, árbol limpio, tema `richimath`, `/var/www/html` en `safe.directory`. El `config.php` conserva dos bloques (XAMPP y servidor) que elige un `if`; el `require` de `lib/setup.php` va fuera, en la línea 40 |
 | Cron | `* * * * * /usr/bin/php /var/www/html/admin/cli/cron.php` en el crontab de `www-data` |
@@ -304,8 +304,9 @@ Pegar el `grep` y los `diff`.
 - **Vhosts de 5.3:** solo deben cambiar las líneas `DocumentRoot` (y
   `<Directory>` si el vhost la tiene).
 - **Rutas limpias y router:** necesitan `mod_rewrite` y
-  `AllowOverride FileInfo Indexes` sobre `public/`. Un `<Directory /var/www/html>`
-  también alcanza a `public/`.
+  `AllowOverride FileInfo Indexes` sobre `public/`. En este servidor los da
+  `conf-enabled/richimath-routes.conf` sobre `/var/www/html`, que alcanza a
+  `public/` (comprobado el 2026-10-10: `/students` → 200).
 
 **Probado en un Apache de Docker (2026-10-10):**
 - **Vhost de mantenimiento:** `https://…/`, `/login` y `/config.php`, por
