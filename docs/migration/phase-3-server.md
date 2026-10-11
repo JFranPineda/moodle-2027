@@ -56,7 +56,7 @@ página estática, PHP 8.2 fuera   do-release-upgrade ──▶ 26.04 · MySQL 8
 | Bloque | Qué | ¿Corta el sitio? | Duración |
 |---|---|---|---|
 | **A. Inventario** ✅ | Solo lectura | No | Hecho el 2026-10-10 |
-| **B. Preparar** | 24.04 al día, PHP sin uso fuera, árboles 4.5 y 5.3, página de mantenimiento, vhosts escritos sin activar | Solo un reinicio (1–2 min) | 45–60 min |
+| **B. Preparar** ✅ | 24.04 al día, PHP sin uso fuera, árboles 4.5 y 5.3, página de mantenimiento, vhosts escritos sin activar | Solo un reinicio (1–2 min) | Hecho el 2026-10-10 |
 | **Dos verdes con PHP 8.4** (§4) | Copia 4 y ensayos 5 y 6 en el portátil, con la imagen 8.4 | No | ~1 h |
 | **C. Ensayo general** | La noche entera, cronometrada, y **vuelta al snapshot** | Sí, de noche | 3–4 h |
 | **Fase 4** (§6) | Lo mismo que C, sin revertir | Sí, de noche | Lo que mida C |
@@ -327,6 +327,21 @@ ls -ld /var/www/*; ls /root/phase3 /root/phase3/*/
 
 Producción sigue igual: 4.3, PHP 8.2, MySQL 8.0, cron intacto. Pegar las
 salidas de B2–B9.
+
+**Resultado (2026-10-10):** hecho y verificado.
+- **Sistema:** PHP 8.2.34 tras `full-upgrade`. En `/etc/php` solo queda 8.2;
+  el 8.3, el 8.4 y los metapaquetes `php-*`, purgados.
+- **Salto disponible:** `do-release-upgrade -c` ofrece **26.04.1 LTS**.
+  Repositorios: `ubuntu.sources` y `ondrej-ubuntu-php-noble.sources`. `ufw`,
+  inactivo.
+- **Árboles:**
+  - `moodle45` en 4.5.14+ con los 6 plugins;
+  - `moodle53` clonado en `965554d18`; su `config.php` solo añade
+    `routerconfigured` (línea 40).
+- **Vhosts:** los de 5.3 solo cambian `DocumentRoot` → `public/`. El de
+  mantenimiento, idéntico al probado en Docker.
+- **Producción, igual que antes:** `prefork` + `php8.2`, sitio 200,
+  `/students` 200, cron intacto.
 
 ---
 
