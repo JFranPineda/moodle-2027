@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-# Local Moodle 5.3 (docker-compose.yml): PHP 8.3, MySQL 8.4, cron, router.
+# Local Moodle 5.3 (docker-compose.yml): PHP 8.4, MySQL 8.4, cron, router.
 # Brings the stack up, then upgrades and purges so code changes show at once.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+# 5.1+ needs vendor/ (Composer) or the REST API router dies.
+[ -f vendor/autoload.php ] || scripts/composer-install.sh
 
 docker compose up -d
 

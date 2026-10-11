@@ -99,6 +99,10 @@ for pair in students:local/richimath/students.php invitations:local/richimath/in
     check FUN-04 "/$p ⇄ /$r" "$got" "^302 $B/$r \| (200|303)$"
 done
 
+# The REST API needs vendor/ (Composer). With debugdisplay on, a missing library
+# still answers 200 with the fatal error in the body: check the body is JSON.
+check MIG-14 "REST API router answers JSON (vendor/ installed)" "$(curl -s $B/api/rest/v2/openapi.json | head -c 1)" '^\{$'
+
 # -------------------------------------------------------------------- admin
 echo "== Admin"
 S=adm

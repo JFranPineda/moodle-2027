@@ -18,6 +18,9 @@ echo "→ git pull (as root: the GitHub credentials belong to root)"
 git pull
 chown -R www-data:www-data "$MOODLE" 
 
+echo "→ composer install (5.1+: league/oauth2-server and symfony/console live in vendor/)"
+$RUN COMPOSER_HOME=/tmp/composer-www composer install --no-dev --classmap-authoritative --no-interaction
+
 echo "→ upgrade (installs plugin/theme version bumps)"
 $RUN php admin/cli/upgrade.php --non-interactive
 

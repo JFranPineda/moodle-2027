@@ -143,6 +143,9 @@ step "restore moodledata"             restore_moodledata
 echo "Production release: $(web admin/cli/cfg.php --name=release | tail -1)" | tee -a "$LOG"
 step "unify collation (unicode_ci)"   web admin/cli/mysql_collation.php --collation=utf8mb4_unicode_ci
 step "upgrade 4.3 → 4.5"              upgrade 4.5
+# 5.1+ keeps part of its libraries in vendor/ (Composer), as production does since
+# 2026-10-11. The 5.3 tree is mounted from this repo, where vendor/ is gitignored.
+[ -f "$REPO53/vendor/autoload.php" ] || step "composer install (5.3 tree)" "$REPO53/scripts/composer-install.sh"
 step "switch to PHP 8.4 + MySQL 8.4"  switch_to_53
 step "upgrade 4.5 → 5.3"              upgrade 5.3
 # The upgrade queues core's CSS build for every installed theme (nearly all of
