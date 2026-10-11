@@ -450,7 +450,15 @@ ssh root@169.58.171.171 'rm -rf /root/moodle-copy'      # solo después del OK
 
 ### C4. Snapshot
 
-Contabo → Snapshots → crear `ensayo-53-<fecha>`. Esperar a que termine.
+El VPS 4 admite **un solo snapshot**. Borrar el que haya **aquí, y no antes**:
+- la copia de C3 ya está verificada en el portátil y cubre el hueco;
+- el snapshot viejo no sirve como red: revertirlo borraría la actividad real de
+  los alumnos desde que se tomó.
+
+La noche del corte, lo mismo con el snapshot del ensayo.
+
+Contabo → Snapshots → borrar el anterior → crear `ensayo-53-<fecha>`. Esperar a
+que termine.
 
 ```bash
 echo "snapshot: <minutos> min" | tee -a /root/phase3/times.log
