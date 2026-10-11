@@ -275,6 +275,12 @@ Imágenes Docker descargadas: `moodlehq/moodle-php-apache:8.2` y `:8.3`,
   `sudo -u www-data php scripts/set-frontpage-banner.php /var/www/html/assets/frontpage-banner.jpg`.
   En 5.3 la cabecera de sección lleva `.d-flex` (`!important`): la sección D6
   necesita `display: none !important` para quitar la franja vacía.
+  **2026-10-10 19:06 (Lima): Richi lo cambió desde la web** (cuenta `richi85`):
+  borró la etiqueta del script y creó otra «Área de texto y medios» con
+  `Logo R M (1).png` (1,2 MB). **Decisión: se queda el suyo.** La etiqueta nueva
+  NO tiene el `idnumber` `richimath-frontpage-banner`; si alguna vez se relanza
+  el script, adopta la etiqueta suelta de la sección 1. `acceptance.sh` cuenta la
+  imagen de la etiqueta, no busca el nombre del fichero.
 - **«Consultas» y WhatsApp fuera del intento de examen** (attempt y summary):
   `core_renderer::in_quiz_attempt()`; vuelven en la revisión.
 - La barra secundaria de 5.3 (React) pinta un instante las pestañas en dos
